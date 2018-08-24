@@ -34,32 +34,48 @@ class Problems:
         return path_len
 
     @classmethod
-    def place_things(cls):
+    def place_things(cls, task_graph):
 
         topo = Topology.create_default()
         device_list = list(topo.nodes())
 
-        n_task = 10
-
-        # create a binary variable to state that a device is used
-        device_state = pulp.LpVariable.dicts(
-            'device_state',
-            device_list,
-            lowBound=0,
-            upBound=1,
-            cat=pulp.LpInteger)
-
         # define the problem and add constrains
-        n_task = 10
         modle = pulp.LpProblem("placething model", pulp.LpMinimize)
 
-        constrain = sum(device_state[name] for name in device_list) == n_task
-        msg = 'n_device picked == n_task'
+        n_task = len(task_graph)
+        combination_list = pulp.combination(device_list, n_task)
+
+        # define variables
+        var_task_exec_time = [
+            pulp.LpVariable(node['name'], lowBound=MIN, upBound=MAX, cat=pulp.LpFloat)
+            for node in task_graph.nodes()]
+
+        var_link_latency = [
+            pulp.LpVariable(edge['name'], lowBound=MIN, upBound=MAX, cat=pulp.LpFloat)
+            for edge in task_graph.edges()]
+
+        # task
+        task_attr = defaultdict()
+        for node in task_graph.nodes():
+            name = node['name']
+            task_attr[node['name']] = {
+                'device_type': pulp.LpVariable('d_{}'.format(name), cat=pulp.LpInterger),
+                'hardware': pulp.LpVariable('h_{}'.format(name), cat=pulp.LpInterger),
+                'sensor': pulp.LpVariable('s_{}'.format(name), cat=pulp.LpInterger),
+            }
+
+        # define objective
+        constrain = sum(var_link_latency) + sum(var_task_exec_time)
+        msg = 'minimize total latency'
         modle += constrain, msg
 
-        candidates = [name for name in device_state if device_state[name] == 1]
-        constrain = cls._get_path_length(topo, candidates)
-        msg = 'find shortest path'
-        modle += constrain, msg
+        # define constrains
+        for node in task_graph.nodes():
+            # TODO: find intervals from a list [1,2,3 5,7,8]
+            intervals = find_intervals(node['device_type'])
+
+                constrain = task_attr[node['name']]['device_type'] <= type
+                msg = 'device type must in {}, {}'.format(TYPE_A, TYPE_B)
+
 
         # TODO: add more constrains
