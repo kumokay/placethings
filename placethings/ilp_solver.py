@@ -17,12 +17,12 @@ class Problems:
         """
         Args:
             target_latency (int): latency constrain for this task graph
-            Gt (networkx.DiGraph): task graph in the following format, where
-                n_src is the data source, n_dst is the actuator, and other
-                nodes in between are computaton tasks
+            Gt (networkx.DiGraph): task graph in a multi-source, single
+            destination, no-loop directed graph, where src_k are data sources,
+            dst is the actuator, and other nodes in between are tasks
 
-               n_src ────> t11 ────> t12 ... ──── n_dst
-                    ├────> t21 ────> t22 ... ────┤
+               src1  ────> t11 ────> t12 ... ────  dst
+               src2  ────> t21 ────> t22 ... ────┤
                     ...   ...     ...         ...
                     └────> tk1 ────> tk2 ... ────┘
 
@@ -33,34 +33,34 @@ class Problems:
                     If t1 will not ouput any data to t2, set the value to 0
                     e.g. Gt[t1][t2][GtInfo.DATA_SZ] = Unit.byte(20)
                         Gt[t1][t2][GtInfo.DATA_SZ] = 0
-                It(t2) (Unit): total input data size to the task. Obtained from
-                    sum E(t1, t2)
-                    e.g. Gt.node[t2][GtInfo.DATA_IN] = Unit.mbs(100)
-                Ot(t1) (Unit): total output data size from the task
-                    e.g. Gt.node[t1][GtInfo.DATA_OUT] = Unit.mbs(100)
+                _It(t2) (Unit): total input data size to the task. Obtained
+                    from sum E(ti, t2) for all ti with an edge to t2. The value
+                    will be stored at Gt.node[t][GtInfo.RESOURCE_RQMT]
+                _Ot(t1) (Unit): total ouput data size to the task. Obtained
+                    from sum E(t1, ti) for all ti with an edge from t1. The
+                    value will be stored at Gt.node[t][GtInfo.RESOURCE_RQMT]
                 Lt(t,d) (Unit): computation latency of task t runs on device d.
                     Devices can be categorized according to number of CPUs,
                     GPUs, RAM size, and disk space.
                     e.g. Gt.node[t][GtInfo.LATENCY_INFO] = {
                             Device.T2_MICRO: Unit.ms(100),
                             Device.P3_2XLARGE: Unit.ms(5)}
-                        device_type = Device.type(ram, hd, cpu, gpu)
+                        device_type = Device.type(Gd.node[d][GdInfo.HARDWARE])
                         Gt.node[t][GtInfo.LATENCY_INFO][device_type] = 100 (ms)
                 Rt(t) (dict): minimum resource requirement for task t
-                Rt(t,d,r): minimum requirement of resource r for task t of a
+                Rt(t,r,d): minimum requirement of resource r for task t of a
                     specific build flavor for that device
                     e.g. build_type = Flavor.type(Device.P3_2XLARGE)
-                        e.g. assert(build_type == Flavor.GPU)
+                        assert(build_type == Flavor.GPU)
                         Gt.node[t][GtInfo.RESOURCE_RQMT][build_type] = {
-                            Resource.RAM: Unit.gb(2),
-                            Resource.HD: Unit.mb(512),
-                            Resource.CPU: 1,
-                            Resource.GPU: 1}
-                St(t) (dict): sensor requirement for task t
-                St(t, s) (int): number of sensors s needed by task t
-                    e.g. Gt.node[t][GtInfo.SENSOR_RQMT] = {
-                        Sensor.GPS: 1,
-                        Sensor.CAMERA: 1}
+                            Hardware.RAM: Unit.gb(2),
+                            Hardware.HD: Unit.mb(512),
+                            Hardware.CPU: Unit.percentage(10),
+                            Hardware.GPU: Unit.percentage(60),
+                            Hardware.BW_INGRESS: Unit.mb(2),  # _It(t)
+                            Hardware.BW_EGRESS: Unit.byte(20),  # _Ot(t)
+                            Hardware.CAMERA: 1,
+                        }
 
             Gd (networkx.DiGraph): a directed graph describes network topology,
                 where each node represent a device
@@ -71,40 +71,36 @@ class Problems:
                     If d2 is not reachable from d1, set the value to MAXINT
                     e.g. Gd[d1][d2][GdInfo.LATENCY] = 20 (ms)
                         Gd[d1][d2][GdInfo.LATENCY] = Const.MAXINT
-                Id(d) (Unit): device input bandwidth
-                    e.g. Gd.node[d][GdInfo.BANDWIDTH_IN] = Unit.mbs(100)
-                Od(d) (Unit): device output bandwidth
-                    e.g. Gd.node[d][GdInfo.BANDWIDTH_OUT] = Unit.mbs(100)
-                Hd(d) (dict): hardware specification of device d.
-                    Use this information to determine device_type Dd(t).
-                    e.g. Gd.node[d][GdInfo.HARDWARE] = {
-                        Resource.RAM: Unit.gb(16),
-                        Resource.HD: Unit.tb(1),
-                        Resource.CPU: 4,
-                        Resource.GPU: 1,
-                        Sensor.GPS: 1,
-                        Sensor.CAMERA: 1}
-                Dd(d) (enum): device type of device d, determined by hardware
-                    specification of the device.
-                    e.g. device_type = Device.type(
-                        Gd.node[d][GdInfo.HARDWARE][Resource.RAM],
-                        Gd.node[d][GdInfo.HARDWARE][Resource.HW],
-                        Gd.node[d][GdInfo.HARDWARE][Resource.CPU],
-                        Gd.node[d][GdInfo.HARDWARE][Resource.GPU])
-                    assert(device_type == Device.T2MICRO)
-                Rd(d) (dict): available computing resources on device d.
+                _Hd(d) (dict): hardware specification of device d.
+                    Use this internal information to determine device_type
+                    Dd(t) and calculate Rd(d).
+                    e.g. Gd.node[d][GdInfo.HARDWARE_SPEC] = {
+                        Hardware.RAM: Unit.gb(16),
+                        Hardware.HD: Unit.tb(1),
+                        Hardware.CPU: 4,
+                        Hardware.GPU: 1,
+                        Hardware.GPS: 1,
+                        Hardware.CAMERA: 1}
+                _Dd(d) (enum): device type of device d, determined by hardware
+                    specification of the device. Used by Gt.node[t] for
+                    accessing information of the a certain device type
+                    e.g. device_type = Device.type(Gd.node[d][GdInfo.HARDWARE])
+                        assert(device_type == Device.T2_MICRO)
+                Rd(d) (dict): available resources on device d.
                 Rd(d, r) (Unit): availablity of resource r on device d.
-                    e.g. Gd.node[d][GdInfo.RESOURCE_AVAILABLE] = {
-                        Resource.RAM: Unit.gb(12),
-                        Resource.HD: Unit.gb(500),
-                        Resource.CPU: Unit.percentage(80),
-                        Resource.GPU: Unit.percentage(100)}
-                Sd(d) (dict): available sensors on device d
-                Sd(d, s) (int): number of available sensors s on device d
-                    e.g. Gd.node[d][GdInfo.SENSOR_AVAILABLE] = {
-                        Sensor.GPS: 1,
-                        Sensor.CAMERA: 1}
-
+                    e.g. Gd.node[d][GdInfo.RESOURCE] = {
+                        Hardware.RAM: Unit.gb(12),
+                        Hardware.HD: Unit.gb(500),
+                        Hardware.CPU: Unit.percentage(80),
+                        Hardware.GPU: Unit.percentage(100),
+                        Hardware.BW_INGRESS: Unit.mb(100),
+                        Hardware.BW_EGRESS: Unit.mb(60),
+                        Hardware.GPS: 1,
+                        Hardware.PROXIMITY: 1,
+                        Hardware.ACCELEROMETER: 1,
+                        Hardware.GYROSCOPE: 1,
+                        Hardware.CAMERA: 1,
+                    }
 
         decision variable:
             X(t,d) = 1 if assign task t to device d else 0
@@ -118,18 +114,18 @@ class Problems:
                         +   sum ( X(ti,di) * X(ti+1,di+1) * Ld(di, di+1) ) }
                             i=1
 
-        constrians: device must be able to support what the task needs
+        constrians 1: neighbors in the task graph must also be accessible from
+            each other in network graph
+            for p in Gt:
+                for i in range(1, len(p-1)):
+                    X(ti,di) * X(ti+1,di+1) * Ld(di, di+1) < LATENCY_MAX
+
+        constrians 2: device must be able to support what the task needs
             for d in Gd:
-                for t in Gt:
-                    X(t,d) * { Id(t) - It(t) } > 0
-                    X(t,d) * { Od(t) - Ot(t) } > 0
-                    for r in Rt:
-                        X(t,d) * { Rd(d,r) - Rt(t,d,r) } > 0
-                    for s in St
-                        X(t,d) * { Sd(d, s) - St(d, s) > 0
+                for r in Rd:
+                               len(Gt)
+                    Rd(d,r) - { sum ( X(ti,d) * Rt(ti,r,d) ) } >= 0
+                                i=1
 
-
-            for
-                X(t,d,G)*Id(d1) X(t,d,G)*Io(d2)
         """
         pass

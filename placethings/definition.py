@@ -20,23 +20,14 @@ class Flavor(Enum):
     CPU = auto()
 
 
-class GtInfoEnum(Enum):
-    DATA_SZ = auto()
-    DATA_IN = auto()
-    DATA_OUT = auto()
-    LATENCY_INFO = auto()
-    RESOURCE_RQMT = auto()
-    SENSOR_RQMT = auto()
-
-
-class GtInfo(object):
+class GtInfo(type):
+    # used as keys for **kwargs for networkx.Digraph.add_node
     DATA_SZ = 'DATA_SZ'
     DATA_IN = 'DATA_IN'
     DATA_OUT = 'DATA_OUT'
     LATENCY_INFO = 'LATENCY_INFO'
     RESOURCE_RQMT = 'RESOURCE_RQMT'
     SENSOR_RQMT = 'SENSOR_RQMT'
-
 
 
 class Resource(Enum):
