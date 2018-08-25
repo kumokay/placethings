@@ -20,31 +20,44 @@ class Flavor(Enum):
     CPU = auto()
 
 
-class GtInfo(type):
+class GtInfoEnum(Enum):
+    DATA_SZ = auto()
+    DATA_IN = auto()
+    DATA_OUT = auto()
+    LATENCY_INFO = auto()
+    RESOURCE_RQMT = auto()
+    SENSOR_RQMT = auto()
+
+
+class GtInfo(object):
     # used as keys for **kwargs for networkx.Digraph.add_node
-    DATA_SZ = 'DATA_SZ'
-    DATA_IN = 'DATA_IN'
-    DATA_OUT = 'DATA_OUT'
-    LATENCY_INFO = 'LATENCY_INFO'
-    RESOURCE_RQMT = 'RESOURCE_RQMT'
-    SENSOR_RQMT = 'SENSOR_RQMT'
+    class helper(type):
+        def __getattr__(self, name):
+            return getattr(GtInfoEnum, name).name
+    __metaclass__ = helper
 
 
-class Resource(Enum):
+class Hardware(Enum):
     RAM = auto()
     HD = auto()
-    GPU = auto()
     CPU = auto()
-
-
-class Sensor(Enum):
+    GPU = auto()
+    BW_INGRESS = auto()
+    BW_EGRESS = auto()
     GPS = auto()
+    PROXIMITY = auto()
+    ACCELEROMETER = auto()
+    GYROSCOPE = auto()
     CAMERA = auto()
 
 
 class Unit(object):
 
     _UNIT = 1
+
+    @classmethod
+    def percentage(cls, n):
+        return n * cls._UNIT
 
     @classmethod
     def ms(cls, n):

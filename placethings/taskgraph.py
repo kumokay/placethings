@@ -9,7 +9,7 @@ from future.utils import iteritems
 import networkx as nx
 from matplotlib import pyplot as plt
 
-from placethings.definition import Device, Flavor, GtInfo, Resource, Unit
+from placethings.definition import Device, Flavor, GtInfo, Hardware, Unit
 
 
 log = logging.getLogger()
@@ -80,10 +80,10 @@ class TaskGraph(object):
                 },
                 GtInfo.RESOURCE_RQMT: {
                     Flavor.CPU: {
-                        Resource.RAM: Unit.mb(1),
-                        Resource.HD: Unit.kb(3),
-                        Resource.GPU: 0,
-                        Resource.CPU: 1,
+                        Hardware.RAM: Unit.mb(1),
+                        Hardware.HD: Unit.kb(3),
+                        Hardware.GPU: Unit.percentage(0),
+                        Hardware.CPU: Unit.percentage(5),
                     }
                 },
                 GtInfo.SENSOR_RQMT: {}
@@ -96,16 +96,16 @@ class TaskGraph(object):
                 },
                 GtInfo.RESOURCE_RQMT: {
                     Flavor.GPU: {
-                        Resource.RAM: Unit.gb(4),
-                        Resource.HD: Unit.mb(500),
-                        Resource.GPU: 1,
-                        Resource.CPU: 1,
+                        Hardware.RAM: Unit.gb(4),
+                        Hardware.HD: Unit.mb(500),
+                        Hardware.GPU: Unit.percentage(60),
+                        Hardware.CPU: Unit.percentage(5),
                     },
                     Flavor.CPU: {
-                        Resource.RAM: Unit.gb(1),
-                        Resource.HD: Unit.mb(300),
-                        Resource.GPU: 0,
-                        Resource.CPU: 1,
+                        Hardware.RAM: Unit.gb(1),
+                        Hardware.HD: Unit.mb(300),
+                        Hardware.GPU: Unit.percentage(0),
+                        Hardware.CPU: Unit.percentage(80),
                     },
                 },
                 GtInfo.SENSOR_RQMT: {}
@@ -118,10 +118,10 @@ class TaskGraph(object):
                 },
                 GtInfo.RESOURCE_RQMT: {
                     Flavor.CPU: {
-                        Resource.RAM: Unit.mb(1),
-                        Resource.HD: Unit.kb(3),
-                        Resource.GPU: 0,
-                        Resource.CPU: 1,
+                        Hardware.RAM: Unit.mb(1),
+                        Hardware.HD: Unit.kb(3),
+                        Hardware.GPU: Unit.percentage(0),
+                        Hardware.CPU: Unit.percentage(5),
                     },
                 },
                 GtInfo.SENSOR_RQMT: {},
@@ -134,10 +134,10 @@ class TaskGraph(object):
                 },
                 GtInfo.RESOURCE_RQMT: {
                     Flavor.CPU: {
-                        Resource.RAM: Unit.mb(1),
-                        Resource.HD: Unit.kb(3),
-                        Resource.GPU: 0,
-                        Resource.CPU: 1,
+                        Hardware.RAM: Unit.mb(1),
+                        Hardware.HD: Unit.kb(3),
+                        Hardware.GPU: Unit.percentage(0),
+                        Hardware.CPU: Unit.percentage(5),
                     },
                 },
                 GtInfo.SENSOR_RQMT: {},

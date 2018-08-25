@@ -120,7 +120,7 @@ class Problems:
                 for i in range(1, len(p-1)):
                     X(ti,di) * X(ti+1,di+1) * Ld(di, di+1) < LATENCY_MAX
 
-        constrians 2: device must be able to support what the task needs
+        constrians 2: device must be able to support what the tasks need
             for d in Gd:
                 for r in Rd:
                                len(Gt)
