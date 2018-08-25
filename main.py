@@ -6,6 +6,8 @@ from __future__ import unicode_literals
 import argparse
 import logging
 
+from placethings.taskgraph import TaskGraph
+from placethings.topology import Topology
 
 logging.basicConfig(
     format='%(asctime)s [%(levelname)s] %(funcName)s: %(message)s')
@@ -17,7 +19,7 @@ class SubArgsManager(object):
     def __init__(self, subparser):
         self.subparser = subparser
 
-    def visualize_topology(self, required=False):
+    def visualize(self, required=False):
         self.subparser.add_argument(
             '-v',
             '--visualize',
@@ -25,7 +27,7 @@ class SubArgsManager(object):
             dest='is_plot',
             default=False,
             required=required,
-            help='plot topology')
+            help='plot graph')
 
 
 class ArgsManager(object):
@@ -49,14 +51,17 @@ class FuncManager(object):
 
     @staticmethod
     def create_topology(args):
-
-        from placethings.topology import Topology
-
         is_plot = args.is_plot
-
         topo = Topology.create_default()
         if is_plot:
             Topology.plot(topo)
+
+    @staticmethod
+    def create_taskgraph(args):
+        is_plot = args.is_plot
+        graph = TaskGraph.create_default_graph()
+        if is_plot:
+            TaskGraph.plot(graph)
 
     @staticmethod
     def place_things(args):
@@ -74,14 +79,21 @@ def main():
         name,
         func=getattr(FuncManager, name),
         help='generate network topology')
-    subargs_manager.visualize_topology(required=False)
+    subargs_manager.visualize(required=False)
+
+    name = 'create_taskgraph'
+    subargs_manager = args_manager.add_subparser(
+        name,
+        func=getattr(FuncManager, name),
+        help='generate network topology')
+    subargs_manager.visualize(required=False)
 
     name = 'place_things'
     subargs_manager = args_manager.add_subparser(
         name,
         func=getattr(FuncManager, name),
         help='compute placement')
-    subargs_manager.visualize_topology(required=False)
+    subargs_manager.visualize(required=False)
 
     args = args_manager.parse_args()
     args.func(args)
