@@ -31,8 +31,8 @@ class Problems:
 
                 E(t1, t2) (Unit): input/output relationship between t1, t2
                     If t1 will not ouput any data to t2, set the value to 0
-                    e.g. Gt[t1][t2][GtInfo.DATA_SZ] = Unit.byte(20)
-                        Gt[t1][t2][GtInfo.DATA_SZ] = 0
+                    e.g. Gt[t1][t2][GtInfo.TRAFFIC] = Unit.byte(20)
+                        Gt[t1][t2][GtInfo.TRAFFIC] = 0
                 _It(t2) (Unit): total input data size to the task. Obtained
                     from sum E(ti, t2) for all ti with an edge to t2. The value
                     will be stored at Gt.node[t][GtInfo.RESOURCE_RQMT]
@@ -57,9 +57,9 @@ class Problems:
                             Hardware.HD: Unit.mb(512),
                             Hardware.CPU: Unit.percentage(10),
                             Hardware.GPU: Unit.percentage(60),
-                            Hardware.BW_INGRESS: Unit.mb(2),  # _It(t)
-                            Hardware.BW_EGRESS: Unit.byte(20),  # _Ot(t)
                             Hardware.CAMERA: 1,
+                            Hardware.NIC_INGRESS: Unit.mb(2),  # _It(t)
+                            Hardware.NIC_EGRESS: Unit.byte(20),  # _Ot(t)
                         }
 
             Gd (networkx.DiGraph): a directed graph describes network topology,

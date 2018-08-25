@@ -21,12 +21,9 @@ class Flavor(Enum):
 
 
 class GtInfoEnum(Enum):
-    DATA_SZ = auto()
-    DATA_IN = auto()
-    DATA_OUT = auto()
+    TRAFFIC = auto()
     LATENCY_INFO = auto()
     RESOURCE_RQMT = auto()
-    SENSOR_RQMT = auto()
 
 
 class GtInfo(object):
@@ -38,17 +35,20 @@ class GtInfo(object):
 
 
 class Hardware(Enum):
+    # shared
     RAM = auto()
     HD = auto()
     CPU = auto()
     GPU = auto()
-    BW_INGRESS = auto()
-    BW_EGRESS = auto()
     GPS = auto()
+    # non-shared
     PROXIMITY = auto()
     ACCELEROMETER = auto()
     GYROSCOPE = auto()
     CAMERA = auto()
+    # derived data / shared
+    NIC_INGRESS = auto()
+    NIC_EGRESS = auto()
 
 
 class Unit(object):

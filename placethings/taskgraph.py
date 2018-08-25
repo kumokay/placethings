@@ -34,9 +34,15 @@ class TaskGraph(object):
             graph (networkx.DiGraph)
 
         """
+        # currently only support multi-source, single destination
+        assert len(src_list) > 0
+        assert len(dst_list) == 1
         graph = nx.DiGraph()
+        # create graph from input data
         cls._add_nodes(graph, src_list, dst_list, task_info)
         cls._add_edges(graph, edge_info)
+        # derive extra information from the input data and stored in the graph
+        cls._derive_data(graph, task_info)
         return graph
 
     @staticmethod
@@ -49,17 +55,26 @@ class TaskGraph(object):
             graph.add_node(name, **attr)
 
     @staticmethod
-    def _assert_node_exist(graph, node):
-        if node not in graph.nodes():
-            raise AssertionError('node {} not present'.format(node))
-
-    @classmethod
-    def _add_edges(cls, graph, edge_info):
+    def _add_edges(graph, edge_info):
         for edge_str, attr in iteritems(edge_info):
             src_node, dst_node = edge_str.split(' -> ')
-            cls._assert_node_exist(graph, src_node)
-            cls._assert_node_exist(graph, dst_node)
+            assert src_node in graph.nodes()
+            assert dst_node in graph.nodes()
             graph.add_edge(src_node, dst_node, **attr)
+
+    @staticmethod
+    def _derive_data(graph, task_info):
+        for task in task_info:
+            ingress_traffic = sum(
+                [graph[src][dst][GtInfo.TRAFFIC]
+                    for (src, dst) in graph.edges() if dst == task])
+            egress_traffic = sum(
+                [graph[src][dst][GtInfo.TRAFFIC]
+                    for edge in graph.edges() if src == task])
+            build_rqmt_info = graph.node[task][GtInfo.RESOURCE_RQMT]
+            for _build, rqmt in iteritems(build_rqmt_info):
+                rqmt[Hardware.NIC_INGRESS] = ingress_traffic
+                rqmt[Hardware.NIC_EGRESS] = egress_traffic
 
     @classmethod
     def create_default_graph(cls):
@@ -86,7 +101,6 @@ class TaskGraph(object):
                         Hardware.CPU: Unit.percentage(5),
                     }
                 },
-                GtInfo.SENSOR_RQMT: {}
             },
             'task_findObject': {
                 GtInfo.LATENCY_INFO: {
@@ -108,7 +122,6 @@ class TaskGraph(object):
                         Hardware.CPU: Unit.percentage(80),
                     },
                 },
-                GtInfo.SENSOR_RQMT: {}
             },
             'task_checkAbnormalEvent': {
                 GtInfo.LATENCY_INFO: {
@@ -124,7 +137,6 @@ class TaskGraph(object):
                         Hardware.CPU: Unit.percentage(5),
                     },
                 },
-                GtInfo.SENSOR_RQMT: {},
             },
             'task_sentNotificatoin': {
                 GtInfo.LATENCY_INFO: {
@@ -140,30 +152,29 @@ class TaskGraph(object):
                         Hardware.CPU: Unit.percentage(5),
                     },
                 },
-                GtInfo.SENSOR_RQMT: {},
             },
         }
         edge_info = {
             'sensor_thermal1 -> task_getAvgTemperature': {
-                GtInfo.DATA_SZ: Unit.kb(1),
+                GtInfo.TRAFFIC: Unit.kb(1),
             },
             'sensor_thermal2 -> task_getAvgTemperature': {
-                GtInfo.DATA_SZ: Unit.kb(1),
+                GtInfo.TRAFFIC: Unit.kb(1),
             },
             'sensor_camera -> task_findObject': {
-                GtInfo.DATA_SZ: Unit.mb(10),
+                GtInfo.TRAFFIC: Unit.mb(10),
             },
             'task_getAvgTemperature -> task_checkAbnormalEvent': {
-                GtInfo.DATA_SZ: Unit.byte(1),
+                GtInfo.TRAFFIC: Unit.byte(1),
             },
             'task_findObject -> task_checkAbnormalEvent': {
-                GtInfo.DATA_SZ: Unit.byte(20),
+                GtInfo.TRAFFIC: Unit.byte(20),
             },
             'task_checkAbnormalEvent -> task_sentNotificatoin': {
-                GtInfo.DATA_SZ: Unit.byte(1),
+                GtInfo.TRAFFIC: Unit.byte(1),
             },
             'task_sentNotificatoin -> accuator_broadcastSystem': {
-                GtInfo.DATA_SZ: Unit.byte(1),
+                GtInfo.TRAFFIC: Unit.byte(1),
             },
         }
         return src_list, dst_list, task_info, edge_info
