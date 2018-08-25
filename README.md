@@ -1,2 +1,2 @@
 # placethings
-just rushing for something
+just want to place things on a graph
