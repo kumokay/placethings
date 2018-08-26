@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from builtins import range
 import logging
 from future.utils import iteritems
 
@@ -90,6 +91,7 @@ class NetworkGraph(object):
                 device_name = cls._gen_device_name(device_type, device_id)
                 # copy hardware spec
                 device_info = {}
+                device_info[Device.DEVICE_TYPE] = device_type
                 device_info[GdInfo.HARDWARE_SPEC] = (
                     device_type_spec[device_type][GdInfo.HARDWARE_SPEC])
                 # derive resource info

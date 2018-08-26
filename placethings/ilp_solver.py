@@ -3,8 +3,14 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from builtins import range
+from collections import defaultdict
 import logging
-# import pulp
+from itertools import zip
+import pulp
+import networkx as nx
+
+from placethings.definition import Const, GdInfo, GtInfo
 
 
 log = logging.getLogger()
@@ -13,10 +19,13 @@ log = logging.getLogger()
 class Problems:
 
     @classmethod
-    def place_things(cls, target_latency, Gt, Gd):
+    def place_things(
+            cls, target_latency, source_list, dst_list, task_list, Gt, Gd):
         """
         Args:
             target_latency (int): latency constrain for this task graph
+            source_list (list): source nodes in the task graph
+            dst_list (list): destination nodes in the task graph
             Gt (networkx.DiGraph): task graph in a multi-source, single
             destination, no-loop directed graph, where src_k are data sources,
             dst is the actuator, and other nodes in between are tasks
@@ -110,12 +119,35 @@ class Problems:
         objective: minimize longest path's overall latency in the task graph,
             i.e. total execution times + transmission latencies along the path
 
-                             len(p)-1
+                             len(p)
             minimize   max   {  sum ( X(ti,di) * Lt(ti, di) )
             X(t,d)   p in Gt    i=1
-                            len(p)
+                           len(p)-1
                         +   sum ( X(ti,di) * X(ti+1,di+1) * Ld(di, di+1) ) }
                             i=1
+
+
+            minimize   max   {
+            X(t,d)   p in Gt
+
+                len(p)-1
+                 sum (X(ti,di) * [ Lt(ti, di) + X(ti+1,di+1) * Ld(di, di+1) ] )
+                 i=1
+            }
+
+            X(ti,di) * Lt(ti, di) when i=len(p)-1 can be removed since dst's
+            computation time should be zero.
+
+            this can be simplified by an auxiliary variable and rewrote as:
+
+                minimize Y
+
+            with additional constrains:
+
+            for p in Gt:
+                len(p)-1
+            Y >= sum (X(ti,di) * [ Lt(ti, di) + X(ti+1,di+1) * Ld(di, di+1) ] )
+                 i=1
 
         constrians 1: neighbors in the task graph must also be accessible from
             each other in network graph
@@ -131,4 +163,92 @@ class Problems:
                                 i=1
 
         """
-        pass
+        # create LP problem
+        prob = pulp.LpProblem("placethings", pulp.LpMinimize)
+
+        # decision variable: X(t,d) = 1 if assign task t to device d else 0
+        X = defaultdict(dict)
+        for t in Gt.nodes():
+            if t in source_list:
+                # do not add sources bc decision must be 1
+                continue
+            for d in Gd.nodes():
+                if t in dst_list:
+                    # do not add dst bc decision must be 1
+                    continue
+                X[t][d] = pulp.LpVariable(
+                    'X({},{})'.fomrat(t, d),
+                    lowBound=0,
+                    upBound=1,
+                    cat='Binary')
+        # auxiliary variable: it represent the longest path's overall latency
+        # in the task graph
+        Y = pulp.LpVariable(
+            'LongestPath',
+            lowBound=0,
+            upBound=Const.INT_MAX,
+            cat='Interger')
+        # objective: minimize longest path's overall latency in the task graph,
+        prob += Y
+        # later, add additional constrains for the auxiliary variable
+        # for p in Gt:
+        #     len(p)-1
+        # Y >= sum (X(ti,di) * [ Lt(ti, di) + X(ti+1,di+1) * Ld(di, di+1) ] )
+        #      i=1
+
+        # Generate all simple paths in the graph G from source to target.
+        all_paths = []
+        for src in source_list:
+            for dst in dst_list:
+                paths = list(nx.all_simple_paths(Gt, src, dst))
+                all_paths += paths
+        # Generate all possible mappings of device_i <-> task_i
+        n_task = len(task_list)
+        all_mappings = pulp.combination(list(Gd.nodes()), n_task)
+        # keys for the mappings
+        taskname_to_idx = zip(task_list, range(n_task))
+        # use constrains to model Y, the longest path for each mapping
+        # mapping: e.g. for (t1, t2, t3, t4),
+        #     => (d1, d2, d3, d4), (d2, d3, d7, d4), ...
+        # path: e.g. src -> t1-> t3 -> dst
+        for device_mapping in all_mappings:
+            for path in all_paths:
+                # put all variables in a list then sum together
+                path_vars = []
+                # path[0] must be a data source in a pre-defined location
+                ti = path[0]
+                assert ti in source_list
+                di = Gd.node[ti]
+                for j in range(1, len(path)-1):
+                    tj = path[j]
+                    dj = device_mapping[taskname_to_idx[tj]]
+                    L_di_dj = Gd[di][dj][GdInfo.LATENCY]
+                    if j == 1:
+                        # i is data source node, must be in this location
+                        path_vars.append(1 * (0 + X[tj][dj] * L_di_dj))
+                    else:
+                        di_type = Gd.node[di][GtInfo.DEVICE_TYPE]
+                        L_ti_di = Gt.node[ti][GtInfo.LATENCY_INFO][di_type]
+                        if j == len(path) - 2:
+                            # j is destination, must be in this location
+                            path_vars.append(
+                                X[ti][di] * (L_ti_di + 1 * L_di_dj))
+                        else:
+                            path_vars.append(
+                                X[ti][di] * (L_ti_di + X[tj][dj] * L_di_dj))
+                prob += Y >= pulp.LpSum(path_vars)
+
+            # add other constrains
+
+            # constrians 1: neighbors in the task graph must also be accessible from
+            #     each other in network graph
+            #     for p in Gt:
+            #         for i in range(1, len(p-1)):
+            #             X(ti,di) * X(ti+1,di+1) * Ld(di, di+1) < LATENCY_MAX
+            #
+            # constrians 2: device must be able to support what the tasks need
+            #     for d in Gd:
+            #         for r in Rd:
+            #                        len(Gt)
+            #             Rd(d,r) - { sum ( X(ti,d) * Rt(ti,r,d) ) } >= 0
+            #                         i=1
