@@ -5,144 +5,82 @@ from __future__ import unicode_literals
 
 import logging
 import random
-from future.utils import iteritems
 
 import networkx as nx
-from matplotlib import pyplot as plt
+
+from placethings.definition import GnInfo
+from placethings.utils import Unit
 
 
 log = logging.getLogger()
 
 
-class Topology(object):
+class TopoGraph(object):
 
-    _DEFAULT_LINK_SPEED_MS = 10
-    _DEFAULT_DEVICE_INFO = {
-        't2.micro': {
-            'task_capacity': 10,
-            'cost_per_hour': 0.0116,
-        },
-        'g3.4xlarge': {
-            'task_capacity': 100,
-            'cost_per_hour': 1.14,
-        },
-        'nuc': {
-            'task_capacity': 10,
-            'cost_per_hour': 0,
-        },
-    }
-    _DEFAULT_DEVICE_AVALIBILITY = {
-        't2.micro': 20,
-        'g3.4xlarge': 2,
-        'nuc': 10,
-    }
-    _DEFAULT_LINK_DENSITY = 0.7
+    _DEFAULT_N_SWITCH = 10
+    _DEFAULT_N_DEVICE = 5
+    _DEFAULT_DENSITY = 0.3
+    _DEFAULT_LATENCY = Unit.ms(20)
+    _DEFAULT_BANDWIDTH = Unit.mbyte(300)
+    _DEFAULT_SWITCH_PREFIX = 'sw'
+    _DEFAULT_DEVICE_PREFIX = 'dv'
 
     @classmethod
-    def _link_two_hosts(cls, topo, h1, h2):
-
-        def _rand_link_speed():
-            return cls._DEFAULT_LINK_SPEED_MS * random.random()
-
-        # asymmetric link speed
-        topo.add_edge(
-            h1,
-            h2,
-            latency=_rand_link_speed(),
-        )
-        topo.add_edge(
-            h2,
-            h1,
-            latency=_rand_link_speed(),
-        )
+    def create_default_switch_list(cls, n_switch=None):
+        if not n_switch:
+            n_switch = cls._DEFAULT_N_SWITCH
+        switch_list = [
+            '{}.{}'.format(cls._DEFAULT_SWITCH_PREFIX, i)
+            for i in range(n_switch)]
+        return switch_list
 
     @classmethod
-    def _add_links(cls, topo, link_density):
+    def _create_default_device_list(cls, n_device=None):
+        if not n_device:
+            n_device = cls._DEFAULT_N_DEVICE
+        device_list = [
+            '{}.{}'.format(cls._DEFAULT_DEVICE_PREFIX, i)
+            for i in range(n_device)]
+        return device_list
+
+    @classmethod
+    def _add_random_link(cls, graph, src, dst):
+        attr = {
+            GnInfo.BANDWIDTH: cls._DEFAULT_BANDWIDTH * random.random(),
+            GnInfo.LATENCY: cls._DEFAULT_LATENCY * random.random(),
+        }
+        graph.add_edge(src, dst, **attr)
+
+    @classmethod
+    def create_default_topo(cls, switch_list=None, device_list=None):
         """
+        Randomly deploy devices in a newtork consists of randomly connected
+        switches.
+
         Args:
-            topo (networkx.DiGraph): a graph with nodes but no edges
-            link_density (float): possibility of having links between hosts
+            switch_list (list): a list of APs, routers, switchs, etc
+            device_list (list): a list of devices
         Returns:
-            topo (networkx.Digraph): network topology with links
+            topology (networkx.DiGraph)
         """
-        host_list = topo.nodes()
-        n_link_per_host = int(round(len(host_list) * link_density))  # ceil(x)
-        for h1 in topo.nodes():
-            for h2 in random.sample(host_list, n_link_per_host):
-                if h1 == h2:
+        if not switch_list:
+            switch_list = cls.create_default_switch_list()
+        if not device_list:
+            device_list = cls._create_default_device_list()
+        graph = nx.DiGraph()
+        graph.add_nodes_from(switch_list)
+        n_edge_per_switch = int(round(cls._DEFAULT_DENSITY * len(switch_list)))
+        for s1 in switch_list:
+            for s2 in random.sample(switch_list, n_edge_per_switch):
+                if s1 == s2:
                     continue
-                cls._link_two_hosts(topo, h1, h2)
-            assert len(topo.edges(h1)) > 0, 'host {} has no edges'.format(h1)
-        return topo
-
-    @staticmethod
-    def _add_hosts(topo, device_info, device_availability):
-        """
-        Args:
-            topo (networkx.DiGraph): an empty graph
-            device_availability (dict): how many devices are available, e.g.
-                device_availability = {
-                    't2.micro': 20,
-                    'g3.4xlarge': 2,
-                    'nuc': 10,
-                }
-            device_info (dict): device information, e.g.
-                device_info = {
-                    't2.micro': {
-                        'task_capacity': 10,
-                        'cost_per_hour': 0.0116,
-                    }
-                    'g3.4xlarge': {
-                        'task_capacity': 100,
-                        'cost_per_hour': 1.14,
-                    }
-                    'nuc': {
-                        'task_capacity': 10,
-                        'cost_per_hour': 0,
-                    }
-                }
-        Returns:
-            topo (networkx.DiGraph): graph with nodes but without edges
-        """
-        def _gen_device_id_str(device_name, ith_device):
-            return '{}_{}'.format(device_name, ith_device)
-
-        for device_name, n_device in iteritems(device_availability):
-            device_attr = device_info.get(device_name, None)
-            if not device_attr:
-                log.warning('no device info for {}'.format(device_name))
-                continue
-            for i in range(n_device):
-                topo.add_node(
-                    _gen_device_id_str(device_name, i),
-                    **device_attr)
-        return topo
-
-    @classmethod
-    def create(cls, device_info, device_availability, link_density):
-        topo = nx.DiGraph()
-        topo = cls._add_hosts(topo, device_info, device_availability)
-        topo = cls._add_links(topo, link_density)
-        return topo
-
-    @classmethod
-    def create_default(cls):
-        log.info('create default topo')
-        device_info = cls._DEFAULT_DEVICE_INFO
-        device_availability = cls._DEFAULT_DEVICE_AVALIBILITY
-        link_density = cls._DEFAULT_LINK_DENSITY
-
-        topo = nx.DiGraph()
-        topo = cls._add_hosts(topo, device_info, device_availability)
-        topo = cls._add_links(topo, link_density)
-        return topo
-
-    @staticmethod
-    def plot(topo):
-        nx.draw_networkx(
-            topo,
-            pos=nx.spring_layout(topo),
-            arrows=False,
-            with_labels=True,
-        )
-        plt.show(topo)
+                cls._add_random_link(graph, s1, s2)
+                cls._add_random_link(graph, s2, s1)
+        graph.add_nodes_from(device_list)
+        for device in device_list:
+            # connect device to a random selected switch
+            [switch] = random.sample(switch_list, 1)
+            # randomly assign bandwidth and latency
+            cls._add_random_link(graph, device, switch)
+            cls._add_random_link(graph, switch, device)
+        return graph

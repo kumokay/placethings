@@ -6,8 +6,9 @@ from __future__ import unicode_literals
 import argparse
 import logging
 
-from placethings.taskgraph import TaskGraph
-from placethings.topology import Topology
+from placethings.task_graph import TaskGraph
+from placethings.topology import TopoGraph
+from placethings.utils import show_plot
 
 logging.basicConfig(
     format='%(asctime)s [%(levelname)s] %(funcName)s: %(message)s')
@@ -50,18 +51,18 @@ class ArgsManager(object):
 class FuncManager(object):
 
     @staticmethod
-    def create_topology(args):
+    def create_topograph(args):
         is_plot = args.is_plot
-        topo = Topology.create_default()
+        topo = TopoGraph.create_default_topo()
         if is_plot:
-            Topology.plot(topo)
+            show_plot(topo)
 
     @staticmethod
     def create_taskgraph(args):
         is_plot = args.is_plot
         graph = TaskGraph.create_default_graph()
         if is_plot:
-            TaskGraph.plot(graph)
+            show_plot(graph)
 
     @staticmethod
     def place_things(args):
@@ -74,7 +75,7 @@ class FuncManager(object):
 def main():
     args_manager = ArgsManager()
 
-    name = 'create_topology'
+    name = 'create_topograph'
     subargs_manager = args_manager.add_subparser(
         name,
         func=getattr(FuncManager, name),
@@ -85,7 +86,7 @@ def main():
     subargs_manager = args_manager.add_subparser(
         name,
         func=getattr(FuncManager, name),
-        help='generate network topology')
+        help='generate task graph')
     subargs_manager.visualize(required=False)
 
     name = 'place_things'

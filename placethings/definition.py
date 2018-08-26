@@ -20,17 +20,43 @@ class Flavor(Enum):
     CPU = auto()
 
 
-class GtInfoEnum(Enum):
-    TRAFFIC = auto()
-    LATENCY_INFO = auto()
-    RESOURCE_RQMT = auto()
-
-
 class GtInfo(object):
-    # used as keys for **kwargs for networkx.Digraph.add_node
+    class GtInfoEnum(Enum):
+        TRAFFIC = auto()
+        LATENCY_INFO = auto()
+        RESOURCE_RQMT = auto()
+
     class helper(type):
+        # used as keys for **kwargs for networkx.Digraph.add_node
         def __getattr__(self, name):
-            return getattr(GtInfoEnum, name).name
+            return getattr(GtInfo.GtInfoEnum, name).name
+    __metaclass__ = helper
+
+
+class GdInfo(object):
+    class GdInfoEnum(Enum):
+        LATENCY = auto()
+        HARDWARE_SPEC = auto()
+        COST = auto()
+        RESOURCE = auto()
+        DEVICE_TYPE = auto()
+
+    class helper(type):
+        # used as keys for **kwargs for networkx.Digraph.add_node
+        def __getattr__(self, name):
+            return getattr(GdInfo.GdInfoEnum, name).name
+    __metaclass__ = helper
+
+
+class GnInfo(object):
+    class GnInfoEnum(Enum):
+        BANDWIDTH = auto()
+        LATENCY = auto()
+
+    class helper(type):
+        # used as keys for **kwargs for networkx.Digraph.add_node
+        def __getattr__(self, name):
+            return getattr(GnInfo.GnInfoEnum, name).name
     __metaclass__ = helper
 
 
@@ -49,40 +75,3 @@ class Hardware(Enum):
     # derived data / shared
     NIC_INGRESS = auto()
     NIC_EGRESS = auto()
-
-
-class Unit(object):
-
-    _UNIT = 1
-
-    @classmethod
-    def percentage(cls, n):
-        return n * cls._UNIT
-
-    @classmethod
-    def ms(cls, n):
-        return n * cls._UNIT
-
-    @classmethod
-    def sec(cls, n):
-        return n * cls.ms(1000)
-
-    @classmethod
-    def byte(cls, n):
-        return n * cls._UNIT
-
-    @classmethod
-    def kb(cls, n):
-        return n * cls.byte(1024)
-
-    @classmethod
-    def mb(cls, n):
-        return n * cls.kb(1024)
-
-    @classmethod
-    def gb(cls, n):
-        return n * cls.mb(1024)
-
-    @classmethod
-    def tb(cls, n):
-        return n * cls.gb(1024)

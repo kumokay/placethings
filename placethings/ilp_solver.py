@@ -65,7 +65,7 @@ class Problems:
             Gd (networkx.DiGraph): a directed graph describes network topology,
                 where each node represent a device
 
-                Gd[d] (dict): information of each task, including:
+                Gd[d] (dict): information of each device, including:
 
                 Ld(d1, d2) (Unit): transmission time between two devices d1, d2
                     If d2 is not reachable from d1, set the value to MAXINT
@@ -80,7 +80,10 @@ class Problems:
                         Hardware.CPU: 4,
                         Hardware.GPU: 1,
                         Hardware.GPS: 1,
-                        Hardware.CAMERA: 1}
+                        Hardware.CAMERA: 1
+                        Hardware.NIC_INGRESS: Unit.gbps(10),
+                        Hardware.NIC_EGRESS: Unit.gbps(10),
+                    }
                 _Dd(d) (enum): device type of device d, determined by hardware
                     specification of the device. Used by Gt.node[t] for
                     accessing information of the a certain device type
