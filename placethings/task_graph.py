@@ -19,12 +19,7 @@ log = logging.getLogger()
 class TaskGraph(object):
 
     @classmethod
-    def create(
-            cls,
-            src_list,
-            dst_list,
-            task_info,
-            edge_info):
+    def create(cls, src_list, dst_list, task_info, edge_info):
         """
         Args:
             src_list (list)

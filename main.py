@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 import argparse
 import logging
 
+from placethings.network_graph import NetworkGraph
 from placethings.task_graph import TaskGraph
 from placethings.topology import TopoGraph
 from placethings.utils import show_plot
@@ -65,6 +66,13 @@ class FuncManager(object):
             show_plot(graph)
 
     @staticmethod
+    def create_networkgraph(args):
+        is_plot = args.is_plot
+        graph = NetworkGraph.create_default_graph()
+        if is_plot:
+            show_plot(graph)
+
+    @staticmethod
     def place_things(args):
 
         from placethings.ilp_solver import Problems
@@ -87,6 +95,13 @@ def main():
         name,
         func=getattr(FuncManager, name),
         help='generate task graph')
+    subargs_manager.visualize(required=False)
+
+    name = 'create_networkgraph'
+    subargs_manager = args_manager.add_subparser(
+        name,
+        func=getattr(FuncManager, name),
+        help='generate network graph')
     subargs_manager.visualize(required=False)
 
     name = 'place_things'

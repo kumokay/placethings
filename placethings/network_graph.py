@@ -8,7 +8,7 @@ from future.utils import iteritems
 
 import networkx as nx
 
-from placethings.definition import Device, GdInfo, Hardware
+from placethings.definition import Const, Device, GdInfo, GnInfo, Hardware
 from placethings.topology import TopoGraph
 from placethings.utils import Unit
 
@@ -20,13 +20,48 @@ class NetworkGraph(object):
 
     _DEFAULT_DEVICE_TO_SWITCH_RATIO = 5
 
-    @classmethod
-    def create(cls, device_info, topo_graph):
-        graph = nx.DiGraph()
-        # TODO
-        return graph
+    @staticmethod
+    def _add_nodes(graph, device_info):
+        for name, attr in iteritems(device_info):
+            graph.add_node(name, **attr)
 
     @staticmethod
+    def _add_edges(graph, topo_graph):
+        for src in graph.nodes():
+            for dst in graph.nodes():
+                if src == dst:
+                    continue
+                try:
+                    total_latency = nx.shortest_path_length(
+                        topo_graph,
+                        source=src,
+                        target=dst,
+                        weight=GnInfo.LATENCY)
+                except nx.NetworkXNoPath:
+                    total_latency = Const.INT_MAX
+                attr = {
+                    GdInfo.LATENCY: total_latency,
+                }
+                graph.add_edge(src, dst, **attr)
+
+    @classmethod
+    def create(cls, device_info, topo_graph):
+        """
+        Args:
+            device_info (dict): device attributes
+            topo_graph (networkx.DiGraph): how computing devices connected to
+                network devices (routers, switches, APs)
+        Returns:
+            network_graph (networkx.DiGraph): end-to-end relationship between
+                computing devices
+        """
+        graph = nx.DiGraph()
+        # create graph from input data
+        cls._add_nodes(graph, device_info)
+        cls._add_edges(graph, topo_graph)
+        return graph
+
+    @classmethod
     def create_default_graph(cls):
         # generate default device info
         device_type_spec, device_inventory = cls.create_default_data()

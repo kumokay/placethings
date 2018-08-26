@@ -82,6 +82,7 @@ class Unit(object):
     def tbps(cls, n):
         return n * cls.gbps(1024)
 
+    @classmethod
     def rph(cls, n):
         # rate per hour
         return n

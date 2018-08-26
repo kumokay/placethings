@@ -6,11 +6,12 @@ from __future__ import unicode_literals
 from aenum import Enum, auto
 
 
-INT_MAX = 2147483647
+class Const:
+    INT_MAX = 2147483647
 
 
 class Device(Enum):
-    T3_MICRO = auto()
+    T2_MICRO = auto()
     T3_LARGE = auto()
     P3_2XLARGE = auto()
 
