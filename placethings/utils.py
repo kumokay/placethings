@@ -40,7 +40,9 @@ def show_plot(graph, with_edge=True, which_edge_label=None):
             edge_color='k',
             style='solid',
         )
-        if which_edge_label:
+        if not which_edge_label:
+            edge_labels = {}
+        else:
             edge_labels = {
                 (src, dst): attr[which_edge_label]
                 for src, dst, attr in graph.edges(data=True)

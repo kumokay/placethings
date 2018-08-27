@@ -62,7 +62,8 @@ class FuncManager(object):
             utils.show_plot(
                 topo,
                 with_edge=True,
-                which_edge_label=definition.GnInfo.LATENCY)
+                which_edge_label=None,
+                )
 
     @staticmethod
     def create_taskgraph(args):

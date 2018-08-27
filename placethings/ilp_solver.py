@@ -222,14 +222,21 @@ def place_things(target_latency, Gt, Gd, src_map, dst_map):
     # number of X == 1 must equal to number of tasks
     log.info('there are {} unknowns'.format(len(all_unknown_X)))
     assert len(all_unknown_X) == len(tasks) * len(devices)
-    prob += pulp.lpSum(all_unknown_X) == len(Gt)
+    prob += pulp.lpSum(all_unknown_X) == len(tasks)
     # auxiliary variable: use XX to replace X[ti][di] * X[tj][dj]
     XX = defaultdict(dict)
+    all_XX = []
     for ti in Gt.nodes():
         for di in Gd.nodes():
             for tj in Gt.nodes():
                 for dj in Gd.nodes():
-                    if ti == tj or di == dj or (ti, di) == (tj, dj):
+                    if ti == tj or di == dj:
+                        XX[(ti, di)][(tj, dj)] = 0
+                    elif (ti, tj) not in Gt.edges():
+                        XX[(ti, di)][(tj, dj)] = 0
+                    elif Gd[di][dj][GdInfo.LATENCY] > invalid_latency:
+                        # constrians 1: neighbors in the task graph must also
+                        # be accessible from each other in the network graph
                         XX[(ti, di)][(tj, dj)] = 0
                     else:
                         XX[(ti, di)][(tj, dj)] = pulp.LpVariable(
@@ -237,6 +244,7 @@ def place_things(target_latency, Gt, Gd, src_map, dst_map):
                             lowBound=0,
                             upBound=1,
                             cat='Integer')
+                        all_XX.append(XX[(ti, di)][(tj, dj)])
                         # add constrains
                         prob += (
                             XX[(ti, di)][(tj, dj)] + 1
@@ -244,6 +252,8 @@ def place_things(target_latency, Gt, Gd, src_map, dst_map):
                         prob += (
                             XX[(ti, di)][(tj, dj)] * 2
                             <= X[ti][di] + X[tj][dj])
+    log.info('there are {} combinations for links'.format(len(all_XX)))
+    prob += pulp.lpSum(all_XX) == len(Gt.edges())
 
     # Generate all simple paths in the graph G from source to target.
     all_paths = []
@@ -290,23 +300,6 @@ def place_things(target_latency, Gt, Gd, src_map, dst_map):
             # add constrain
             prob += Y >= pulp.lpSum(path_vars)
 
-    # constrians 1: neighbors in the task graph must also be accessible
-    #     from each other in network graph
-    #     for (ti, tj) in Gt.edges():
-    #         for all combinations (di, dj) in Gd:
-    #             X(ti,di) * X(tj,dj) * Ld(di, dj) < LATENCY_MAX
-    for (ti, tj) in Gt.edges():
-        for di in Gd:
-            for dj in Gd:
-                if di == dj:
-                    continue
-                # get transmission latency from di -> dj
-                Ld_di_dj = Gd[di][dj][GdInfo.LATENCY]
-                # prob += X[ti][di] * X[tj][dj] * Ld_di_dj < invalid_latency
-                if Ld_di_dj > invalid_latency:
-                    # if invalid latency, cannot select them at the same time
-                    prob += X[ti][di] + X[tj][dj] != 2
-
     # constrians 2: device must be able to support what the tasks need
     #     for d in Gd:
     #         for r in Rd:
@@ -331,9 +324,9 @@ def place_things(target_latency, Gt, Gd, src_map, dst_map):
 
     # solve
     status = prob.solve()
-    log.info('status={}'.format(status))
+    log.info('status={}'.format(pulp.LpStatus[status]))
     for t in Gt.nodes():
         for d in Gd.nodes():
-            if pulp.value(X[t][d]) == 1:
+            if pulp.value(X[t][d]):
                 log.info('map: {} <-> {}, X_t_d={}'.format(
                     t, d, pulp.value(X[t][d])))
