@@ -197,25 +197,32 @@ def place_things(target_latency, Gt, Gd, src_map, dst_map):
     X = defaultdict(dict)
     all_unknown_X = []
     for t in Gt.nodes():
-        all_devices_X = []
-        if Gt.node[t][GtInfo.DEVICE] is TaskGraph.DEVICE_NOT_ASSIGNED:
-            for d in Gd.nodes():
+        for d in Gd.nodes():
+            X[t][d] = None  # init invalid value
+    for t in mapped_tasks:
+        for d in Gd.nodes():
+            X[t][d] = 0
+    for d in mapped_devices:
+        for t in Gt.nodes():
+            X[t][d] = 0
+    for t in mapped_tasks:
+        d_known = Gt.node[t][GtInfo.DEVICE]
+        X[t][d_known] = 1
+    for t in tasks:
+        for d in devices:
+            if X[t][d] is None:
                 X[t][d] = pulp.LpVariable(
                     'X_{}_{}'.format(t, d),
                     lowBound=0,
                     upBound=1,
-                    cat='Binary')
-                all_devices_X.append(X[t][d])
-        else:
-            for d in Gd.nodes():
-                X[t][d] = 0
-            d_known = Gt.node[t][GtInfo.DEVICE]
-            X[t][d_known] = 1
-            all_devices_X.append(1)
-        # task <-> device is 1-1 mapping
-        prob += pulp.lpSum(all_devices_X) == 1
+                    cat='Integer')
+                all_unknown_X.append(X[t][d])
+        # 1-1 map
+        prob += pulp.lpSum(listvalues(X[t])) == 1
     # number of X == 1 must equal to number of tasks
-    prob += pulp.lpSum(all_unknown_X) == len(tasks)
+    log.info('there are {} unknowns'.format(len(all_unknown_X)))
+    assert len(all_unknown_X) == len(tasks) * len(devices)
+    prob += pulp.lpSum(all_unknown_X) == len(Gt)
     # auxiliary variable: use XX to replace X[ti][di] * X[tj][dj]
     XX = defaultdict(dict)
     for ti in Gt.nodes():
@@ -229,7 +236,7 @@ def place_things(target_latency, Gt, Gd, src_map, dst_map):
                             'XX_{}_{}'.format((ti, di), (tj, dj)),
                             lowBound=0,
                             upBound=1,
-                            cat='Binary')
+                            cat='Integer')
                         # add constrains
                         prob += (
                             XX[(ti, di)][(tj, dj)] + 1
@@ -327,6 +334,6 @@ def place_things(target_latency, Gt, Gd, src_map, dst_map):
     log.info('status={}'.format(status))
     for t in Gt.nodes():
         for d in Gd.nodes():
-            if pulp.value(X[t][d]):
+            if pulp.value(X[t][d]) == 1:
                 log.info('map: {} <-> {}, X_t_d={}'.format(
                     t, d, pulp.value(X[t][d])))
