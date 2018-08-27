@@ -11,9 +11,21 @@ class Const:
 
 
 class Device(Enum):
+    # actuator
+    BROADCAST = auto()
+    # processor
     T2_MICRO = auto()
     T3_LARGE = auto()
     P3_2XLARGE = auto()
+    # sensor
+    THERMAL = auto()
+    CAMERA = auto()
+
+
+class DeviceCategory(Enum):
+    ACTUATOR = auto()
+    PROCESSOR = auto()
+    SENSOR = auto()
 
 
 class Flavor(Enum):
@@ -25,7 +37,8 @@ class GtInfo(object):
     class GtInfoEnum(Enum):
         TRAFFIC = auto()
         LATENCY_INFO = auto()
-        RESOURCE_RQMT = auto()
+        RESRC_RQMT = auto()
+        DEVICE = auto()
 
     class helper(type):
         # used as keys for **kwargs for networkx.Digraph.add_node
@@ -37,9 +50,10 @@ class GtInfo(object):
 class GdInfo(object):
     class GdInfoEnum(Enum):
         LATENCY = auto()
-        HARDWARE_SPEC = auto()
+        HARDWARE = auto()
         COST = auto()
-        RESOURCE = auto()
+        RESRC = auto()
+        DEVICE_CAT = auto()
         DEVICE_TYPE = auto()
 
     class helper(type):
@@ -67,12 +81,12 @@ class Hardware(Enum):
     HD = auto()
     CPU = auto()
     GPU = auto()
-    GPS = auto()
+    # derived data / shared
+    NIC_INGRESS = auto()
+    NIC_EGRESS = auto()
     # non-shared
+    GPS = auto()
     PROXIMITY = auto()
     ACCELEROMETER = auto()
     GYROSCOPE = auto()
     CAMERA = auto()
-    # derived data / shared
-    NIC_INGRESS = auto()
-    NIC_EGRESS = auto()

@@ -4,12 +4,14 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from builtins import range
+from copy import deepcopy
 import logging
 from future.utils import iteritems
 
 import networkx as nx
 
-from placethings.definition import Const, Device, GdInfo, GnInfo, Hardware
+from placethings.definition import (
+    Const, Device, DeviceCategory, GdInfo, GnInfo, Hardware)
 from placethings.topology import TopoGraph
 from placethings.utils import Unit
 
@@ -63,17 +65,18 @@ class NetworkGraph(object):
         return graph
 
     @classmethod
-    def create_default_graph(cls):
+    def create_default_device_info(cls):
         # generate default device info
-        device_type_spec, device_inventory = cls.create_default_data()
-        all_device_info = cls.derive_device_info(
-            device_type_spec, device_inventory)
+        device_spec, device_inventory = cls.create_default_data()
+        return cls.derive_device_info(device_spec, device_inventory)
 
-        # generate default topology
-        device_list = list(all_device_info)
-        n_switch = len(device_list) // cls._DEFAULT_DEVICE_TO_SWITCH_RATIO
+    @classmethod
+    def create_default_graph(cls):
+        all_device_info = cls.create_default_device_info()
+        n_switch = len(all_device_info) // cls._DEFAULT_DEVICE_TO_SWITCH_RATIO
         switch_list = TopoGraph.create_default_switch_list(n_switch)
-        topo_graph = TopoGraph.create_default_topo(device_list, switch_list)
+        topo_graph = TopoGraph.create_default_topo(
+            switch_list, list(all_device_info))
 
         # generate network graph
         graph = cls.create(all_device_info, topo_graph)
@@ -84,69 +87,97 @@ class NetworkGraph(object):
         return '{}.{}'.format(device_type.name, device_id)
 
     @classmethod
-    def derive_device_info(cls, device_type_spec, device_inventory):
+    def derive_device_info(cls, device_spec, device_inventory):
         all_device_info = {}
-        for device_type, n_device in iteritems(device_inventory):
-            for device_id in range(n_device):
-                device_name = cls._gen_device_name(device_type, device_id)
-                # copy hardware spec
-                device_info = {}
-                device_info[Device.DEVICE_TYPE] = device_type
-                device_info[GdInfo.HARDWARE_SPEC] = (
-                    device_type_spec[device_type][GdInfo.HARDWARE_SPEC])
-                # derive resource info
-                device_info[GdInfo.RESOURCE] = {}
-                for key, value in iteritems(device_info[GdInfo.HARDWARE_SPEC]):
-                    # set cpu, gpu to be 100
-                    if key in [Hardware.CPU, Hardware.GPU]:
-                        device_info[GdInfo.RESOURCE][key] = (
-                            Unit.percentage(100))
-                    else:
-                        device_info[GdInfo.RESOURCE][key] = value
-                all_device_info[device_name] = device_info
+        for device_cat, device_inventory_info in iteritems(device_inventory):
+            for device_type, n_device in iteritems(device_inventory_info):
+                for device_id in range(n_device):
+                    device_name = cls._gen_device_name(device_type, device_id)
+                    # copy hardware spec
+                    spec = device_spec[device_cat][device_type]
+                    device_info = {
+                        GdInfo.DEVICE_CAT: device_cat,
+                        GdInfo.DEVICE_TYPE: device_type,
+                        GdInfo.COST: spec[GdInfo.COST],
+                        GdInfo.HARDWARE: spec[GdInfo.HARDWARE],
+                        GdInfo.RESRC: deepcopy(spec[GdInfo.HARDWARE]),
+                    }
+                    # special setting for RESRC info of GPU/CPU
+                    for hw_type in [Hardware.CPU, Hardware.GPU]:
+                        if hw_type in device_info[GdInfo.RESRC]:
+                            device_info[GdInfo.RESRC][hw_type] = (
+                                Unit.percentage(100))
+                    all_device_info[device_name] = device_info
         return all_device_info
 
     @staticmethod
     def create_default_data():
         log.info('create default device data')
-        device_type_spec = {
-            Device.T2_MICRO: {
-                GdInfo.COST: Unit.rph(0.0116),
-                GdInfo.HARDWARE_SPEC: {
-                    Hardware.RAM: Unit.gbyte(1),
-                    Hardware.HD: Unit.gbyte(30),
-                    Hardware.CPU: 1,
-                    Hardware.GPU: 0,
-                    Hardware.NIC_INGRESS: Unit.mbps(100),
-                    Hardware.NIC_EGRESS: Unit.mbps(100),
-                },
-            },
-            Device.T3_LARGE: {
-                GdInfo.COST: Unit.rph(0.0928),
-                GdInfo.HARDWARE_SPEC: {
-                    Hardware.RAM: Unit.gbyte(8),
-                    Hardware.HD: Unit.tbyte(16),
-                    Hardware.CPU: 2,
-                    Hardware.GPU: 0,
-                    Hardware.NIC_INGRESS: Unit.gbps(1),
-                    Hardware.NIC_EGRESS: Unit.gbps(1),
-                },
-            },
-            Device.P3_2XLARGE: {
-                GdInfo.COST: Unit.rph(3.06),
-                GdInfo.HARDWARE_SPEC: {
-                    Hardware.RAM: Unit.gbyte(16),
-                    Hardware.HD: Unit.tbyte(16),
-                    Hardware.CPU: 8,
-                    Hardware.GPU: 1,
-                    Hardware.NIC_INGRESS: Unit.gbps(10),
-                    Hardware.NIC_EGRESS: Unit.gbps(10),
-                },
-            },
-        }
         device_inventory = {
-            Device.T2_MICRO: 20,
-            Device.T3_LARGE: 10,
-            Device.P3_2XLARGE: 1,
+            DeviceCategory.ACTUATOR: {
+                Device.BROADCAST: 1,
+            },
+            DeviceCategory.PROCESSOR: {
+                Device.T2_MICRO: 20,
+                Device.T3_LARGE: 10,
+                Device.P3_2XLARGE: 1,
+            },
+            DeviceCategory.SENSOR: {
+                Device.THERMAL: 2,
+                Device.CAMERA: 1,
+            },
         }
-        return device_type_spec, device_inventory
+        device_spec = {
+            DeviceCategory.ACTUATOR: {
+                Device.BROADCAST: {
+                    GdInfo.COST: Unit.rph(0),
+                    GdInfo.HARDWARE: {},
+                },
+            },
+            DeviceCategory.PROCESSOR: {
+                Device.T2_MICRO: {
+                    GdInfo.COST: Unit.rph(0.0116),
+                    GdInfo.HARDWARE: {
+                        Hardware.RAM: Unit.gbyte(1),
+                        Hardware.HD: Unit.gbyte(30),
+                        Hardware.CPU: 1,
+                        Hardware.GPU: 0,
+                        Hardware.NIC_INGRESS: Unit.mbps(100),
+                        Hardware.NIC_EGRESS: Unit.mbps(100),
+                    },
+                },
+                Device.T3_LARGE: {
+                    GdInfo.COST: Unit.rph(0.0928),
+                    GdInfo.HARDWARE: {
+                        Hardware.RAM: Unit.gbyte(8),
+                        Hardware.HD: Unit.tbyte(16),
+                        Hardware.CPU: 2,
+                        Hardware.GPU: 0,
+                        Hardware.NIC_INGRESS: Unit.gbps(1),
+                        Hardware.NIC_EGRESS: Unit.gbps(1),
+                    },
+                },
+                Device.P3_2XLARGE: {
+                    GdInfo.COST: Unit.rph(3.06),
+                    GdInfo.HARDWARE: {
+                        Hardware.RAM: Unit.gbyte(16),
+                        Hardware.HD: Unit.tbyte(16),
+                        Hardware.CPU: 8,
+                        Hardware.GPU: 1,
+                        Hardware.NIC_INGRESS: Unit.gbps(10),
+                        Hardware.NIC_EGRESS: Unit.gbps(10),
+                    },
+                },
+            },
+            DeviceCategory.SENSOR: {
+                Device.THERMAL: {
+                    GdInfo.COST: Unit.rph(0),
+                    GdInfo.HARDWARE: {},
+                },
+                Device.CAMERA: {
+                    GdInfo.COST: Unit.rph(0),
+                    GdInfo.HARDWARE: {},
+                },
+            },
+        }
+        return device_spec, device_inventory

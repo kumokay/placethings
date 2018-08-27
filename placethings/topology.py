@@ -43,20 +43,19 @@ class TopoGraph(object):
         return ['{}.{}'.format(node_prefix, i) for i in range(n_node)]
 
     @classmethod
-    def _add_random_link(cls, graph, src, dst):
+    def _add_random_link(cls, graph, src, dst, bandwidth=None, latency=None):
+        if not bandwidth:
+            bandwidth = cls._DEFAULT_BANDWIDTH
+        if not latency:
+            latency = cls._DEFAULT_LATENCY
         attr = {
-            GnInfo.BANDWIDTH: cls._DEFAULT_BANDWIDTH * random.random(),
-            GnInfo.LATENCY: cls._DEFAULT_LATENCY * random.random(),
+            GnInfo.BANDWIDTH: int(round(bandwidth * random.random())),
+            GnInfo.LATENCY: int(round(latency * random.random())),
         }
         graph.add_edge(src, dst, **attr)
 
     @classmethod
-    def create_default_topo(
-            cls,
-            switch_list=None,
-            device_list=None,
-            source_list=None,
-            dst_list=None):
+    def create_default_topo(cls, switch_list, device_list=None):
         """
         Randomly deploy devices in a newtork consists of randomly connected
         switches.
@@ -64,23 +63,11 @@ class TopoGraph(object):
         Args:
             switch_list (list): a list of APs, routers, switchs, etc
             device_list (list): a list of devices
-            source_list (list): a list of data sources
-            dst_list (list): a list of actuators
         Returns:
             topology (networkx.DiGraph)
         """
-        if not switch_list:
-            switch_list = cls._create_node_list(
-                cls._DEFAULT_N_SWITCH, cls._DEFAULT_PREFIX_SWITCH)
         if not device_list:
-            device_list = cls._create_node_list(
-                cls._DEFAULT_N_DEVICE, cls._DEFAULT_PREFIX_DEVICE)
-        if not source_list:
-            source_list = cls._create_node_list(
-                cls._DEFAULT_N_SOURCE, cls._DEFAULT_PREFIX_SOURCE)
-        if not dst_list:
-            dst_list = cls._create_node_list(
-                cls._DEFAULT_N_DESTINATION, cls._DEFAULT_PREFIX_DESTINATION)
+            device_list = []
 
         graph = nx.DiGraph()
         graph.add_nodes_from(switch_list)
@@ -91,9 +78,8 @@ class TopoGraph(object):
                     continue
                 cls._add_random_link(graph, s1, s2)
                 cls._add_random_link(graph, s2, s1)
-        client_list = device_list + source_list +dst_list
-        graph.add_nodes_from(client_list)
-        for node in client_list:
+        graph.add_nodes_from(device_list)
+        for node in device_list:
             # connect device to a random selected switch
             [switch] = random.sample(switch_list, 1)
             # randomly assign bandwidth and latency
