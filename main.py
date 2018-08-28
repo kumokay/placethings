@@ -88,7 +88,7 @@ class FuncManager(object):
             TaskGraph.create_default_data())
         Gt = TaskGraph.create(src_map, dst_map, task_info, edge_info)
         Gd = NetworkGraph.create_default_graph()
-        ilp_solver.place_things(utils.Unit.sec(10), Gt, Gd, src_map, dst_map)
+        ilp_solver.place_things(utils.Unit.sec(2), Gt, Gd, src_map, dst_map)
 
 
 def main():

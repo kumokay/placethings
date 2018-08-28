@@ -196,16 +196,15 @@ def place_things(target_latency, Gt, Gd, src_map, dst_map):
     # decision variable: X(t,d) = 1 if assign task t to device d else 0
     X = defaultdict(dict)
     all_unknown_X = []
-    for t in Gt.nodes():
-        for d in Gd.nodes():
-            X[t][d] = None  # init invalid value
-    for t in mapped_tasks:
-        for d in Gd.nodes():
-            X[t][d] = 0
+    for t in tasks:
+        for d in devices:
+            X[t][d] = None
     for d in mapped_devices:
         for t in Gt.nodes():
             X[t][d] = 0
     for t in mapped_tasks:
+        for d in Gd.nodes():
+            X[t][d] = 0
         d_known = Gt.node[t][GtInfo.DEVICE]
         X[t][d_known] = 1
     for t in tasks:
@@ -230,11 +229,10 @@ def place_things(target_latency, Gt, Gd, src_map, dst_map):
         for di in Gd.nodes():
             for tj in Gt.nodes():
                 for dj in Gd.nodes():
-                    if ti == tj or di == dj:
+                    if (ti, tj) not in Gt.edges():
                         XX[(ti, di)][(tj, dj)] = 0
-                    elif (ti, tj) not in Gt.edges():
-                        XX[(ti, di)][(tj, dj)] = 0
-                    elif Gd[di][dj][GdInfo.LATENCY] > invalid_latency:
+                    elif (di, dj) not in Gd.edges() or (
+                            Gd[di][dj][GdInfo.LATENCY] > invalid_latency):
                         # constrians 1: neighbors in the task graph must also
                         # be accessible from each other in the network graph
                         XX[(ti, di)][(tj, dj)] = 0
