@@ -11,9 +11,8 @@ from future.utils import iteritems
 import networkx as nx
 
 from placethings.definition import (
-    Const, Device, DeviceCategory, GdInfo, GnInfo, Hardware)
+    Const, Device, DeviceCategory, GdInfo, GnInfo, Hardware, Unit)
 from placethings.topology import TopoGraph
-from placethings.utils import Unit
 
 
 log = logging.getLogger()

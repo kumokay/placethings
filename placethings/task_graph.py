@@ -9,8 +9,8 @@ from future.utils import iteritems
 import networkx as nx
 from matplotlib import pyplot as plt
 
-from placethings.definition import Device, Flavor, GtInfo, Hardware
-from placethings.utils import Unit
+from placethings.definition import Device, Flavor, GtInfo, Hardware, Unit
+from placethings.utils import json_utils
 
 
 log = logging.getLogger()
@@ -88,6 +88,17 @@ class TaskGraph(object):
     @classmethod
     def create_default_graph(cls):
         src_map, dst_map, task_info, edge_info = cls.create_default_data()
+        json_utils.export_bundle(
+            json_utils.get_default_file_path('task_graph'),
+            src_map=src_map,
+            dst_map=dst_map,
+            task_info=task_info,
+            edge_info=edge_info,
+        )
+        src_map, dst_map, task_info, edge_info = json_utils.import_bundle(
+            json_utils.get_default_file_path('task_graph'),
+            'src_map', 'dst_map', 'task_info', 'edge_info',
+        )
         return cls.create(src_map, dst_map, task_info, edge_info)
 
     @classmethod

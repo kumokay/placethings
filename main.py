@@ -6,10 +6,11 @@ from __future__ import unicode_literals
 import argparse
 import logging
 
-from placethings import definition, ilp_solver, utils
+from placethings import definition, ilp_solver
 from placethings.network_graph import NetworkGraph
 from placethings.task_graph import TaskGraph
 from placethings.topology import TopoGraph
+from placethings.utils import json_utils, plot_utils
 
 
 logging.basicConfig(
@@ -59,18 +60,17 @@ class FuncManager(object):
         devices = list(NetworkGraph.create_default_device_info())
         topo = TopoGraph.create_default_topo(switches, devices)
         if is_plot:
-            utils.show_plot(
+            plot_utils.show_plot(
                 topo,
                 with_edge=True,
-                which_edge_label=None,
-                )
+                which_edge_label=None)
 
     @staticmethod
     def create_taskgraph(args):
         is_plot = args.is_plot
         graph = TaskGraph.create_default_graph()
         if is_plot:
-            utils.show_plot(graph)
+            plot_utils.show_plot(graph)
 
     @staticmethod
     def create_networkgraph(args):

@@ -9,8 +9,7 @@ import random
 
 import networkx as nx
 
-from placethings.definition import GnInfo
-from placethings.utils import Unit
+from placethings.definition import GnInfo, Unit
 
 
 log = logging.getLogger()
