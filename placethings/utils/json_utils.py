@@ -3,22 +3,16 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from aenum import Enum
 from future.utils import iteritems
 import logging
 import json
 import os
 
+from placethings.utils import common_utils
 from placethings.definition import EnumHelper
 
 
 log = logging.getLogger()
-
-_DEFAULT_FILE_DIR = '/tmp/placethings'
-
-
-def get_default_file_path(filename):
-    return '{}/{}'.format(_DEFAULT_FILE_DIR, filename)
 
 
 class CustomEncoder(json.JSONEncoder):
@@ -35,10 +29,16 @@ class CustomEncoder(json.JSONEncoder):
         return new_dict
 
     def iterencode(self, obj):
-        log.info('encode using CustomEncoder')
+        log.info('encode using CustomEncoder.iterencode')
         if isinstance(obj, dict):
             obj = self._convert_keys_to_strs(obj)
         return super(CustomEncoder, self).iterencode(obj)
+
+    def default(self, obj):
+        log.info('encode using CustomEncoder.default')
+        if EnumHelper.is_enum(obj):
+            return EnumHelper.enum_to_str(obj)
+        return super(CustomEncoder, self).default(obj)
 
 
 class CustomDecoder(json.JSONDecoder):
@@ -48,6 +48,8 @@ class CustomDecoder(json.JSONDecoder):
         for key, value in iteritems(dict_obj):
             if isinstance(value, dict):
                 value = cls._convert_keys_from_strs(value)
+            elif isinstance(value, (str, unicode)):
+                value = EnumHelper.str_to_enum(value)
             new_key = EnumHelper.str_to_enum(key)
             if new_key:
                 new_dict[new_key] = value
@@ -60,6 +62,8 @@ class CustomDecoder(json.JSONDecoder):
         obj = super(CustomDecoder, self).decode(obj)
         if isinstance(obj, dict):
             obj = self._convert_keys_from_strs(obj)
+        elif isinstance(obj, (str, unicode)):
+            obj = EnumHelper.str_to_enum(obj)
         return obj
 
 
@@ -75,10 +79,7 @@ def from_json(json_str):
 
 
 def export_to_file(filepath, obj):
-    filedir = os.path.dirname(filepath)
-    if not os.path.exists(filedir):
-        os.makedirs(filedir)
-    assert os.path.exists(filedir)
+    common_utils.check_file_folder(filepath)
     with open(filepath, mode='w') as fp:
         json.dump(obj, fp, indent=4, separators=(',', ': '), cls=CustomEncoder)
     log.info('exported to file: {}'.format(filepath))

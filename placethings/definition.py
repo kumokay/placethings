@@ -8,6 +8,11 @@ from aenum import Enum, auto
 
 class EnumHelper(object):
     @staticmethod
+    def enum_to_int(enum_obj):
+        assert isinstance(enum_obj, Enum)
+        return enum_obj.value
+
+    @staticmethod
     def enum_to_str(enum_obj):
         assert isinstance(enum_obj, Enum)
         return str(enum_obj)
@@ -16,10 +21,8 @@ class EnumHelper(object):
     def str_to_enum(str_obj):
         try:
             enum_obj = eval(str_obj)
-        except NameError:
-            enum_obj = None
-        except SyntaxError:
-            enum_obj = None
+        except (NameError, SyntaxError):
+            enum_obj = str_obj
         return enum_obj
 
     @staticmethod
@@ -31,9 +34,23 @@ class Const:
     INT_MAX = 2147483647
 
 
+class NetworkDevice(Enum):
+    AP = auto()
+    BS = auto()
+    SWITCH = auto()
+
+
+class NetworkLink(Enum):
+    LAN = auto()
+    WLAN = auto()
+    BACKBONE = auto()
+    LTE = auto()
+    DIRECT_LINK = auto()
+
+
 class Device(Enum):
     # actuator
-    BROADCAST = auto()
+    PHONE = auto()
     # processor
     T2_MICRO = auto()
     T3_LARGE = auto()
@@ -64,7 +81,7 @@ class GtInfo(object):
     class helper(type):
         # used as keys for **kwargs for networkx.Digraph.add_node
         def __getattr__(self, name):
-            return getattr(GtInfo.GtInfoEnum, name).name
+            return str(getattr(GtInfo.GtInfoEnum, name))
     __metaclass__ = helper
 
 
@@ -80,19 +97,26 @@ class GdInfo(object):
     class helper(type):
         # used as keys for **kwargs for networkx.Digraph.add_node
         def __getattr__(self, name):
-            return getattr(GdInfo.GdInfoEnum, name).name
+            return str(getattr(GdInfo.GdInfoEnum, name))
     __metaclass__ = helper
 
 
 class GnInfo(object):
     class GnInfoEnum(Enum):
-        BANDWIDTH = auto()
+        # device properties
+        DEVICE_TYPE = auto()
+        AVAILABLE_LINKS = auto()
+        ULINK_BW = auto()
+        DLINK_BW = auto()
+        LINK_TYPE = auto()
+        # link properties
         LATENCY = auto()
+        BANDWIDTH = auto()
 
     class helper(type):
         # used as keys for **kwargs for networkx.Digraph.add_node
         def __getattr__(self, name):
-            return getattr(GnInfo.GnInfoEnum, name).name
+            return str(getattr(GnInfo.GnInfoEnum, name))
     __metaclass__ = helper
 
 

@@ -9,8 +9,9 @@ from future.utils import iteritems
 import networkx as nx
 from matplotlib import pyplot as plt
 
-from placethings.definition import Device, Flavor, GtInfo, Hardware, Unit
-from placethings.utils import json_utils
+from placethings import config_factory
+from placethings.definition import GtInfo, Hardware
+from placethings.utils import json_utils, common_utils
 
 
 log = logging.getLogger()
@@ -55,13 +56,13 @@ class TaskGraph(object):
 
     @classmethod
     def _add_nodes(cls, graph, src_map, dst_map, task_info):
-        for map in [src_map, dst_map]:
-            for task, device in iteritems(map):
-                graph.add_node(task, **{GtInfo.DEVICE: device})
         for name, task_attr in iteritems(task_info):
             attr = {GtInfo.DEVICE: cls.DEVICE_NOT_ASSIGNED}
             attr.update(task_attr)
             graph.add_node(name, **attr)
+        for map in [src_map, dst_map]:
+            for task, device in iteritems(map):
+                graph.add_node(task, **{GtInfo.DEVICE: device})
 
     @staticmethod
     def _add_edges(graph, edge_info):
@@ -87,149 +88,16 @@ class TaskGraph(object):
 
     @classmethod
     def create_default_graph(cls):
-        src_map, dst_map, task_info, edge_info = cls.create_default_data()
-        json_utils.export_bundle(
-            json_utils.get_default_file_path('task_graph'),
-            src_map=src_map,
-            dst_map=dst_map,
-            task_info=task_info,
-            edge_info=edge_info,
-        )
-        src_map, dst_map, task_info, edge_info = json_utils.import_bundle(
-            json_utils.get_default_file_path('task_graph'),
-            'src_map', 'dst_map', 'task_info', 'edge_info',
-        )
+        _task_info, _edge_info, _src_map, _dst_map = (
+            config_factory.create_default_task_graph())
+        task_info, edge_info, src_map, dst_map = json_utils.import_bundle(
+            common_utils.get_file_path('config_default/task_graph.json'),
+            'task_info', 'edge_info', 'src_map', 'dst_map')
+        assert _src_map == src_map
+        assert _dst_map == dst_map
+        assert _task_info == task_info
+        assert _edge_info == edge_info
         return cls.create(src_map, dst_map, task_info, edge_info)
-
-    @classmethod
-    def create_default_data(cls):
-        log.info('create default task graph')
-        src_map = {
-            'src_thermal.0': 'THERMAL.0',
-            'src_thermal.1': 'THERMAL.1',
-            'src_camera': 'CAMERA.0',
-        }
-        dst_map = {
-            'dst_broadcast': 'BROADCAST.0',
-        }
-        task_info = {
-            'task_getAvgTemperature': {
-                GtInfo.LATENCY_INFO: {
-                    Device.T2_MICRO: {
-                        # TODO: assume one flavor per device type for now.
-                        # may extend to multiple flavor later
-                        Flavor.CPU: Unit.ms(15),
-                    },
-                    Device.T3_LARGE: {
-                        Flavor.CPU: Unit.ms(10),
-                    },
-                    Device.P3_2XLARGE: {
-                        Flavor.CPU: Unit.ms(5),
-                    },
-                },
-                GtInfo.RESRC_RQMT: {
-                    Flavor.CPU: {
-                        Hardware.RAM: Unit.mbyte(1),
-                        Hardware.HD: Unit.kbyte(3),
-                        Hardware.GPU: Unit.percentage(0),
-                        Hardware.CPU: Unit.percentage(5),
-                    }
-                },
-            },
-            'task_findObject': {
-                GtInfo.LATENCY_INFO: {
-                    Device.T2_MICRO: {
-                        Flavor.CPU: Unit.sec(6),
-                    },
-                    Device.T3_LARGE: {
-                        Flavor.CPU: Unit.sec(2),
-                    },
-                    Device.P3_2XLARGE: {
-                        Flavor.GPU: Unit.ms(600),
-                    },
-                },
-                GtInfo.RESRC_RQMT: {
-                    Flavor.GPU: {
-                        Hardware.RAM: Unit.gbyte(4),
-                        Hardware.HD: Unit.mbyte(500),
-                        Hardware.GPU: Unit.percentage(60),
-                        Hardware.CPU: Unit.percentage(5),
-                    },
-                    Flavor.CPU: {
-                        Hardware.RAM: Unit.gbyte(1),
-                        Hardware.HD: Unit.mbyte(300),
-                        Hardware.GPU: Unit.percentage(0),
-                        Hardware.CPU: Unit.percentage(80),
-                    },
-                },
-            },
-            'task_checkAbnormalEvent': {
-                GtInfo.LATENCY_INFO: {
-                    Device.T2_MICRO: {
-                        Flavor.CPU: Unit.ms(5),
-                    },
-                    Device.T3_LARGE: {
-                        Flavor.CPU: Unit.ms(5),
-                    },
-                    Device.P3_2XLARGE: {
-                        Flavor.CPU: Unit.ms(5),
-                    },
-                },
-                GtInfo.RESRC_RQMT: {
-                    Flavor.CPU: {
-                        Hardware.RAM: Unit.mbyte(1),
-                        Hardware.HD: Unit.kbyte(3),
-                        Hardware.GPU: Unit.percentage(0),
-                        Hardware.CPU: Unit.percentage(5),
-                    },
-                },
-            },
-            'task_sentNotificatoin': {
-                GtInfo.LATENCY_INFO: {
-                    Device.T2_MICRO: {
-                        Flavor.CPU: Unit.ms(5),
-                    },
-                    Device.T3_LARGE: {
-                        Flavor.CPU: Unit.ms(5),
-                    },
-                    Device.P3_2XLARGE: {
-                        Flavor.CPU: Unit.ms(5),
-                    },
-                },
-                GtInfo.RESRC_RQMT: {
-                    Flavor.CPU: {
-                        Hardware.RAM: Unit.mbyte(1),
-                        Hardware.HD: Unit.kbyte(3),
-                        Hardware.GPU: Unit.percentage(0),
-                        Hardware.CPU: Unit.percentage(5),
-                    },
-                },
-            },
-        }
-        edge_info = {
-            'src_thermal.0 -> task_getAvgTemperature': {
-                GtInfo.TRAFFIC: Unit.kbyte(1),
-            },
-            'src_thermal.1 -> task_getAvgTemperature': {
-                GtInfo.TRAFFIC: Unit.kbyte(1),
-            },
-            'src_camera -> task_findObject': {
-                GtInfo.TRAFFIC: Unit.mbyte(10),
-            },
-            'task_getAvgTemperature -> task_checkAbnormalEvent': {
-                GtInfo.TRAFFIC: Unit.byte(1),
-            },
-            'task_findObject -> task_checkAbnormalEvent': {
-                GtInfo.TRAFFIC: Unit.byte(20),
-            },
-            'task_checkAbnormalEvent -> task_sentNotificatoin': {
-                GtInfo.TRAFFIC: Unit.byte(1),
-            },
-            'task_sentNotificatoin -> dst_broadcast': {
-                GtInfo.TRAFFIC: Unit.byte(1),
-            },
-        }
-        return src_map, dst_map, task_info, edge_info
 
     @staticmethod
     def plot(graph):

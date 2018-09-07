@@ -3,12 +3,25 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import logging
 
 import networkx as nx
 from matplotlib import pyplot as plt
 
+from placethings.utils import common_utils
 
-def show_plot(graph, with_edge=True, which_edge_label=None):
+
+log = logging.getLogger()
+
+
+def save_plot(relative_filepath):
+    filepath = common_utils.get_file_path(relative_filepath)
+    common_utils.check_file_folder(filepath)
+    log.info('save plot to: {}'.format(filepath))
+    plt.savefig(filepath)
+
+
+def plot(graph, with_edge=True, which_edge_label=None, relative_filepath=None):
     pos = nx.spring_layout(graph)
     nx.draw_networkx_nodes(
         graph,
@@ -53,4 +66,6 @@ def show_plot(graph, with_edge=True, which_edge_label=None):
             font_family='sans-serif',
             font_weight='normal',
         )
-    plt.show(graph)
+    if not relative_filepath:
+        relative_filepath = 'output/plot.png'
+    save_plot(relative_filepath)

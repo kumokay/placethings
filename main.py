@@ -6,11 +6,12 @@ from __future__ import unicode_literals
 import argparse
 import logging
 
-from placethings import definition, ilp_solver
+from placethings import ilp_solver, config_factory
+from placethings.definition import Unit
 from placethings.network_graph import NetworkGraph
 from placethings.task_graph import TaskGraph
 from placethings.topology import TopoGraph
-from placethings.utils import json_utils, plot_utils
+from placethings.utils import plot_utils
 
 
 logging.basicConfig(
@@ -60,27 +61,33 @@ class FuncManager(object):
         devices = list(NetworkGraph.create_default_device_info())
         topo = TopoGraph.create_default_topo(switches, devices)
         if is_plot:
-            plot_utils.show_plot(
+            plot_utils.plot(
                 topo,
                 with_edge=True,
-                which_edge_label=None)
+                which_edge_label=None,
+                relative_filepath='output/topo_graph.png')
 
     @staticmethod
     def create_taskgraph(args):
         is_plot = args.is_plot
         graph = TaskGraph.create_default_graph()
         if is_plot:
-            plot_utils.show_plot(graph)
+            plot_utils.plot(
+                graph,
+                with_edge=True,
+                which_edge_label=None,
+                relative_filepath='output/task_graph.png')
 
     @staticmethod
     def create_networkgraph(args):
         is_plot = args.is_plot
         graph = NetworkGraph.create_default_graph()
         if is_plot:
-            utils.show_plot(
+            plot_utils.plot(
                 graph,
-                with_edge=True,
-                which_edge_label=definition.GdInfo.LATENCY)
+                with_edge=False,
+                which_edge_label=None,
+                relative_filepath='output/network_graph.png')
 
     @staticmethod
     def place_things(args):
@@ -88,7 +95,11 @@ class FuncManager(object):
             TaskGraph.create_default_data())
         Gt = TaskGraph.create(src_map, dst_map, task_info, edge_info)
         Gd = NetworkGraph.create_default_graph()
-        ilp_solver.place_things(utils.Unit.sec(2), Gt, Gd, src_map, dst_map)
+        ilp_solver.place_things(Unit.sec(2), Gt, Gd, src_map, dst_map)
+
+    @staticmethod
+    def export_data(args):
+        config_factory.export_all_data()
 
 
 def main():
@@ -120,6 +131,13 @@ def main():
         name,
         func=getattr(FuncManager, name),
         help='compute placement')
+    subargs_manager.visualize(required=False)
+
+    name = 'export_data'
+    subargs_manager = args_manager.add_subparser(
+        name,
+        func=getattr(FuncManager, name),
+        help='export config to json')
     subargs_manager.visualize(required=False)
 
     args = args_manager.parse_args()
