@@ -34,18 +34,40 @@ class Const:
     INT_MAX = 2147483647
 
 
-class NetworkDevice(Enum):
-    AP = auto()
-    BS = auto()
-    SWITCH = auto()
+class NwLink(Enum):
+    ETHERNET = auto()
+    WIFI = auto()
+    LTE_CAT4 = auto()
 
 
-class NetworkLink(Enum):
+class LinkInfo(Enum):
+    ULINK_BW = auto()
+    DLINK_BW = auto()
+    PROTOCOL = auto()
+    N_LINKS = auto()
+
+
+class LinkType(Enum):
     LAN = auto()
-    WLAN = auto()
+    WAN = auto()
+    ANY = auto()
+
+
+class NwDevice(Enum):
+    # home
+    HOME_ROUTER = auto()
+    HOME_IOTGW = auto()
+    # backbone
+    BB_SWITCH = auto()
+    BASESTATION = auto()
+    # third_party
+    CLOUD_SWITCH = auto()
+
+
+class NwDeviceCategory(Enum):
+    HOME = auto()
     BACKBONE = auto()
-    LTE = auto()
-    DIRECT_LINK = auto()
+    CLOUD = auto()
 
 
 class Device(Enum):
@@ -104,14 +126,15 @@ class GdInfo(object):
 class GnInfo(object):
     class GnInfoEnum(Enum):
         # device properties
+        DEVICE_CAT = auto()
         DEVICE_TYPE = auto()
         AVAILABLE_LINKS = auto()
-        ULINK_BW = auto()
-        DLINK_BW = auto()
-        LINK_TYPE = auto()
+        LINK_INFO = auto()
         # link properties
-        LATENCY = auto()
+        SRC_LINK_TYPE = auto()
+        DST_LINK_TYPE = auto()
         BANDWIDTH = auto()
+        PROTOCOL = auto()
 
     class helper(type):
         # used as keys for **kwargs for networkx.Digraph.add_node

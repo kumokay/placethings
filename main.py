@@ -6,11 +6,9 @@ from __future__ import unicode_literals
 import argparse
 import logging
 
-from placethings import ilp_solver, config_factory
-from placethings.definition import Unit
-from placethings.network_graph import NetworkGraph
-from placethings.task_graph import TaskGraph
-from placethings.topology import TopoGraph
+#from placethings import ilp_solver
+#from placethings.definition import Unit
+from placethings.config import topo_graph, task_graph
 from placethings.utils import plot_utils
 
 
@@ -57,12 +55,11 @@ class FuncManager(object):
     @staticmethod
     def create_topograph(args):
         is_plot = args.is_plot
-        switches = TopoGraph.create_default_switch_list()
-        devices = list(NetworkGraph.create_default_device_info())
-        topo = TopoGraph.create_default_topo(switches, devices)
+        graph = topo_graph.create_default_topo_graph()
+        topo_graph.export_data()
         if is_plot:
             plot_utils.plot(
-                topo,
+                graph,
                 with_edge=True,
                 which_edge_label=None,
                 relative_filepath='output/topo_graph.png')
@@ -70,7 +67,7 @@ class FuncManager(object):
     @staticmethod
     def create_taskgraph(args):
         is_plot = args.is_plot
-        graph = TaskGraph.create_default_graph()
+        graph = task_graph.create_default_task_graph()
         if is_plot:
             plot_utils.plot(
                 graph,
@@ -81,7 +78,7 @@ class FuncManager(object):
     @staticmethod
     def create_networkgraph(args):
         is_plot = args.is_plot
-        graph = NetworkGraph.create_default_graph()
+        graph = None
         if is_plot:
             plot_utils.plot(
                 graph,
@@ -91,15 +88,17 @@ class FuncManager(object):
 
     @staticmethod
     def place_things(args):
-        src_map, dst_map, task_info, edge_info = (
-            TaskGraph.create_default_data())
-        Gt = TaskGraph.create(src_map, dst_map, task_info, edge_info)
-        Gd = NetworkGraph.create_default_graph()
-        ilp_solver.place_things(Unit.sec(2), Gt, Gd, src_map, dst_map)
+        #src_map, dst_map, task_info, edge_info = (
+        #    TaskGraph.create_default_data())
+        #Gt = TaskGraph.create(src_map, dst_map, task_info, edge_info)
+        #Gd = NetworkGraph.create_default_graph()
+        #ilp_solver.place_things(Unit.sec(2), Gt, Gd, src_map, dst_map)
+        pass
 
     @staticmethod
     def export_data(args):
-        config_factory.export_all_data()
+        # config_factory.export_all_data()
+        pass
 
 
 def main():
