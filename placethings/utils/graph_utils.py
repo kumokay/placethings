@@ -12,20 +12,22 @@ import networkx as nx
 log = logging.getLogger()
 
 
-def gen_graph(node_info, edge_info):
+def gen_graph(node_info, edge_info, base_graph=None):
     """
     Args:
         task_info (dict)
         edge_info (dict)
+        graph (networkx.DiGraph): the base graph to add nodes / edges
     Returns:
         graph (networkx.DiGraph)
     """
-    graph = nx.DiGraph()
+    if not base_graph:
+        base_graph = nx.DiGraph()
     for name, attr in iteritems(node_info):
-        graph.add_node(name, **attr)
+        base_graph.add_node(name, **attr)
     for edge_str, attr in iteritems(edge_info):
         src_node, dst_node = edge_str.split(' -> ')
-        assert src_node in graph.nodes()
-        assert dst_node in graph.nodes()
-        graph.add_edge(src_node, dst_node, **attr)
-    return graph
+        assert src_node in base_graph.nodes()
+        assert dst_node in base_graph.nodes()
+        base_graph.add_edge(src_node, dst_node, **attr)
+    return base_graph

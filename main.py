@@ -8,7 +8,7 @@ import logging
 
 #from placethings import ilp_solver
 #from placethings.definition import Unit
-from placethings.config import topo_graph, task_graph
+from placethings.config import topo_graph, task_graph, network_graph
 from placethings.utils import plot_utils
 
 
@@ -68,6 +68,7 @@ class FuncManager(object):
     def create_taskgraph(args):
         is_plot = args.is_plot
         graph = task_graph.create_default_task_graph()
+        task_graph.export_data()
         if is_plot:
             plot_utils.plot(
                 graph,
@@ -78,11 +79,12 @@ class FuncManager(object):
     @staticmethod
     def create_networkgraph(args):
         is_plot = args.is_plot
-        graph = None
+        graph = network_graph.create_default_network_graph()
+        network_graph.export_data()
         if is_plot:
             plot_utils.plot(
                 graph,
-                with_edge=False,
+                with_edge=True,
                 which_edge_label=None,
                 relative_filepath='output/network_graph.png')
 

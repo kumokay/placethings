@@ -1,8 +1,5 @@
 {
-    "dst_map": {
-        "task_broadcast": "PHONE.0"
-    },
-    "task_info": {
+    "node_info": {
         "task_sentNotificatoin": {
             "GtInfoEnum.LATENCY_INFO": {
                 "Device.P3_2XLARGE": {
@@ -109,11 +106,6 @@
                 }
             }
         }
-    },
-    "src_map": {
-        "task_thermal_loc1": "THERMAL.0",
-        "task_thermal_loc2": "THERMAL.1",
-        "task_camera": "CAMERA.0"
     },
     "edge_info": {
         "task_thermal_loc1 -> task_getAvgTemperature": {

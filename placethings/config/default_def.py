@@ -27,8 +27,8 @@ DEVICE_INVENTORY = {
         Device.PHONE: 1,
     },
     DeviceCategory.PROCESSOR: {
-        Device.T2_MICRO: 20,
-        Device.T3_LARGE: 10,
+        Device.T2_MICRO: 2,
+        Device.T3_LARGE: 2,
         Device.P3_2XLARGE: 1,
     },
     DeviceCategory.SENSOR: {

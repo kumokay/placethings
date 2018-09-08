@@ -47,6 +47,8 @@ def derive_device_info(device_spec, device_inventory):
                     GdInfo.DEVICE_TYPE: device_type,
                     GdInfo.COST: spec[GdInfo.COST],
                     GdInfo.HARDWARE: spec[GdInfo.HARDWARE],
+                    GdInfo.NIC: deepcopy(spec[GdInfo.NIC]),
+                    # TODO: bandwidth is a resource
                     GdInfo.RESRC: deepcopy(spec[GdInfo.HARDWARE]),
                 }
                 # special setting for RESRC info of GPU/CPU

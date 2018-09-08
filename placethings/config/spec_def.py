@@ -87,6 +87,12 @@ DEVICE_SPEC = {
         Device.PHONE: {
             GdInfo.COST: Unit.rph(0),
             GdInfo.HARDWARE: {},
+            GdInfo.NIC: {
+                LinkInfo.PROTOCOL: NwLink.LTE_CAT4,
+                LinkInfo.N_LINKS: 1,
+                LinkInfo.ULINK_BW: Unit.mbps(50),
+                LinkInfo.DLINK_BW: Unit.mbps(150),
+            },
         },
     },
     DeviceCategory.PROCESSOR: {
@@ -97,8 +103,12 @@ DEVICE_SPEC = {
                 Hardware.HD: Unit.gbyte(30),
                 Hardware.CPU: 1,
                 Hardware.GPU: 0,
-                Hardware.NIC_INGRESS: Unit.mbps(100),
-                Hardware.NIC_EGRESS: Unit.mbps(100),
+            },
+            GdInfo.NIC: {
+                LinkInfo.PROTOCOL: NwLink.ETHERNET,
+                LinkInfo.N_LINKS: 1,
+                LinkInfo.ULINK_BW: Unit.mbps(100),
+                LinkInfo.DLINK_BW: Unit.mbps(100),
             },
         },
         Device.T3_LARGE: {
@@ -108,8 +118,12 @@ DEVICE_SPEC = {
                 Hardware.HD: Unit.tbyte(16),
                 Hardware.CPU: 2,
                 Hardware.GPU: 0,
-                Hardware.NIC_INGRESS: Unit.gbps(1),
-                Hardware.NIC_EGRESS: Unit.gbps(1),
+            },
+            GdInfo.NIC: {
+                LinkInfo.PROTOCOL: NwLink.ETHERNET,
+                LinkInfo.N_LINKS: 1,
+                LinkInfo.ULINK_BW: Unit.gbps(100),
+                LinkInfo.DLINK_BW: Unit.gbps(100),
             },
         },
         Device.P3_2XLARGE: {
@@ -119,8 +133,12 @@ DEVICE_SPEC = {
                 Hardware.HD: Unit.tbyte(16),
                 Hardware.CPU: 8,
                 Hardware.GPU: 1,
-                Hardware.NIC_INGRESS: Unit.gbps(10),
-                Hardware.NIC_EGRESS: Unit.gbps(10),
+            },
+            GdInfo.NIC: {
+                LinkInfo.PROTOCOL: NwLink.ETHERNET,
+                LinkInfo.N_LINKS: 1,
+                LinkInfo.ULINK_BW: Unit.gbps(10),
+                LinkInfo.DLINK_BW: Unit.gbps(10),
             },
         },
     },
@@ -128,10 +146,22 @@ DEVICE_SPEC = {
         Device.THERMAL: {
             GdInfo.COST: Unit.rph(0),
             GdInfo.HARDWARE: {},
+            GdInfo.NIC: {
+                LinkInfo.PROTOCOL: NwLink.WIFI,
+                LinkInfo.N_LINKS: 1,
+                LinkInfo.ULINK_BW: Unit.mbps(10),
+                LinkInfo.DLINK_BW: Unit.mbps(10),
+            },
         },
         Device.CAMERA: {
             GdInfo.COST: Unit.rph(0),
             GdInfo.HARDWARE: {},
+            GdInfo.NIC: {
+                LinkInfo.PROTOCOL: NwLink.WIFI,
+                LinkInfo.N_LINKS: 1,
+                LinkInfo.ULINK_BW: Unit.mbps(60),
+                LinkInfo.DLINK_BW: Unit.mbps(60),
+            },
         },
     },
 }

@@ -115,6 +115,7 @@ class GdInfo(object):
         RESRC = auto()
         DEVICE_CAT = auto()
         DEVICE_TYPE = auto()
+        NIC = auto()
 
     class helper(type):
         # used as keys for **kwargs for networkx.Digraph.add_node
