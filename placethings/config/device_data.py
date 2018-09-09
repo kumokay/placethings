@@ -10,6 +10,7 @@ import logging
 from placethings.config import default_def, spec_def
 from placethings.config.common import InventoryManager, Validator
 from placethings.definition import GdInfo, Hardware, Unit
+from placethings.utils import common_utils, json_utils
 
 
 log = logging.getLogger()
@@ -58,3 +59,20 @@ def derive_device_info(device_spec, device_inventory):
                             Unit.percentage(100))
                 all_device_info[device_name] = device_info
     return all_device_info
+
+
+def export_data():
+    device_spec, device_inventory = create_default_device_data()
+    filename = common_utils.get_file_path('config_default/device_data.json')
+    json_utils.export_bundle(
+        filename,
+        device_spec=device_spec,
+        device_inventory=device_inventory,
+    )
+    _device_spec, _device_inventory = json_utils.import_bundle(
+        filename,
+        'device_spec',
+        'device_inventory',
+    )
+    assert _device_spec == device_spec
+    assert _device_inventory == device_inventory

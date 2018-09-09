@@ -26,9 +26,8 @@ class Validator(object):
         return True
 
     @staticmethod
-    def validate_mapping(task_info, device_inventory, mapping):
+    def validate_mapping(task_set, device_inventory, mapping):
         inventory = InventoryManager(device_inventory)
-        task_set = set(task_info)
         device_set = inventory.get_device_set()
         for task, device in iteritems(mapping):
             if task not in task_set:

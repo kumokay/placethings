@@ -8,7 +8,8 @@ import logging
 
 #from placethings import ilp_solver
 #from placethings.definition import Unit
-from placethings.config import topo_graph, task_graph, network_graph
+from placethings.config import (
+    topo_graph, task_graph, network_graph, config_factory)
 from placethings.utils import plot_utils
 
 
@@ -98,9 +99,8 @@ class FuncManager(object):
         pass
 
     @staticmethod
-    def export_data(args):
-        # config_factory.export_all_data()
-        pass
+    def export_all_config(args):
+        config_factory.export_all_config()
 
 
 def main():
@@ -134,11 +134,11 @@ def main():
         help='compute placement')
     subargs_manager.visualize(required=False)
 
-    name = 'export_data'
+    name = 'export_all_config'
     subargs_manager = args_manager.add_subparser(
         name,
         func=getattr(FuncManager, name),
-        help='export config to json')
+        help='export all config to json')
     subargs_manager.visualize(required=False)
 
     args = args_manager.parse_args()

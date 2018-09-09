@@ -1,0 +1,12 @@
+{
+    "default_map": {
+        "task_sentNotificatoin": null,
+        "task_getAvgTemperature": null,
+        "task_thermal_loc1": "THERMAL.0",
+        "task_thermal_loc2": "THERMAL.1",
+        "task_camera": "CAMERA.0",
+        "task_broadcast": "PHONE.0",
+        "task_findObject": null,
+        "task_checkAbnormalEvent": null
+    }
+}
