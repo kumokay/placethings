@@ -135,6 +135,7 @@ class GnInfo(object):
         SRC_LINK_TYPE = auto()
         DST_LINK_TYPE = auto()
         BANDWIDTH = auto()
+        LATENCY = auto()
         PROTOCOL = auto()
 
     class helper(type):

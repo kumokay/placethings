@@ -8,7 +8,7 @@ import logging
 from placethings.config import nw_device_data
 from placethings.config.common import LinkHelper, InventoryManager
 from placethings.definition import (
-    GnInfo, LinkType, LinkInfo, NwDevice, NwDeviceCategory)
+    GnInfo, LinkType, LinkInfo, NwDevice, NwDeviceCategory, Unit)
 from placethings.utils import common_utils, graph_utils, json_utils
 
 
@@ -36,7 +36,8 @@ def _get_link_info(inventory, name, link_type):
         spec[LinkInfo.PROTOCOL])
 
 
-def _gen_edge_info(inventory, n1, link_type1, n2, link_type2):
+def _gen_edge_info(
+        inventory, n1, link_type1, n2, link_type2, ul_delay, dl_delay):
     ul1, dl1, prot1 = _get_link_info(inventory, n1, link_type1)
     ul2, dl2, prot2 = _get_link_info(inventory, n2, link_type2)
     assert prot1 == prot2
@@ -46,12 +47,14 @@ def _gen_edge_info(inventory, n1, link_type1, n2, link_type2):
         GnInfo.SRC_LINK_TYPE: link_type1,
         GnInfo.DST_LINK_TYPE: link_type2,
         GnInfo.BANDWIDTH: min(ul1, dl2),
+        GnInfo.LATENCY: ul_delay,
         GnInfo.PROTOCOL: prot,
     }
     edge_info[LinkHelper.get_edge(n2, n1)] = {
         GnInfo.SRC_LINK_TYPE: link_type2,
         GnInfo.DST_LINK_TYPE: link_type1,
         GnInfo.BANDWIDTH: min(ul2, dl1),
+        GnInfo.LATENCY: dl_delay,
         GnInfo.PROTOCOL: prot,
     }
     return edge_info
@@ -75,20 +78,32 @@ def _create_default_edge_info():
     # gen edges
     edge_info = {}
     # HOME_IOTGW <-> HOME_SWTICH
+    ul_delay = Unit.ms(1)
+    dl_delay = Unit.ms(1)
     edges = _gen_edge_info(
-        inventory, iot_gw, LinkType.WAN, home_router, LinkType.LAN)
+        inventory, iot_gw, LinkType.WAN, home_router, LinkType.LAN,
+        ul_delay, dl_delay)
     edge_info.update(edges)
     # HOME_SWTICH <-> BB_SWTICH
+    ul_delay = Unit.ms(10)
+    dl_delay = Unit.ms(10)
     edges = _gen_edge_info(
-        inventory, home_router, LinkType.WAN, bb_switch, LinkType.ANY)
+        inventory, home_router, LinkType.WAN, bb_switch, LinkType.ANY,
+        ul_delay, dl_delay)
     edge_info.update(edges)
     # BASESTATION <-> BB_SWTICH
+    ul_delay = Unit.ms(10)
+    dl_delay = Unit.ms(10)
     edges = _gen_edge_info(
-        inventory, bs, LinkType.WAN, bb_switch, LinkType.ANY)
+        inventory, bs, LinkType.WAN, bb_switch, LinkType.ANY,
+        ul_delay, dl_delay)
     edge_info.update(edges)
     # CLOUD_SWTICH <-> BB_SWTICH
+    ul_delay = Unit.ms(20)
+    dl_delay = Unit.ms(20)
     edges = _gen_edge_info(
-        inventory, cloud_switch, LinkType.WAN, bb_switch, LinkType.ANY)
+        inventory, cloud_switch, LinkType.WAN, bb_switch, LinkType.ANY,
+        ul_delay, dl_delay)
     edge_info.update(edges)
     return edge_info
 
