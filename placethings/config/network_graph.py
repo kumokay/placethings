@@ -164,10 +164,16 @@ def export_data():
         'config_default/network_graph.json',
         node_info=node_info,
         edge_info=edge_info)
-    _node_info, _edge_info = json_utils.import_bundle(
-        common_utils.get_file_path('config_default/network_graph.json'),
+    _node_info, _edge_info = import_data()
+    assert _node_info == node_info
+    assert _edge_info == edge_info
+
+
+def import_data():
+    filename = common_utils.get_file_path('config_default/network_graph.json')
+    node_info, edge_info = json_utils.import_bundle(
+        filename,
         'node_info',
         'edge_info',
     )
-    assert _node_info == node_info
-    assert _edge_info == edge_info
+    return node_info, edge_info

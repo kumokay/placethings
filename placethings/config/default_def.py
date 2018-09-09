@@ -58,25 +58,3 @@ DEFAULT_MAPPING = {
     'task_camera': 'CAMERA.0',
     'task_broadcast': 'PHONE.0',
 }
-
-
-def export_data():
-    filename = common_utils.get_file_path('config_default/nw_device_data.json')
-    json_utils.export_bundle(
-        filename,
-        NW_DEVICE_INVENTORY=NW_DEVICE_INVENTORY,
-        DEVICE_INVENTORY=DEVICE_INVENTORY,
-        DEFAULT_TASKS=DEFAULT_TASKS,
-        DEFAULT_MAPPING=DEFAULT_MAPPING,
-    )
-    _1, _2, _3, _4 = json_utils.import_bundle(
-        filename,
-        'NW_DEVICE_INVENTORY',
-        'DEVICE_INVENTORY',
-        'DEFAULT_TASKS',
-        'DEFAULT_MAPPING',
-    )
-    assert _1 == NW_DEVICE_INVENTORY
-    assert _2 == DEVICE_INVENTORY
-    assert _3 == DEFAULT_TASKS
-    assert _4 == DEFAULT_MAPPING

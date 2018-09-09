@@ -65,10 +65,16 @@ def export_data():
         device_spec=device_spec,
         device_inventory=device_inventory,
     )
-    _device_spec, _device_inventory = json_utils.import_bundle(
+    _device_spec, _device_inventory = import_data()
+    assert _device_spec == device_spec
+    assert _device_inventory == device_inventory
+
+
+def import_data():
+    filename = common_utils.get_file_path('config_default/nw_device_data.json')
+    device_spec, device_inventory = json_utils.import_bundle(
         filename,
         'device_spec',
         'device_inventory',
     )
-    assert _device_spec == device_spec
-    assert _device_inventory == device_inventory
+    return device_spec, device_inventory

@@ -42,8 +42,14 @@ def export_data():
         filename,
         default_map=default_map,
     )
-    _1, = json_utils.import_bundle(
+    _1 = import_data()
+    assert _1 == default_map
+
+
+def import_data():
+    filename = common_utils.get_file_path('config_default/default_map.json')
+    default_map, = json_utils.import_bundle(
         filename,
         'default_map',
     )
-    assert _1 == default_map
+    return default_map

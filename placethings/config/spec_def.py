@@ -166,27 +166,3 @@ DEVICE_SPEC = {
         },
     },
 }
-
-
-def export_data():
-    filename = common_utils.get_file_path('config_default/nw_device_spec.json')
-    json_utils.export_bundle(
-        filename,
-        NW_DEVICE_SPEC=NW_DEVICE_SPEC,
-    )
-    _1, = json_utils.import_bundle(
-        filename,
-        'NW_DEVICE_SPEC',
-    )
-    assert _1 == NW_DEVICE_SPEC
-
-    filename = common_utils.get_file_path('config_default/device_spec.json')
-    json_utils.export_bundle(
-        filename,
-        DEVICE_SPEC=DEVICE_SPEC,
-    )
-    _1, = json_utils.import_bundle(
-        filename,
-        'DEVICE_SPEC',
-    )
-    assert _1 == DEVICE_SPEC

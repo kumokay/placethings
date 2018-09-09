@@ -196,10 +196,15 @@ def export_data():
         'config_default/task_graph.json',
         node_info=node_info,
         edge_info=edge_info)
-    _node_info, _edge_info = json_utils.import_bundle(
+    _node_info, _edge_info = import_data()
+    assert _node_info == node_info
+    assert _edge_info == edge_info
+
+
+def import_data():
+    node_info, edge_info = json_utils.import_bundle(
         common_utils.get_file_path('config_default/task_graph.json'),
         'node_info',
         'edge_info',
     )
-    assert _node_info == node_info
-    assert _edge_info == edge_info
+    return node_info, edge_info
