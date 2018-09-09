@@ -13,7 +13,6 @@ import networkx as nx
 
 from placethings.definition import Const, GdInfo, GtInfo, Hardware
 from placethings.graph_gen.graph_utils import FileHelper
-from placethings.utils import common_utils
 
 
 log = logging.getLogger()
