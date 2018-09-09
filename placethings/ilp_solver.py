@@ -12,13 +12,28 @@ import pulp
 import networkx as nx
 
 from placethings.definition import Const, GdInfo, GtInfo, Hardware
-from placethings.task_graph import TaskGraph
 
 
 log = logging.getLogger()
 
 
-def place_things(target_latency, Gt, Gd, src_map, dst_map):
+def _find_src_nodes(Gt):
+    src_list = []
+    for node in Gt.nodes():
+        if not Gt.predecessors(node):
+            src_list.append(node)
+    return src_list
+
+
+def _find_dst_nodes(Gt):
+    dst_list = []
+    for node in Gt.nodes():
+        if not Gt.successors(node):
+            dst_list.append(node)
+    return dst_list
+
+
+def place_things(target_latency, Gt, Gd):
     """
     Args:
         target_latency (int): latency constrain for this task graph
@@ -173,8 +188,14 @@ def place_things(target_latency, Gt, Gd, src_map, dst_map):
             latency=invalid_latency))
 
     # Generate all possible mappings of device_i <-> task_i
-    mapped_tasks = list(src_map) + list(dst_map)
-    mapped_devices = listvalues(src_map) + listvalues(dst_map)
+    known_mapping = {}
+    for node in Gt.nodes():
+        mapped_device = Gt.node[node].get(GtInfo.DEVICE, None)
+        if mapped_device is not None:
+            known_mapping[node] = mapped_device
+    log.info('known_mapping: {}'.format(known_mapping))
+    mapped_tasks = list(known_mapping)
+    mapped_devices = listvalues(known_mapping)
     tasks = [t for t in Gt.nodes() if t not in mapped_tasks]
     devices = [d for d in Gd.nodes() if d not in mapped_devices]
     log.info('find possible mappings for {} tasks in {} devices'.format(
@@ -254,9 +275,11 @@ def place_things(target_latency, Gt, Gd, src_map, dst_map):
     prob += pulp.lpSum(all_XX) == len(Gt.edges())
 
     # Generate all simple paths in the graph G from source to target.
+    src_list = _find_src_nodes(Gt)
+    dst_list = _find_dst_nodes(Gt)
     all_paths = []
-    for src in src_map:
-        for dst in dst_map:
+    for src in src_list:
+        for dst in dst_list:
             paths = list(nx.all_simple_paths(Gt, src, dst))
             all_paths += paths
     all_mappings = pulp.combination(devices, len(tasks))
@@ -264,8 +287,8 @@ def place_things(target_latency, Gt, Gd, src_map, dst_map):
     # use constrains to model Y, the longest path for each mapping
     for device_mapping in all_mappings:
         for path in all_paths:
-            assert path[0] in src_map
-            assert path[len(path)-1] in dst_map
+            assert path[0] in src_list
+            assert path[len(path)-1] in dst_list
             path_vars = []
             # first node: src
             ti = path[0]
@@ -274,8 +297,7 @@ def place_things(target_latency, Gt, Gd, src_map, dst_map):
             for j in range(1, len(path)-1):
                 tj = path[j]
                 dj = device_mapping[task_to_idx[tj]]
-                assert Gt.node[tj][GtInfo.DEVICE] == (
-                    TaskGraph.DEVICE_NOT_ASSIGNED)
+                assert Gt.node[tj][GtInfo.DEVICE] is None
                 assert dj in Gd.nodes()
                 # get transmission latency from di -> dj
                 Ld_di_dj = Gd[di][dj][GdInfo.LATENCY]

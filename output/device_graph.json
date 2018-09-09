@@ -169,110 +169,197 @@
         }
     },
     "edge_info": {
-        "THERMAL.1 -> HOME_IOTGW.0": {
-            "GnInfoEnum.BANDWIDTH": 10485760,
-            "GnInfoEnum.SRC_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.DST_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.LATENCY": 3,
-            "GnInfoEnum.PROTOCOL": "NwLink.WIFI"
+        "T2_MICRO.0 -> P3_2XLARGE.0": {
+            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.BANDWIDTH": 104857600
         },
-        "T2_MICRO.0 -> HOME_ROUTER.0": {
-            "GnInfoEnum.BANDWIDTH": 104857600,
-            "GnInfoEnum.SRC_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.DST_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.LATENCY": 1,
-            "GnInfoEnum.PROTOCOL": "NwLink.ETHERNET"
+        "THERMAL.0 -> T3_LARGE.0": {
+            "GdInfoEnum.LATENCY": 5,
+            "GdInfoEnum.BANDWIDTH": 10485760
         },
-        "CLOUD_SWITCH.0 -> P3_2XLARGE.0": {
-            "GnInfoEnum.BANDWIDTH": 419430400,
-            "GnInfoEnum.SRC_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.DST_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.LATENCY": 1,
-            "GnInfoEnum.PROTOCOL": "NwLink.ETHERNET"
+        "CAMERA.0 -> T3_LARGE.0": {
+            "GdInfoEnum.LATENCY": 5,
+            "GdInfoEnum.BANDWIDTH": 52428800
         },
-        "T2_MICRO.1 -> CLOUD_SWITCH.0": {
-            "GnInfoEnum.BANDWIDTH": 104857600,
-            "GnInfoEnum.SRC_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.DST_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.LATENCY": 1,
-            "GnInfoEnum.PROTOCOL": "NwLink.ETHERNET"
+        "THERMAL.0 -> P3_2XLARGE.0": {
+            "GdInfoEnum.LATENCY": 15025,
+            "GdInfoEnum.BANDWIDTH": 10485760
         },
-        "T3_LARGE.0 -> HOME_ROUTER.0": {
-            "GnInfoEnum.BANDWIDTH": 104857600,
-            "GnInfoEnum.SRC_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.DST_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.LATENCY": 1,
-            "GnInfoEnum.PROTOCOL": "NwLink.ETHERNET"
+        "CAMERA.0 -> P3_2XLARGE.0": {
+            "GdInfoEnum.LATENCY": 15025,
+            "GdInfoEnum.BANDWIDTH": 52428800
         },
-        "T3_LARGE.1 -> CLOUD_SWITCH.0": {
-            "GnInfoEnum.BANDWIDTH": 419430400,
-            "GnInfoEnum.SRC_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.DST_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.LATENCY": 1,
-            "GnInfoEnum.PROTOCOL": "NwLink.ETHERNET"
+        "T2_MICRO.1 -> T3_LARGE.0": {
+            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.BANDWIDTH": 104857600
         },
-        "CAMERA.0 -> HOME_IOTGW.0": {
-            "GnInfoEnum.BANDWIDTH": 52428800,
-            "GnInfoEnum.SRC_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.DST_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.LATENCY": 3,
-            "GnInfoEnum.PROTOCOL": "NwLink.WIFI"
+        "T2_MICRO.1 -> T3_LARGE.1": {
+            "GdInfoEnum.LATENCY": 2,
+            "GdInfoEnum.BANDWIDTH": 104857600
         },
-        "THERMAL.0 -> HOME_IOTGW.0": {
-            "GnInfoEnum.BANDWIDTH": 10485760,
-            "GnInfoEnum.SRC_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.DST_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.LATENCY": 3,
-            "GnInfoEnum.PROTOCOL": "NwLink.WIFI"
+        "CAMERA.0 -> T3_LARGE.1": {
+            "GdInfoEnum.LATENCY": 15025,
+            "GdInfoEnum.BANDWIDTH": 52428800
         },
-        "PHONE.0 -> BASESTATION.0": {
-            "GnInfoEnum.BANDWIDTH": 52428800,
-            "GnInfoEnum.SRC_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.DST_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.LATENCY": 10,
-            "GnInfoEnum.PROTOCOL": "NwLink.LTE_CAT4"
+        "THERMAL.0 -> T3_LARGE.1": {
+            "GdInfoEnum.LATENCY": 15025,
+            "GdInfoEnum.BANDWIDTH": 10485760
         },
-        "CLOUD_SWITCH.0 -> T3_LARGE.1": {
-            "GnInfoEnum.BANDWIDTH": 419430400,
-            "GnInfoEnum.SRC_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.DST_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.LATENCY": 1,
-            "GnInfoEnum.PROTOCOL": "NwLink.ETHERNET"
+        "THERMAL.1 -> P3_2XLARGE.0": {
+            "GdInfoEnum.LATENCY": 15025,
+            "GdInfoEnum.BANDWIDTH": 10485760
         },
-        "P3_2XLARGE.0 -> CLOUD_SWITCH.0": {
-            "GnInfoEnum.BANDWIDTH": 419430400,
-            "GnInfoEnum.SRC_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.DST_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.LATENCY": 1,
-            "GnInfoEnum.PROTOCOL": "NwLink.ETHERNET"
+        "T3_LARGE.0 -> T3_LARGE.1": {
+            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.BANDWIDTH": 104857600
         },
-        "BASESTATION.0 -> PHONE.0": {
-            "GnInfoEnum.BANDWIDTH": 157286400,
-            "GnInfoEnum.SRC_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.DST_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.LATENCY": 10,
-            "GnInfoEnum.PROTOCOL": "NwLink.LTE_CAT4"
+        "T2_MICRO.0 -> T2_MICRO.1": {
+            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.BANDWIDTH": 104857600
         },
-        "HOME_ROUTER.0 -> T3_LARGE.0": {
-            "GnInfoEnum.BANDWIDTH": 104857600,
-            "GnInfoEnum.SRC_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.DST_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.LATENCY": 1,
-            "GnInfoEnum.PROTOCOL": "NwLink.ETHERNET"
+        "THERMAL.0 -> PHONE.0": {
+            "GdInfoEnum.LATENCY": 44,
+            "GdInfoEnum.BANDWIDTH": 10485760
         },
-        "HOME_ROUTER.0 -> T2_MICRO.0": {
-            "GnInfoEnum.BANDWIDTH": 104857600,
-            "GnInfoEnum.SRC_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.DST_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.LATENCY": 1,
-            "GnInfoEnum.PROTOCOL": "NwLink.ETHERNET"
+        "T2_MICRO.1 -> P3_2XLARGE.0": {
+            "GdInfoEnum.LATENCY": 2,
+            "GdInfoEnum.BANDWIDTH": 104857600
         },
-        "CLOUD_SWITCH.0 -> T2_MICRO.1": {
-            "GnInfoEnum.BANDWIDTH": 104857600,
-            "GnInfoEnum.SRC_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.DST_LINK_TYPE": "LinkType.LAN",
-            "GnInfoEnum.LATENCY": 1,
-            "GnInfoEnum.PROTOCOL": "NwLink.ETHERNET"
+        "PHONE.0 -> P3_2XLARGE.0": {
+            "GdInfoEnum.LATENCY": 15021,
+            "GdInfoEnum.BANDWIDTH": 52428800
+        },
+        "P3_2XLARGE.0 -> T3_LARGE.1": {
+            "GdInfoEnum.LATENCY": 2,
+            "GdInfoEnum.BANDWIDTH": 419430400
+        },
+        "P3_2XLARGE.0 -> T3_LARGE.0": {
+            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.BANDWIDTH": 104857600
+        },
+        "T3_LARGE.1 -> T3_LARGE.0": {
+            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.BANDWIDTH": 104857600
+        },
+        "THERMAL.1 -> T3_LARGE.1": {
+            "GdInfoEnum.LATENCY": 15025,
+            "GdInfoEnum.BANDWIDTH": 10485760
+        },
+        "T2_MICRO.0 -> T3_LARGE.1": {
+            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.BANDWIDTH": 104857600
+        },
+        "T2_MICRO.0 -> T3_LARGE.0": {
+            "GdInfoEnum.LATENCY": 2,
+            "GdInfoEnum.BANDWIDTH": 104857600
+        },
+        "CAMERA.0 -> PHONE.0": {
+            "GdInfoEnum.LATENCY": 44,
+            "GdInfoEnum.BANDWIDTH": 52428800
+        },
+        "THERMAL.1 -> T3_LARGE.0": {
+            "GdInfoEnum.LATENCY": 5,
+            "GdInfoEnum.BANDWIDTH": 10485760
+        },
+        "PHONE.0 -> T2_MICRO.1": {
+            "GdInfoEnum.LATENCY": 15021,
+            "GdInfoEnum.BANDWIDTH": 52428800
+        },
+        "PHONE.0 -> T2_MICRO.0": {
+            "GdInfoEnum.LATENCY": 41,
+            "GdInfoEnum.BANDWIDTH": 52428800
+        },
+        "T3_LARGE.1 -> PHONE.0": {
+            "GdInfoEnum.LATENCY": 15021,
+            "GdInfoEnum.BANDWIDTH": 157286400
+        },
+        "T3_LARGE.1 -> T2_MICRO.0": {
+            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.BANDWIDTH": 104857600
+        },
+        "T3_LARGE.1 -> T2_MICRO.1": {
+            "GdInfoEnum.LATENCY": 2,
+            "GdInfoEnum.BANDWIDTH": 104857600
+        },
+        "T2_MICRO.0 -> PHONE.0": {
+            "GdInfoEnum.LATENCY": 41,
+            "GdInfoEnum.BANDWIDTH": 104857600
+        },
+        "THERMAL.1 -> T2_MICRO.1": {
+            "GdInfoEnum.LATENCY": 15025,
+            "GdInfoEnum.BANDWIDTH": 10485760
+        },
+        "THERMAL.1 -> T2_MICRO.0": {
+            "GdInfoEnum.LATENCY": 5,
+            "GdInfoEnum.BANDWIDTH": 10485760
+        },
+        "T3_LARGE.1 -> P3_2XLARGE.0": {
+            "GdInfoEnum.LATENCY": 2,
+            "GdInfoEnum.BANDWIDTH": 419430400
+        },
+        "P3_2XLARGE.0 -> T2_MICRO.1": {
+            "GdInfoEnum.LATENCY": 2,
+            "GdInfoEnum.BANDWIDTH": 104857600
+        },
+        "P3_2XLARGE.0 -> T2_MICRO.0": {
+            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.BANDWIDTH": 104857600
+        },
+        "P3_2XLARGE.0 -> PHONE.0": {
+            "GdInfoEnum.LATENCY": 15021,
+            "GdInfoEnum.BANDWIDTH": 157286400
+        },
+        "THERMAL.1 -> PHONE.0": {
+            "GdInfoEnum.LATENCY": 44,
+            "GdInfoEnum.BANDWIDTH": 10485760
+        },
+        "T2_MICRO.1 -> T2_MICRO.0": {
+            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.BANDWIDTH": 104857600
+        },
+        "THERMAL.0 -> T2_MICRO.1": {
+            "GdInfoEnum.LATENCY": 15025,
+            "GdInfoEnum.BANDWIDTH": 10485760
+        },
+        "CAMERA.0 -> T2_MICRO.1": {
+            "GdInfoEnum.LATENCY": 15025,
+            "GdInfoEnum.BANDWIDTH": 52428800
+        },
+        "CAMERA.0 -> T2_MICRO.0": {
+            "GdInfoEnum.LATENCY": 5,
+            "GdInfoEnum.BANDWIDTH": 52428800
+        },
+        "T3_LARGE.0 -> T2_MICRO.1": {
+            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.BANDWIDTH": 104857600
+        },
+        "T3_LARGE.0 -> PHONE.0": {
+            "GdInfoEnum.LATENCY": 41,
+            "GdInfoEnum.BANDWIDTH": 104857600
+        },
+        "T3_LARGE.0 -> T2_MICRO.0": {
+            "GdInfoEnum.LATENCY": 2,
+            "GdInfoEnum.BANDWIDTH": 104857600
+        },
+        "PHONE.0 -> T3_LARGE.1": {
+            "GdInfoEnum.LATENCY": 15021,
+            "GdInfoEnum.BANDWIDTH": 52428800
+        },
+        "PHONE.0 -> T3_LARGE.0": {
+            "GdInfoEnum.LATENCY": 41,
+            "GdInfoEnum.BANDWIDTH": 52428800
+        },
+        "T2_MICRO.1 -> PHONE.0": {
+            "GdInfoEnum.LATENCY": 15021,
+            "GdInfoEnum.BANDWIDTH": 104857600
+        },
+        "THERMAL.0 -> T2_MICRO.0": {
+            "GdInfoEnum.LATENCY": 5,
+            "GdInfoEnum.BANDWIDTH": 10485760
+        },
+        "T3_LARGE.0 -> P3_2XLARGE.0": {
+            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.BANDWIDTH": 104857600
         }
     }
 }

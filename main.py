@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 import argparse
 import logging
 
-# from placethings import ilp_solver
+from placethings import ilp_solver
 from placethings.definition import Unit
 from placethings.config import config_factory
 from placethings.graph_gen import graph_factory
@@ -93,8 +93,7 @@ class FuncManager(object):
         is_export = args.is_export
         Gt = graph_factory.gen_task_graph(config_name, is_export)
         Gd = graph_factory.gen_device_graph(config_name, is_export)
-        # ilp_solver.place_things(Unit.sec(2), Gt, Gd)
-        pass
+        ilp_solver.place_things(Unit.sec(2), Gt, Gd)
 
     @staticmethod
     def export_default_config(args):

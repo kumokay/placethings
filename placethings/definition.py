@@ -110,6 +110,7 @@ class GtInfo(object):
 class GdInfo(object):
     class GdInfoEnum(Enum):
         LATENCY = auto()
+        BANDWIDTH = auto()
         HARDWARE = auto()
         COST = auto()
         RESRC = auto()
