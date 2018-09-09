@@ -95,5 +95,52 @@
                 }
             }
         }
+    },
+    "links": {
+        "THERMAL.1 -> HOME_IOTGW.0": {
+            "GnInfoEnum.LATENCY": 3
+        },
+        "T2_MICRO.0 -> HOME_ROUTER.0": {
+            "GnInfoEnum.LATENCY": 1
+        },
+        "CLOUD_SWITCH.0 -> P3_2XLARGE.0": {
+            "GnInfoEnum.LATENCY": 1
+        },
+        "T2_MICRO.1 -> CLOUD_SWITCH.0": {
+            "GnInfoEnum.LATENCY": 1
+        },
+        "T3_LARGE.0 -> HOME_ROUTER.0": {
+            "GnInfoEnum.LATENCY": 1
+        },
+        "T3_LARGE.1 -> CLOUD_SWITCH.0": {
+            "GnInfoEnum.LATENCY": 1
+        },
+        "CAMERA.0 -> HOME_IOTGW.0": {
+            "GnInfoEnum.LATENCY": 3
+        },
+        "THERMAL.0 -> HOME_IOTGW.0": {
+            "GnInfoEnum.LATENCY": 3
+        },
+        "PHONE.0 -> BASESTATION.0": {
+            "GnInfoEnum.LATENCY": 10
+        },
+        "CLOUD_SWITCH.0 -> T2_MICRO.1": {
+            "GnInfoEnum.LATENCY": 1
+        },
+        "CLOUD_SWITCH.0 -> T3_LARGE.1": {
+            "GnInfoEnum.LATENCY": 1
+        },
+        "P3_2XLARGE.0 -> CLOUD_SWITCH.0": {
+            "GnInfoEnum.LATENCY": 1
+        },
+        "BASESTATION.0 -> PHONE.0": {
+            "GnInfoEnum.LATENCY": 10
+        },
+        "HOME_ROUTER.0 -> T2_MICRO.0": {
+            "GnInfoEnum.LATENCY": 1
+        },
+        "HOME_ROUTER.0 -> T3_LARGE.0": {
+            "GnInfoEnum.LATENCY": 1
+        }
     }
 }

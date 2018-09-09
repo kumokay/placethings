@@ -3,13 +3,10 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from copy import deepcopy
-from future.utils import iteritems
 import logging
 
 from placethings.config import default_def, spec_def
-from placethings.config.common import InventoryManager, Validator
-from placethings.definition import GnInfo
+from placethings.config.common import Validator
 from placethings.utils import common_utils, json_utils
 
 

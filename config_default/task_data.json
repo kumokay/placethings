@@ -1,5 +1,5 @@
 {
-    "node_info": {
+    "task_info": {
         "task_sentNotificatoin": {
             "GtInfoEnum.LATENCY_INFO": {
                 "Device.P3_2XLARGE": {
@@ -107,7 +107,17 @@
             }
         }
     },
-    "edge_info": {
+    "task_mapping": {
+        "task_sentNotificatoin": null,
+        "task_getAvgTemperature": null,
+        "task_thermal_loc1": "THERMAL.0",
+        "task_thermal_loc2": "THERMAL.1",
+        "task_camera": "CAMERA.0",
+        "task_broadcast": "PHONE.0",
+        "task_findObject": null,
+        "task_checkAbnormalEvent": null
+    },
+    "task_links": {
         "task_thermal_loc1 -> task_getAvgTemperature": {
             "GtInfoEnum.TRAFFIC": 8192
         },

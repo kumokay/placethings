@@ -14,14 +14,14 @@ from placethings.utils import common_utils
 log = logging.getLogger()
 
 
-def save_plot(relative_filepath):
-    filepath = common_utils.get_file_path(relative_filepath)
+def save_plot(filepath):
     common_utils.check_file_folder(filepath)
     log.info('save plot to: {}'.format(filepath))
     plt.savefig(filepath)
+    plt.close()
 
 
-def plot(graph, with_edge=True, which_edge_label=None, relative_filepath=None):
+def plot(graph, with_edge=True, which_edge_label=None, filepath=None):
     pos = nx.spring_layout(graph)
     nx.draw_networkx_nodes(
         graph,
@@ -66,6 +66,6 @@ def plot(graph, with_edge=True, which_edge_label=None, relative_filepath=None):
             font_family='sans-serif',
             font_weight='normal',
         )
-    if not relative_filepath:
-        relative_filepath = 'output/plot.png'
-    save_plot(relative_filepath)
+    if not filepath:
+        filepath = 'output/plot.png'
+    save_plot(filepath)

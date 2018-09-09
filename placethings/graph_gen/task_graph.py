@@ -9,7 +9,7 @@ import logging
 
 from placethings.config import task_data
 from placethings.definition import GtInfo
-from placethings.utils import common_utils, graph_utils, json_utils
+from placethings.utils import common_utils, graph_utils, json_utils, plot_utils
 
 
 log = logging.getLogger()
@@ -38,29 +38,50 @@ def _derive_graph_info(task_mapping, task_links, task_info):
     return node_info, edge_info
 
 
-def create_graph(mapping, task_links, task_info):
+def create_graph(
+        mapping, task_links, task_info,
+        is_export=False, graph_filename=None, data_filename=None):
     node_info, edge_info = _derive_graph_info(mapping, task_links, task_info)
     graph = graph_utils.gen_graph(task_info, task_links)
+    if is_export:
+        export_graph(graph, graph_filename)
+        export_data(node_info, edge_info, data_filename)
     return graph
 
 
-def create_default_task_graph():
+def create_default_task_graph(
+        is_export=False, graph_filename=None, data_filename=None):
     task_mapping, task_links, task_info = task_data.create_default_task_data()
-    return create_graph(task_mapping, task_links, task_info)
+    return create_graph(
+        task_mapping, task_info, task_links,
+        is_export, graph_filename, data_filename)
 
 
-def create_graph_from_file(filepath):
+def create_graph_from_file(
+        filepath,
+        is_export=False, graph_filename=None, data_filename=None):
     task_mapping, task_links, task_info = task_data.import_data(filepath)
-    return create_graph(task_mapping, task_info, task_links)
+    return create_graph(
+        task_mapping, task_links, task_info,
+        is_export, graph_filename, data_filename)
 
 
-_DEFAULT_FILE_PATH = 'output/task_graph.json'
+_DEFAULT_FILE_PATH = 'output/task_graph'
 
 
-def export_data():
-    filename = common_utils.get_file_path(_DEFAULT_FILE_PATH)
-    mapping, task_links, task_info = task_data.create_default_task_data()
-    node_info, edge_info = _derive_graph_info(mapping, task_links, task_info)
+def export_graph(graph, filename=None):
+    if not filename:
+        filename = common_utils.get_file_path(_DEFAULT_FILE_PATH + '.png')
+    plot_utils.plot(
+        graph,
+        with_edge=True,
+        which_edge_label=None,
+        filepath=filename)
+
+
+def export_data(node_info, edge_info, filename=None):
+    if not filename:
+        filename = common_utils.get_file_path(_DEFAULT_FILE_PATH + '.json')
     json_utils.export_bundle(
         filename,
         node_info=node_info,
@@ -72,7 +93,7 @@ def export_data():
 
 def import_data(filename=None):
     if not filename:
-        filename = common_utils.get_file_path(_DEFAULT_FILE_PATH)
+        filename = common_utils.get_file_path(_DEFAULT_FILE_PATH + '.json')
     node_info, edge_info = json_utils.import_bundle(
         filename,
         'node_info',

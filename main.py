@@ -6,11 +6,10 @@ from __future__ import unicode_literals
 import argparse
 import logging
 
-#from placethings import ilp_solver
-#from placethings.definition import Unit
-from placethings.config import (
-    topo_graph, task_graph, network_graph, config_factory)
-from placethings.utils import plot_utils
+# from placethings import ilp_solver
+from placethings.definition import Unit
+from placethings.config import config_factory
+from placethings.graph_gen import graph_factory
 
 
 logging.basicConfig(
@@ -28,10 +27,23 @@ class SubArgsManager(object):
             '-v',
             '--visualize',
             type=bool,
-            dest='is_plot',
+            dest='is_export',
             default=False,
             required=required,
-            help='plot graph')
+            help='export graph and data')
+
+    def config(self, required=False):
+        self.subparser.add_argument(
+            '-c',
+            '--config',
+            type=str,
+            dest='config_name',
+            default='config_default',
+            required=required,
+            help=(
+                'gen graph base on confiig files. '
+                'If not specified, use config_dafult')
+        )
 
 
 class ArgsManager(object):
@@ -55,52 +67,38 @@ class FuncManager(object):
 
     @staticmethod
     def create_topograph(args):
-        is_plot = args.is_plot
-        graph = topo_graph.create_default_topo_graph()
-        topo_graph.export_data()
-        if is_plot:
-            plot_utils.plot(
-                graph,
-                with_edge=True,
-                which_edge_label=None,
-                relative_filepath='output/topo_graph.png')
+        config_name = args.config_name
+        graph_factory.gen_topo_graph(config_name, is_export=True)
 
     @staticmethod
     def create_taskgraph(args):
-        is_plot = args.is_plot
-        graph = task_graph.create_default_task_graph()
-        task_graph.export_data()
-        if is_plot:
-            plot_utils.plot(
-                graph,
-                with_edge=True,
-                which_edge_label=None,
-                relative_filepath='output/task_graph.png')
+        config_name = args.config_name
+        graph_factory.gen_task_graph(config_name, is_export=True)
 
     @staticmethod
-    def create_networkgraph(args):
-        is_plot = args.is_plot
-        graph = network_graph.create_default_network_graph()
-        network_graph.export_data()
-        if is_plot:
-            plot_utils.plot(
-                graph,
-                with_edge=True,
-                which_edge_label=None,
-                relative_filepath='output/network_graph.png')
+    def create_devicegraph(args):
+        config_name = args.config_name
+        graph_factory.gen_device_graph(config_name, is_export=True)
+
+    @staticmethod
+    def export_all_graph(args):
+        config_name = args.config_name
+        graph_factory.gen_device_graph(config_name, is_export=True)
+        graph_factory.gen_task_graph(config_name, is_export=True)
+        graph_factory.gen_topo_graph(config_name, is_export=True)
 
     @staticmethod
     def place_things(args):
-        #src_map, dst_map, task_info, edge_info = (
-        #    TaskGraph.create_default_data())
-        #Gt = TaskGraph.create(src_map, dst_map, task_info, edge_info)
-        #Gd = NetworkGraph.create_default_graph()
-        #ilp_solver.place_things(Unit.sec(2), Gt, Gd, src_map, dst_map)
+        config_name = args.config_name
+        is_export = args.is_export
+        Gt = graph_factory.gen_task_graph(config_name, is_export)
+        Gd = graph_factory.gen_device_graph(config_name, is_export)
+        # ilp_solver.place_things(Unit.sec(2), Gt, Gd)
         pass
 
     @staticmethod
-    def export_all_config(args):
-        config_factory.export_all_config()
+    def export_default_config(args):
+        config_factory.export_default_config()
 
 
 def main():
@@ -111,21 +109,28 @@ def main():
         name,
         func=getattr(FuncManager, name),
         help='generate network topology')
-    subargs_manager.visualize(required=False)
+    subargs_manager.config(required=False)
 
     name = 'create_taskgraph'
     subargs_manager = args_manager.add_subparser(
         name,
         func=getattr(FuncManager, name),
         help='generate task graph')
-    subargs_manager.visualize(required=False)
+    subargs_manager.config(required=False)
 
-    name = 'create_networkgraph'
+    name = 'create_devicegraph'
     subargs_manager = args_manager.add_subparser(
         name,
         func=getattr(FuncManager, name),
         help='generate network graph')
-    subargs_manager.visualize(required=False)
+    subargs_manager.config(required=False)
+
+    name = 'export_all_graph'
+    subargs_manager = args_manager.add_subparser(
+        name,
+        func=getattr(FuncManager, name),
+        help='export all config to json')
+    subargs_manager.config(required=False)
 
     name = 'place_things'
     subargs_manager = args_manager.add_subparser(
@@ -133,13 +138,13 @@ def main():
         func=getattr(FuncManager, name),
         help='compute placement')
     subargs_manager.visualize(required=False)
+    subargs_manager.config(required=False)
 
-    name = 'export_all_config'
+    name = 'export_default_config'
     subargs_manager = args_manager.add_subparser(
         name,
         func=getattr(FuncManager, name),
-        help='export all config to json')
-    subargs_manager.visualize(required=False)
+        help='export all default config to json')
 
     args = args_manager.parse_args()
     args.func(args)

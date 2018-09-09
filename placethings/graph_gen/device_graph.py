@@ -11,7 +11,7 @@ from placethings.config import device_data, nw_device_data, topo_graph
 from placethings.config.common import LinkHelper, InventoryManager
 from placethings.definition import (
     GdInfo, GnInfo, Hardware, LinkType, LinkInfo, Unit)
-from placethings.utils import common_utils, graph_utils, json_utils
+from placethings.utils import common_utils, graph_utils, json_utils, plot_utils
 
 
 log = logging.getLogger()
@@ -95,15 +95,21 @@ def _derive_graph_info(spec, inventory, links, nw_spec, nw_inventory):
     return node_info, edge_info
 
 
-def create_graph(spec, inventory, links, nw_spec, nw_inventory, nw_links):
+def create_graph(
+        spec, inventory, links, nw_spec, nw_inventory, nw_links,
+        is_export=False, graph_filename=None, data_filename=None):
     node_info, edge_info = _derive_graph_info(
         spec, inventory, links, nw_spec, nw_inventory)
     graph = topo_graph.create_topo_graph(nw_spec, nw_inventory, nw_links)
     graph = graph_utils.gen_graph(node_info, edge_info, base_graph=graph)
+    if is_export:
+        export_graph(graph, graph_filename)
+        export_data(node_info, edge_info, data_filename)
     return graph
 
 
-def create_default_network_graph():
+def create_default_network_graph(
+        is_export=False, graph_filename=None, data_filename=None):
     spec, inventory, links = device_data.create_default_device_data()
     nw_spec, nw_inventory, nw_links = (
         nw_device_data.create_default_device_data())
@@ -111,23 +117,32 @@ def create_default_network_graph():
         spec, inventory, links, nw_spec, nw_inventory, nw_links)
 
 
-def create_graph_from_file(filepath):
-    spec, inventory, links = device_data.import_data(filepath)
-    nw_spec, nw_inventory, nw_links = nw_device_data.import_data(filepath)
+def create_graph_from_file(
+        device_data_path, nw_data_path,
+        is_export=False, graph_filename=None, data_filename=None):
+    spec, inventory, links = device_data.import_data(device_data_path)
+    nw_spec, nw_inventory, nw_links = nw_device_data.import_data(nw_data_path)
     return create_graph(
-        spec, inventory, links, nw_spec, nw_inventory, nw_links)
+        spec, inventory, links, nw_spec, nw_inventory, nw_links,
+        is_export, graph_filename, data_filename)
 
 
-_DEFAULT_FILE_PATH = 'output/network_graph.json'
+_DEFAULT_FILE_PATH = 'output/device_graph'
 
 
-def export_data():
-    spec, inventory, links = device_data.create_default_device_data()
-    nw_spec, nw_inventory, nw_links = (
-        nw_device_data.create_default_device_data())
-    node_info, edge_info = _derive_graph_info(
-        spec, inventory, links, nw_spec, nw_inventory)
-    filename = common_utils.get_file_path(_DEFAULT_FILE_PATH)
+def export_graph(graph, filename=None):
+    if not filename:
+        filename = common_utils.get_file_path(_DEFAULT_FILE_PATH + '.png')
+    plot_utils.plot(
+        graph,
+        with_edge=True,
+        which_edge_label=None,
+        filepath=filename)
+
+
+def export_data(node_info, edge_info, filename=None):
+    if not filename:
+        filename = common_utils.get_file_path(_DEFAULT_FILE_PATH + '.json')
     json_utils.export_bundle(
         filename,
         node_info=node_info,
@@ -139,7 +154,7 @@ def export_data():
 
 def import_data(filename=None):
     if not filename:
-        filename = common_utils.get_file_path(_DEFAULT_FILE_PATH)
+        filename = common_utils.get_file_path(_DEFAULT_FILE_PATH + '.json')
     node_info, edge_info = json_utils.import_bundle(
         filename,
         'node_info',
