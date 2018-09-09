@@ -94,17 +94,34 @@ def import_from_file(filepath):
     return obj
 
 
-def export_bundle(filepath, **kwargs):
-    bundle = dict(kwargs)
-    return export_to_file(filepath, bundle)
+def export_bundle(filepath, filemap, if_verify=True):
+    """
+    Args:
+        filepath (str): save all data to the file
+        filemap (dict): {data_struct_name: data_struct_obj}
+        if_verify (bool): verify if the exproted file is exactly the same
+            as the assigned data structure
+    """
+    is_success = export_to_file(filepath, filemap)
+    assert is_success
+    imported_filemap = import_bundle(filepath)
+    assert imported_filemap == filemap
+    return True
 
 
 def import_bundle(filepath, *args):
+    """
+    Args:
+        filepath (str): save all data to the file
+        *args (str): desired data_struct names
+    Returns:
+        filemap (dict): {data_struct_name: data_struct_obj}
+    """
     bundle = import_from_file(filepath)
     if not args:
         return bundle
     else:
-        obj_list = []
+        filemap = {}
         for name in args:
-            obj_list.append(bundle[name])
-        return obj_list if obj_list else None
+            filemap[args] = bundle[args]
+        return filemap

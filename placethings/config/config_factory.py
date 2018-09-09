@@ -12,23 +12,26 @@ from placethings.utils import common_utils
 log = logging.getLogger()
 
 
+class FileHelper(object):
+    DEFAULT_CONF_NAME = 'config_default'
+    _FILES = {
+        'device_data',
+        'nw_device_data',
+        'task_data',
+    }
+
+    @classmethod
+    def gen_config_filepath(cls, config_name, data_type):
+        assert data_type in cls._FILES
+        filename = '{}.json'.format(data_type)
+        return common_utils.get_config_filepath(config_name, filename)
+
+
 def export_default_config():
-    device_data.export_data()
-    nw_device_data.export_data()
-    task_data.export_data()
-
-
-def import_all_config(config_name):
-    filename = 'device_data.json'
-    filepath = common_utils.get_config_filepath(config_name, filename)
-    device_spec, device_inventory, links = device_data.import_data(filepath)
-    device_data_set = (device_spec, device_inventory, links)
-    filename = 'nw_device_data.json'
-    filepath = common_utils.get_config_filepath(config_name, filename)
-    nw_spec, nw_inventory, nw_links = nw_device_data.import_data(filepath)
-    nw_data_set = (nw_spec, nw_inventory, nw_links)
-    filename = 'task_data.json'
-    filepath = common_utils.get_config_filepath(config_name, filename)
-    mapping, task_links, task_info = task_data.import_data(filepath)
-    task_data_set = (mapping, task_links, task_info)
-    return device_data_set, nw_data_set, task_data_set
+    config_name = FileHelper.DEFAULT_CONF_NAME
+    filepath = FileHelper.gen_config_filepath(config_name, 'device_data')
+    device_data.export_data(filepath)
+    filepath = FileHelper.gen_config_filepath(config_name, 'nw_device_data')
+    nw_device_data.export_data(filepath)
+    filepath = FileHelper.gen_config_filepath(config_name, 'task_data')
+    task_data.export_data(filepath)

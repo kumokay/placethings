@@ -1,17 +1,4 @@
 {
-    "device_inventory": {
-        "NwDeviceCategory.CLOUD": {
-            "NwDevice.CLOUD_SWITCH": 1
-        },
-        "NwDeviceCategory.BACKBONE": {
-            "NwDevice.BB_SWITCH": 1,
-            "NwDevice.BASESTATION": 1
-        },
-        "NwDeviceCategory.HOME": {
-            "NwDevice.HOME_ROUTER": 1,
-            "NwDevice.HOME_IOTGW": 1
-        }
-    },
     "device_spec": {
         "NwDeviceCategory.CLOUD": {
             "NwDevice.CLOUD_SWITCH": {
@@ -82,6 +69,19 @@
                     "LinkInfo.DLINK_BW": 52428800
                 }
             }
+        }
+    },
+    "device_inventory": {
+        "NwDeviceCategory.CLOUD": {
+            "NwDevice.CLOUD_SWITCH": 1
+        },
+        "NwDeviceCategory.BACKBONE": {
+            "NwDevice.BB_SWITCH": 1,
+            "NwDevice.BASESTATION": 1
+        },
+        "NwDeviceCategory.HOME": {
+            "NwDevice.HOME_ROUTER": 1,
+            "NwDevice.HOME_IOTGW": 1
         }
     },
     "links": {

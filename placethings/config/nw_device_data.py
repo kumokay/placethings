@@ -7,7 +7,7 @@ import logging
 
 from placethings.config import default_def, spec_def
 from placethings.config.common import Validator
-from placethings.utils import common_utils, json_utils
+from placethings.utils import json_utils
 
 
 log = logging.getLogger()
@@ -47,31 +47,18 @@ def get_device_data(filename):
     return device_spec, device_inventory, links
 
 
-_DEFAULT_FILE_PATH = 'config_default/nw_device_data.json'
-
-
-def export_data():
-    filename = common_utils.get_file_path(_DEFAULT_FILE_PATH)
+def export_data(filepath):
     device_spec, device_inventory, links = create_default_device_data()
-    json_utils.export_bundle(
-        filename,
+    filemap = dict(
         device_spec=device_spec,
         device_inventory=device_inventory,
-        links=links,
-    )
-    _1, _2, _3 = import_data()
-    assert _1 == device_spec
-    assert _2 == device_inventory
-    assert _3 == links
+        links=links)
+    json_utils.export_bundle(filepath, filemap)
 
 
-def import_data(filename=None):
-    if not filename:
-        filename = common_utils.get_file_path(_DEFAULT_FILE_PATH)
-    device_spec, device_inventory, links = json_utils.import_bundle(
-        filename,
-        'device_spec',
-        'device_inventory',
-        'links',
-    )
+def import_data(filepath):
+    filemap = json_utils.import_bundle(filepath)
+    device_spec = filemap['device_spec']
+    device_inventory = filemap['device_inventory']
+    links = filemap['links']
     return device_spec, device_inventory, links

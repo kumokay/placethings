@@ -8,11 +8,12 @@ from future.utils import iteritems
 import logging
 import networkx as nx
 
-from placethings.config import device_data, nw_device_data, topo_graph
+from placethings.config import device_data, nw_device_data
 from placethings.config.common import LinkHelper, InventoryManager
 from placethings.definition import (
     Const, GdInfo, GnInfo, Hardware, LinkType, LinkInfo, Unit)
-from placethings.utils import graph_utils, json_utils, plot_utils
+from placethings.graph_gen import topo_graph
+from placethings.graph_gen.graph_utils import GraphGen, FileHelper
 
 
 log = logging.getLogger()
@@ -124,86 +125,32 @@ def _derive_graph_info(spec, inventory, links, nw_spec, nw_inventory):
 
 
 def create_graph(
-        spec, inventory, links, nw_spec, nw_inventory, nw_links,
-        is_export=False, nw_graph_filename=None, nw_data_filename=None,
-        dev_graph_filename=None, dev_data_filename=None):
+        spec, inventory, links,
+        nw_spec, nw_inventory, nw_links,
+        is_export=False):
     node_info, edge_info = _derive_graph_info(
         spec, inventory, links, nw_spec, nw_inventory)
-    graph = topo_graph.create_topo_graph(nw_spec, nw_inventory, nw_links)
-    graph = graph_utils.gen_graph(node_info, edge_info, base_graph=graph)
+    graph = topo_graph.create_graph(nw_spec, nw_inventory, nw_links, is_export)
+    graph = GraphGen.create(node_info, edge_info, base_graph=graph)
     # derive device_graph
     dev_edge_info = _derive_device_graph_edge_info(graph, list(node_info))
-    dev_graph = graph_utils.gen_graph(node_info, dev_edge_info)
+    dev_graph = GraphGen.create(node_info, dev_edge_info)
     if is_export:
-        if not nw_graph_filename:
-            nw_graph_filename = 'output/network_graph.png'
-        if not nw_data_filename:
-            nw_data_filename = 'output/network_graph.json'
-        if not dev_graph_filename:
-            dev_graph_filename = 'output/device_graph.png'
-        if not dev_data_filename:
-            dev_data_filename = 'output/device_graph.json'
-        export_nw_graph(graph, nw_graph_filename)
-        export_data(node_info, edge_info, nw_data_filename)
-        export_dev_graph(dev_graph, dev_graph_filename)
-        export_data(node_info, dev_edge_info, dev_data_filename)
+        FileHelper.export_graph(dev_graph, 'device_graph')
+        FileHelper.export_data(node_info, dev_edge_info, 'device_graph')
     return dev_graph
 
 
-def create_default_network_graph(
-        is_export=False, nw_graph_filename=None, nw_data_filename=None,
-        dev_graph_filename=None, dev_data_filename=None):
+def create_default_graph(is_export=False):
     spec, inventory, links = device_data.create_default_device_data()
     nw_spec, nw_inventory, nw_links = (
         nw_device_data.create_default_device_data())
     return create_graph(
-        spec, inventory, links, nw_spec, nw_inventory, nw_links,
-        is_export, nw_graph_filename, nw_data_filename,
-        dev_graph_filename, dev_data_filename)
+        spec, inventory, links, nw_spec, nw_inventory, nw_links, is_export)
 
 
-def create_graph_from_file(
-        device_data_path, nw_data_path,
-        is_export=False, nw_graph_filename=None, nw_data_filename=None,
-        dev_graph_filename=None, dev_data_filename=None):
+def create_graph_from_file(device_data_path, nw_data_path, is_export=False):
     spec, inventory, links = device_data.import_data(device_data_path)
     nw_spec, nw_inventory, nw_links = nw_device_data.import_data(nw_data_path)
     return create_graph(
-        spec, inventory, links, nw_spec, nw_inventory, nw_links,
-        is_export, nw_graph_filename, nw_data_filename,
-        dev_graph_filename, dev_data_filename)
-
-
-def export_dev_graph(graph, filename):
-    plot_utils.plot(
-        graph,
-        with_edge=True,
-        which_edge_label=GdInfo.LATENCY,
-        filepath=filename)
-
-
-def export_nw_graph(graph, filename):
-    plot_utils.plot(
-        graph,
-        with_edge=True,
-        which_edge_label=GnInfo.LATENCY,
-        filepath=filename)
-
-
-def export_data(node_info, edge_info, filename):
-    json_utils.export_bundle(
-        filename,
-        node_info=node_info,
-        edge_info=edge_info)
-    _node_info, _edge_info = import_data(filename)
-    assert _node_info == node_info
-    assert _edge_info == edge_info
-
-
-def import_data(filename):
-    node_info, edge_info = json_utils.import_bundle(
-        filename,
-        'node_info',
-        'edge_info',
-    )
-    return node_info, edge_info
+        spec, inventory, links, nw_spec, nw_inventory, nw_links, is_export)

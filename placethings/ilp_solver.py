@@ -12,7 +12,8 @@ import pulp
 import networkx as nx
 
 from placethings.definition import Const, GdInfo, GtInfo, Hardware
-from placethings.utils import common_utils, plot_utils
+from placethings.graph_gen.graph_utils import FileHelper
+from placethings.utils import common_utils
 
 
 log = logging.getLogger()
@@ -450,8 +451,6 @@ def place_things(target_latency, Gt, Gd):
         d1, d2 = Gt.node[t1][GtInfo.DEVICE], Gt.node[t2][GtInfo.DEVICE]
         transmission_latency = Gd[d1][d2][GdInfo.LATENCY]
         edge_labels[edge] = '{}ms'.format(transmission_latency)
-    # plot
-    plot_utils.plot(
-        Gt, node_label_dict=node_labels,
-        with_edge=True, edge_label_dict=edge_labels,
-        filepath=common_utils.get_file_path('output/result_mapping.png'))
+    FileHelper.export_graph(
+        Gt, 'result', with_edge=True,
+        edge_label_dict=edge_labels, node_label_dict=node_labels)

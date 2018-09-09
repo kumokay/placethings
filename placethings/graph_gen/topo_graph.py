@@ -10,7 +10,7 @@ import logging
 from placethings.config import nw_device_data
 from placethings.config.common import LinkHelper, InventoryManager
 from placethings.definition import GnInfo, LinkInfo
-from placethings.utils import common_utils, graph_utils, json_utils, plot_utils
+from placethings.graph_gen.graph_utils import GraphGen, FileHelper
 
 
 log = logging.getLogger()
@@ -69,63 +69,20 @@ def _derive_graph_info(spec, inventory, links):
     return node_info, edge_info
 
 
-def create_graph(
-        spec, inventory, links,
-        is_export=False, graph_filename=None, data_filename=None):
+def create_graph(spec, inventory, links, is_export=False):
     node_info, edge_info = _derive_graph_info(spec, inventory, links)
-    graph = graph_utils.gen_graph(node_info, edge_info)
+    graph = GraphGen.create(node_info, edge_info)
     if is_export:
-        export_graph(graph, graph_filename)
-        export_data(node_info, edge_info, data_filename)
+        FileHelper.export_graph(graph, 'topo_graph')
+        FileHelper.export_data(node_info, edge_info, 'topo_graph')
     return graph
 
 
-def create_default_topo_graph(
-        is_export=False, graph_filename=None, data_filename=None):
+def create_default_graph(is_export=False):
     spec, inventory, links = nw_device_data.create_default_device_data()
-    return create_graph(
-        spec, inventory, links, is_export, graph_filename, data_filename)
+    return create_graph(spec, inventory, links, is_export)
 
 
-def create_graph_from_file(
-        filepath,
-        is_export=False, graph_filename=None, data_filename=None):
+def create_graph_from_file(filepath, is_export=False):
     spec, inventory, links = nw_device_data.import_data(filepath)
-    return create_graph(
-        spec, inventory, links, is_export, graph_filename, data_filename)
-
-
-_DEFAULT_FILE_PATH = 'output/topo_graph'
-
-
-def export_graph(graph, filename=None):
-    if not filename:
-        filename = common_utils.get_file_path(_DEFAULT_FILE_PATH + '.png')
-    plot_utils.plot(
-        graph,
-        with_edge=True,
-        which_edge_label=None,
-        filepath=filename)
-
-
-def export_data(node_info, edge_info, filename=None):
-    if not filename:
-        filename = common_utils.get_file_path(_DEFAULT_FILE_PATH + '.json')
-    json_utils.export_bundle(
-        filename,
-        node_info=node_info,
-        edge_info=edge_info)
-    _node_info, _edge_info = import_data()
-    assert _node_info == node_info
-    assert _edge_info == edge_info
-
-
-def import_data(filename=None):
-    if not filename:
-        filename = common_utils.get_file_path(_DEFAULT_FILE_PATH + '.json')
-    node_info, edge_info = json_utils.import_bundle(
-        filename,
-        'node_info',
-        'edge_info',
-    )
-    return node_info, edge_info
+    return create_graph(spec, inventory, links, is_export)
