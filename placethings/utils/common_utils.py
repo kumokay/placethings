@@ -24,3 +24,7 @@ def check_file_folder(filepath):
     if not os.path.exists(filedir):
         os.makedirs(filedir)
     assert os.path.exists(filedir)
+
+
+def get_config_filepath(config_name, config_filename):
+    return get_file_path('{}/{}'.format(config_name, config_filename))

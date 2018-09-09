@@ -90,14 +90,14 @@
             "GnInfoEnum.BANDWIDTH": 2147483647,
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.ANY",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.WAN",
-            "GnInfoEnum.LATENCY": 15,
+            "GnInfoEnum.LATENCY": 20,
             "GnInfoEnum.PROTOCOL": "NwLink.ETHERNET"
         },
         "HOME_ROUTER.0 -> BB_SWITCH.0": {
             "GnInfoEnum.BANDWIDTH": 524288000,
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.WAN",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.ANY",
-            "GnInfoEnum.LATENCY": 20,
+            "GnInfoEnum.LATENCY": 10,
             "GnInfoEnum.PROTOCOL": "NwLink.ETHERNET"
         },
         "BASESTATION.0 -> BB_SWITCH.0": {
@@ -111,7 +111,7 @@
             "GnInfoEnum.BANDWIDTH": 524288000,
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.ANY",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.WAN",
-            "GnInfoEnum.LATENCY": 20,
+            "GnInfoEnum.LATENCY": 10,
             "GnInfoEnum.PROTOCOL": "NwLink.ETHERNET"
         },
         "HOME_IOTGW.0 -> HOME_ROUTER.0": {
@@ -132,7 +132,7 @@
             "GnInfoEnum.BANDWIDTH": 2147483647,
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.WAN",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.ANY",
-            "GnInfoEnum.LATENCY": 15,
+            "GnInfoEnum.LATENCY": 20,
             "GnInfoEnum.PROTOCOL": "NwLink.ETHERNET"
         },
         "BB_SWITCH.0 -> BASESTATION.0": {

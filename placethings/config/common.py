@@ -155,3 +155,6 @@ class InventoryManager(object):
         log.error('cannot find spec')
         assert False
         return None
+
+    def has_device(self, device_name):
+        return device_name in self._device_map

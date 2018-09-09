@@ -4,8 +4,8 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from placethings.definition import (
-    Device, DeviceCategory, NwDevice, NwDeviceCategory)
-from placethings.utils import json_utils, common_utils
+    Device, DeviceCategory, Flavor, Hardware, NwDevice, NwDeviceCategory,
+    GnInfo, GtInfo, LinkType, Unit)
 
 
 NW_DEVICE_INVENTORY = {
@@ -20,6 +20,51 @@ NW_DEVICE_INVENTORY = {
     NwDeviceCategory.CLOUD: {
         NwDevice.CLOUD_SWITCH: 1,
     },
+}
+
+
+# device naming rule: DeviceTypeName.ID
+NW_LINKS = {
+    'HOME_IOTGW.0 -> HOME_ROUTER.0': {
+        GnInfo.SRC_LINK_TYPE: LinkType.WAN,
+        GnInfo.DST_LINK_TYPE: LinkType.LAN,
+        GnInfo.LATENCY: Unit.ms(1),
+    },
+    'HOME_ROUTER.0 -> HOME_IOTGW.0': {
+        GnInfo.SRC_LINK_TYPE: LinkType.LAN,
+        GnInfo.DST_LINK_TYPE: LinkType.WAN,
+        GnInfo.LATENCY: Unit.ms(1),
+    },
+    'HOME_ROUTER.0 -> BB_SWITCH.0': {
+        GnInfo.SRC_LINK_TYPE: LinkType.WAN,
+        GnInfo.DST_LINK_TYPE: LinkType.ANY,
+        GnInfo.LATENCY: Unit.ms(20),
+    },
+    'BB_SWITCH.0 -> HOME_ROUTER.0': {
+        GnInfo.SRC_LINK_TYPE: LinkType.ANY,
+        GnInfo.DST_LINK_TYPE: LinkType.WAN,
+        GnInfo.LATENCY: Unit.ms(20),
+    },
+    'BASESTATION.0 -> BB_SWITCH.0': {
+        GnInfo.SRC_LINK_TYPE: LinkType.WAN,
+        GnInfo.DST_LINK_TYPE: LinkType.ANY,
+        GnInfo.LATENCY: Unit.ms(10),
+    },
+    'BB_SWITCH.0 -> BASESTATION.0': {
+        GnInfo.SRC_LINK_TYPE: LinkType.ANY,
+        GnInfo.DST_LINK_TYPE: LinkType.WAN,
+        GnInfo.LATENCY: Unit.ms(10),
+    },
+    'CLOUD_SWITCH.0 -> BB_SWITCH.0': {
+        GnInfo.SRC_LINK_TYPE: LinkType.WAN,
+        GnInfo.DST_LINK_TYPE: LinkType.ANY,
+        GnInfo.LATENCY: Unit.ms(15),
+    },
+    'BB_SWITCH.0 -> CLOUD_SWITCH.0': {
+        GnInfo.SRC_LINK_TYPE: LinkType.ANY,
+        GnInfo.DST_LINK_TYPE: LinkType.WAN,
+        GnInfo.LATENCY: Unit.ms(15),
+    }
 }
 
 
@@ -39,22 +84,202 @@ DEVICE_INVENTORY = {
 }
 
 
-DEFAULT_TASKS = [
-    'task_thermal_loc1',
-    'task_thermal_loc2',
-    'task_camera',
-    'task_broadcast',
-    'task_getAvgTemperature',
-    'task_findObject',
-    'task_checkAbnormalEvent',
-    'task_sentNotificatoin',
-]
+# device naming rule: DeviceTypeName.ID
+DEVICE_LINKS = {
+    'THERMAL.0 -> HOME_IOTGW.0': {
+        GnInfo.LATENCY: Unit.ms(3),
+    },
+    'THERMAL.1 -> HOME_IOTGW.0': {
+        GnInfo.LATENCY: Unit.ms(3),
+    },
+    'CAMERA.0 -> HOME_IOTGW.0': {
+        GnInfo.LATENCY: Unit.ms(3),
+    },
+    'T2_MICRO.0 -> HOME_ROUTER.0': {
+        GnInfo.LATENCY: Unit.ms(1),
+    },
+    'HOME_ROUTER.0 -> T2_MICRO.0': {
+        GnInfo.LATENCY: Unit.ms(1),
+    },
+    'T3_LARGE.0 -> HOME_ROUTER.0': {
+        GnInfo.LATENCY: Unit.ms(1),
+    },
+    'HOME_ROUTER.0 -> T3_LARGE.0': {
+        GnInfo.LATENCY: Unit.ms(1),
+    },
+    'T2_MICRO.1 -> CLOUD_SWITCH.0': {
+        GnInfo.LATENCY: Unit.ms(1),
+    },
+    'CLOUD_SWITCH.0 -> T2_MICRO.1': {
+        GnInfo.LATENCY: Unit.ms(1),
+    },
+    'T3_LARGE.1 -> CLOUD_SWITCH.0': {
+        GnInfo.LATENCY: Unit.ms(1),
+    },
+    'CLOUD_SWITCH.0 -> T3_LARGE.1': {
+        GnInfo.LATENCY: Unit.ms(1),
+    },
+    'P3_2XLARGE.0 -> CLOUD_SWITCH.0': {
+        GnInfo.LATENCY: Unit.ms(1),
+    },
+    'CLOUD_SWITCH.0 -> P3_2XLARGE.0': {
+        GnInfo.LATENCY: Unit.ms(1),
+    },
+    'PHONE.0 -> BASESTATION.0': {
+        GnInfo.LATENCY: Unit.ms(10),
+    },
+    'BASESTATION.0 -> PHONE.0': {
+        GnInfo.LATENCY: Unit.ms(10),
+    },
+}
 
 
 # device naming rule: DeviceTypeName.ID
-DEFAULT_MAPPING = {
+TASK_MAPPING = {
     'task_thermal_loc1': 'THERMAL.0',
     'task_thermal_loc2': 'THERMAL.1',
     'task_camera': 'CAMERA.0',
     'task_broadcast': 'PHONE.0',
+    'task_getAvgTemperature': None,
+    'task_findObject': None,
+    'task_checkAbnormalEvent': None,
+    'task_sentNotificatoin': None,
+}
+
+
+TASK_LINKS = {
+    'task_thermal_loc1 -> task_getAvgTemperature': {
+        GtInfo.TRAFFIC: Unit.kbyte(1),
+    },
+    'task_thermal_loc2 -> task_getAvgTemperature': {
+        GtInfo.TRAFFIC: Unit.kbyte(1),
+    },
+    'task_getAvgTemperature -> task_checkAbnormalEvent': {
+        GtInfo.TRAFFIC: Unit.byte(1),
+    },
+    'task_camera -> task_findObject': {
+        GtInfo.TRAFFIC: Unit.mbyte(10),
+    },
+    'task_findObject -> task_checkAbnormalEvent': {
+        GtInfo.TRAFFIC: Unit.byte(10),
+    },
+    'task_checkAbnormalEvent -> task_sentNotificatoin': {
+        GtInfo.TRAFFIC: Unit.byte(1),
+    },
+    'task_sentNotificatoin -> task_broadcast': {
+        GtInfo.TRAFFIC: Unit.byte(1),
+    },
+
+}
+
+
+TASK_INFO = {
+    'task_thermal_loc1': {
+        GtInfo.LATENCY_INFO: {},
+        GtInfo.RESRC_RQMT: {}
+    },
+    'task_thermal_loc2': {
+        GtInfo.LATENCY_INFO: {},
+        GtInfo.RESRC_RQMT: {},
+    },
+    'task_camera': {
+        GtInfo.LATENCY_INFO: {},
+        GtInfo.RESRC_RQMT: {},
+    },
+    'task_broadcast': {
+        GtInfo.LATENCY_INFO: {},
+        GtInfo.RESRC_RQMT: {},
+    },
+    'task_getAvgTemperature': {
+        GtInfo.LATENCY_INFO: {
+            Device.T2_MICRO: {
+                # TODO: assume one flavor per device type for now.
+                # may extend to multiple flavor later
+                Flavor.CPU: Unit.ms(15),
+            },
+            Device.T3_LARGE: {
+                Flavor.CPU: Unit.ms(10),
+            },
+            Device.P3_2XLARGE: {
+                Flavor.CPU: Unit.ms(5),
+            },
+        },
+        GtInfo.RESRC_RQMT: {
+            Flavor.CPU: {
+                Hardware.RAM: Unit.mbyte(1),
+                Hardware.HD: Unit.kbyte(3),
+                Hardware.GPU: Unit.percentage(0),
+                Hardware.CPU: Unit.percentage(5),
+            }
+        },
+    },
+    'task_findObject': {
+        GtInfo.LATENCY_INFO: {
+            Device.T2_MICRO: {
+                Flavor.CPU: Unit.sec(6),
+            },
+            Device.T3_LARGE: {
+                Flavor.CPU: Unit.sec(2),
+            },
+            Device.P3_2XLARGE: {
+                Flavor.GPU: Unit.ms(600),
+            },
+        },
+        GtInfo.RESRC_RQMT: {
+            Flavor.GPU: {
+                Hardware.RAM: Unit.gbyte(4),
+                Hardware.HD: Unit.mbyte(500),
+                Hardware.GPU: Unit.percentage(60),
+                Hardware.CPU: Unit.percentage(5),
+            },
+            Flavor.CPU: {
+                Hardware.RAM: Unit.gbyte(1),
+                Hardware.HD: Unit.mbyte(300),
+                Hardware.GPU: Unit.percentage(0),
+                Hardware.CPU: Unit.percentage(80),
+            },
+        },
+    },
+    'task_checkAbnormalEvent': {
+        GtInfo.LATENCY_INFO: {
+            Device.T2_MICRO: {
+                Flavor.CPU: Unit.ms(5),
+            },
+            Device.T3_LARGE: {
+                Flavor.CPU: Unit.ms(5),
+            },
+            Device.P3_2XLARGE: {
+                Flavor.CPU: Unit.ms(5),
+            },
+        },
+        GtInfo.RESRC_RQMT: {
+            Flavor.CPU: {
+                Hardware.RAM: Unit.mbyte(1),
+                Hardware.HD: Unit.kbyte(3),
+                Hardware.GPU: Unit.percentage(0),
+                Hardware.CPU: Unit.percentage(5),
+            },
+        },
+    },
+    'task_sentNotificatoin': {
+        GtInfo.LATENCY_INFO: {
+            Device.T2_MICRO: {
+                Flavor.CPU: Unit.ms(5),
+            },
+            Device.T3_LARGE: {
+                Flavor.CPU: Unit.ms(5),
+            },
+            Device.P3_2XLARGE: {
+                Flavor.CPU: Unit.ms(5),
+            },
+        },
+        GtInfo.RESRC_RQMT: {
+            Flavor.CPU: {
+                Hardware.RAM: Unit.mbyte(1),
+                Hardware.HD: Unit.kbyte(3),
+                Hardware.GPU: Unit.percentage(0),
+                Hardware.CPU: Unit.percentage(5),
+            },
+        },
+    },
 }

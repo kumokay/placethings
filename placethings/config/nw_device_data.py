@@ -28,6 +28,11 @@ def get_default_inventory(device_spec):
     return device_inventory
 
 
+def get_default_links():
+    # TODO: validate links
+    return default_def.NW_LINKS
+
+
 def create_default_device_data():
     """
     Returns:
@@ -36,45 +41,40 @@ def create_default_device_data():
     """
     device_spec = get_default_spec()
     device_inventory = get_default_inventory(device_spec)
-    return device_spec, device_inventory
+    links = get_default_links()
+    return device_spec, device_inventory, links
 
 
-def derive_device_info(device_spec, device_inventory):
-    all_device_info = {}
-    inventory_manager = InventoryManager(device_inventory)
-    device_record = inventory_manager.get_device_record()
-    for device_cat, inventory_info in iteritems(device_record):
-        for device_type, device_list in iteritems(inventory_info):
-            for device_name in device_list:
-                # copy link spec
-                link_spec_dict = device_spec[device_cat][device_type]
-                device_info = {
-                    GnInfo.DEVICE_CAT: device_cat,
-                    GnInfo.DEVICE_TYPE: device_type,
-                    GnInfo.LINK_INFO: deepcopy(link_spec_dict),
-                }
-                all_device_info[device_name] = device_info
-    return all_device_info
+def get_device_data(filename):
+    device_spec, device_inventory, links = import_data(filename)
+    return device_spec, device_inventory, links
+
+
+_DEFAULT_FILE_PATH = 'config_default/nw_device_data.json'
 
 
 def export_data():
-    device_spec, device_inventory = create_default_device_data()
-    filename = common_utils.get_file_path('config_default/nw_device_data.json')
+    filename = common_utils.get_file_path(_DEFAULT_FILE_PATH)
+    device_spec, device_inventory, links = create_default_device_data()
     json_utils.export_bundle(
         filename,
         device_spec=device_spec,
         device_inventory=device_inventory,
+        links=links,
     )
-    _device_spec, _device_inventory = import_data()
-    assert _device_spec == device_spec
-    assert _device_inventory == device_inventory
+    _1, _2, _3 = import_data()
+    assert _1 == device_spec
+    assert _2 == device_inventory
+    assert _3 == links
 
 
-def import_data():
-    filename = common_utils.get_file_path('config_default/nw_device_data.json')
-    device_spec, device_inventory = json_utils.import_bundle(
+def import_data(filename=None):
+    if not filename:
+        filename = common_utils.get_file_path(_DEFAULT_FILE_PATH)
+    device_spec, device_inventory, links = json_utils.import_bundle(
         filename,
         'device_spec',
         'device_inventory',
+        'links',
     )
-    return device_spec, device_inventory
+    return device_spec, device_inventory, links
