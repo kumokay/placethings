@@ -153,8 +153,8 @@ class Hardware(Enum):
     CPU = auto()
     GPU = auto()
     # derived data / shared
-    NIC_INGRESS = auto()
-    NIC_EGRESS = auto()
+    # NIC_INGRESS = auto()
+    # NIC_EGRESS = auto()
     # non-shared
     GPS = auto()
     PROXIMITY = auto()

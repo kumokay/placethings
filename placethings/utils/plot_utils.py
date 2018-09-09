@@ -21,7 +21,10 @@ def save_plot(filepath):
     plt.close()
 
 
-def plot(graph, with_edge=True, which_edge_label=None, filepath=None):
+def plot(
+        graph,
+        with_edge=True, which_edge_label=None, edge_label_dict=None,
+        node_label_dict=None, filepath=None):
     pos = nx.spring_layout(graph)
     nx.draw_networkx_nodes(
         graph,
@@ -34,8 +37,8 @@ def plot(graph, with_edge=True, which_edge_label=None, filepath=None):
     nx.draw_networkx_labels(
         graph,
         pos=pos,
-        labels=None,
-        font_size=12,
+        labels=node_label_dict,
+        font_size=10,
         font_color='k',
         font_family='sans-serif',
         font_weight='normal',
@@ -49,17 +52,19 @@ def plot(graph, with_edge=True, which_edge_label=None, filepath=None):
             edge_color='k',
             style='solid',
         )
-        if not which_edge_label:
-            edge_labels = {}
-        else:
-            edge_labels = {
-                (src, dst): attr[which_edge_label]
-                for src, dst, attr in graph.edges(data=True)
-            }
+        assert not (edge_label_dict and which_edge_label)
+        if not edge_label_dict:
+            if not which_edge_label:
+                edge_label_dict = {}
+            else:
+                edge_label_dict = {
+                    (src, dst): attr[which_edge_label]
+                    for src, dst, attr in graph.edges(data=True)
+                }
         nx.draw_networkx_edge_labels(
             graph,
             pos=pos,
-            edge_labels=edge_labels,
+            edge_labels=edge_label_dict,
             label_pos=0.5,
             font_size=10,
             font_color='k',

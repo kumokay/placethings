@@ -43,9 +43,6 @@ def create_graph(
         is_export=False, graph_filename=None, data_filename=None):
     node_info, edge_info = _derive_graph_info(mapping, task_links, task_info)
     graph = graph_utils.gen_graph(node_info, edge_info)
-    print(graph.node['task_thermal_loc1'])
-    print(graph.node['task_getAvgTemperature'])
-
     if is_export:
         export_graph(graph, graph_filename)
         export_data(node_info, edge_info, data_filename)

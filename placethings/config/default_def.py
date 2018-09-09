@@ -228,15 +228,15 @@ TASK_INFO = {
         GtInfo.RESRC_RQMT: {
             Flavor.GPU: {
                 Hardware.RAM: Unit.gbyte(4),
-                Hardware.HD: Unit.mbyte(500),
+                Hardware.HD: Unit.mbyte(30),
                 Hardware.GPU: Unit.percentage(60),
                 Hardware.CPU: Unit.percentage(5),
             },
             Flavor.CPU: {
                 Hardware.RAM: Unit.gbyte(1),
-                Hardware.HD: Unit.mbyte(300),
+                Hardware.HD: Unit.mbyte(30),
                 Hardware.GPU: Unit.percentage(0),
-                Hardware.CPU: Unit.percentage(80),
+                Hardware.CPU: Unit.percentage(60),
             },
         },
     },

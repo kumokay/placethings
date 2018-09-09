@@ -170,7 +170,7 @@
     },
     "edge_info": {
         "T2_MICRO.0 -> P3_2XLARGE.0": {
-            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.LATENCY": 37,
             "GdInfoEnum.BANDWIDTH": 104857600
         },
         "THERMAL.0 -> T3_LARGE.0": {
@@ -182,15 +182,15 @@
             "GdInfoEnum.BANDWIDTH": 52428800
         },
         "THERMAL.0 -> P3_2XLARGE.0": {
-            "GdInfoEnum.LATENCY": 15025,
+            "GdInfoEnum.LATENCY": 40,
             "GdInfoEnum.BANDWIDTH": 10485760
         },
         "CAMERA.0 -> P3_2XLARGE.0": {
-            "GdInfoEnum.LATENCY": 15025,
+            "GdInfoEnum.LATENCY": 40,
             "GdInfoEnum.BANDWIDTH": 52428800
         },
         "T2_MICRO.1 -> T3_LARGE.0": {
-            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.LATENCY": 37,
             "GdInfoEnum.BANDWIDTH": 104857600
         },
         "T2_MICRO.1 -> T3_LARGE.1": {
@@ -198,23 +198,23 @@
             "GdInfoEnum.BANDWIDTH": 104857600
         },
         "CAMERA.0 -> T3_LARGE.1": {
-            "GdInfoEnum.LATENCY": 15025,
+            "GdInfoEnum.LATENCY": 40,
             "GdInfoEnum.BANDWIDTH": 52428800
         },
         "THERMAL.0 -> T3_LARGE.1": {
-            "GdInfoEnum.LATENCY": 15025,
+            "GdInfoEnum.LATENCY": 40,
             "GdInfoEnum.BANDWIDTH": 10485760
         },
         "THERMAL.1 -> P3_2XLARGE.0": {
-            "GdInfoEnum.LATENCY": 15025,
+            "GdInfoEnum.LATENCY": 40,
             "GdInfoEnum.BANDWIDTH": 10485760
         },
         "T3_LARGE.0 -> T3_LARGE.1": {
-            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.LATENCY": 37,
             "GdInfoEnum.BANDWIDTH": 104857600
         },
         "T2_MICRO.0 -> T2_MICRO.1": {
-            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.LATENCY": 37,
             "GdInfoEnum.BANDWIDTH": 104857600
         },
         "THERMAL.0 -> PHONE.0": {
@@ -226,7 +226,7 @@
             "GdInfoEnum.BANDWIDTH": 104857600
         },
         "PHONE.0 -> P3_2XLARGE.0": {
-            "GdInfoEnum.LATENCY": 15021,
+            "GdInfoEnum.LATENCY": 36,
             "GdInfoEnum.BANDWIDTH": 52428800
         },
         "P3_2XLARGE.0 -> T3_LARGE.1": {
@@ -234,19 +234,19 @@
             "GdInfoEnum.BANDWIDTH": 419430400
         },
         "P3_2XLARGE.0 -> T3_LARGE.0": {
-            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.LATENCY": 37,
             "GdInfoEnum.BANDWIDTH": 104857600
         },
         "T3_LARGE.1 -> T3_LARGE.0": {
-            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.LATENCY": 37,
             "GdInfoEnum.BANDWIDTH": 104857600
         },
         "THERMAL.1 -> T3_LARGE.1": {
-            "GdInfoEnum.LATENCY": 15025,
+            "GdInfoEnum.LATENCY": 40,
             "GdInfoEnum.BANDWIDTH": 10485760
         },
         "T2_MICRO.0 -> T3_LARGE.1": {
-            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.LATENCY": 37,
             "GdInfoEnum.BANDWIDTH": 104857600
         },
         "T2_MICRO.0 -> T3_LARGE.0": {
@@ -262,7 +262,7 @@
             "GdInfoEnum.BANDWIDTH": 10485760
         },
         "PHONE.0 -> T2_MICRO.1": {
-            "GdInfoEnum.LATENCY": 15021,
+            "GdInfoEnum.LATENCY": 36,
             "GdInfoEnum.BANDWIDTH": 52428800
         },
         "PHONE.0 -> T2_MICRO.0": {
@@ -270,11 +270,11 @@
             "GdInfoEnum.BANDWIDTH": 52428800
         },
         "T3_LARGE.1 -> PHONE.0": {
-            "GdInfoEnum.LATENCY": 15021,
+            "GdInfoEnum.LATENCY": 36,
             "GdInfoEnum.BANDWIDTH": 157286400
         },
         "T3_LARGE.1 -> T2_MICRO.0": {
-            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.LATENCY": 37,
             "GdInfoEnum.BANDWIDTH": 104857600
         },
         "T3_LARGE.1 -> T2_MICRO.1": {
@@ -286,7 +286,7 @@
             "GdInfoEnum.BANDWIDTH": 104857600
         },
         "THERMAL.1 -> T2_MICRO.1": {
-            "GdInfoEnum.LATENCY": 15025,
+            "GdInfoEnum.LATENCY": 40,
             "GdInfoEnum.BANDWIDTH": 10485760
         },
         "THERMAL.1 -> T2_MICRO.0": {
@@ -302,11 +302,11 @@
             "GdInfoEnum.BANDWIDTH": 104857600
         },
         "P3_2XLARGE.0 -> T2_MICRO.0": {
-            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.LATENCY": 37,
             "GdInfoEnum.BANDWIDTH": 104857600
         },
         "P3_2XLARGE.0 -> PHONE.0": {
-            "GdInfoEnum.LATENCY": 15021,
+            "GdInfoEnum.LATENCY": 36,
             "GdInfoEnum.BANDWIDTH": 157286400
         },
         "THERMAL.1 -> PHONE.0": {
@@ -314,15 +314,15 @@
             "GdInfoEnum.BANDWIDTH": 10485760
         },
         "T2_MICRO.1 -> T2_MICRO.0": {
-            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.LATENCY": 37,
             "GdInfoEnum.BANDWIDTH": 104857600
         },
         "THERMAL.0 -> T2_MICRO.1": {
-            "GdInfoEnum.LATENCY": 15025,
+            "GdInfoEnum.LATENCY": 40,
             "GdInfoEnum.BANDWIDTH": 10485760
         },
         "CAMERA.0 -> T2_MICRO.1": {
-            "GdInfoEnum.LATENCY": 15025,
+            "GdInfoEnum.LATENCY": 40,
             "GdInfoEnum.BANDWIDTH": 52428800
         },
         "CAMERA.0 -> T2_MICRO.0": {
@@ -330,7 +330,7 @@
             "GdInfoEnum.BANDWIDTH": 52428800
         },
         "T3_LARGE.0 -> T2_MICRO.1": {
-            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.LATENCY": 37,
             "GdInfoEnum.BANDWIDTH": 104857600
         },
         "T3_LARGE.0 -> PHONE.0": {
@@ -342,7 +342,7 @@
             "GdInfoEnum.BANDWIDTH": 104857600
         },
         "PHONE.0 -> T3_LARGE.1": {
-            "GdInfoEnum.LATENCY": 15021,
+            "GdInfoEnum.LATENCY": 36,
             "GdInfoEnum.BANDWIDTH": 52428800
         },
         "PHONE.0 -> T3_LARGE.0": {
@@ -350,7 +350,7 @@
             "GdInfoEnum.BANDWIDTH": 52428800
         },
         "T2_MICRO.1 -> PHONE.0": {
-            "GdInfoEnum.LATENCY": 15021,
+            "GdInfoEnum.LATENCY": 36,
             "GdInfoEnum.BANDWIDTH": 104857600
         },
         "THERMAL.0 -> T2_MICRO.0": {
@@ -358,7 +358,7 @@
             "GdInfoEnum.BANDWIDTH": 10485760
         },
         "T3_LARGE.0 -> P3_2XLARGE.0": {
-            "GdInfoEnum.LATENCY": 15022,
+            "GdInfoEnum.LATENCY": 37,
             "GdInfoEnum.BANDWIDTH": 104857600
         }
     }

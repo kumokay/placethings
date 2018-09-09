@@ -29,13 +29,13 @@ class CustomEncoder(json.JSONEncoder):
         return new_dict
 
     def iterencode(self, obj):
-        log.info('encode using CustomEncoder.iterencode')
+        log.debug('encode using CustomEncoder.iterencode')
         if isinstance(obj, dict):
             obj = self._convert_keys_to_strs(obj)
         return super(CustomEncoder, self).iterencode(obj)
 
     def default(self, obj):
-        log.info('encode using CustomEncoder.default')
+        log.debug('encode using CustomEncoder.default')
         if EnumHelper.is_enum(obj):
             return EnumHelper.enum_to_str(obj)
         return super(CustomEncoder, self).default(obj)

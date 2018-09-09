@@ -143,9 +143,9 @@ def create_graph(
             dev_graph_filename = 'output/device_graph.png'
         if not dev_data_filename:
             dev_data_filename = 'output/device_graph.json'
-        export_graph(graph, nw_graph_filename)
+        export_nw_graph(graph, nw_graph_filename)
         export_data(node_info, edge_info, nw_data_filename)
-        export_graph(dev_graph, dev_graph_filename)
+        export_dev_graph(dev_graph, dev_graph_filename)
         export_data(node_info, dev_edge_info, dev_data_filename)
     return dev_graph
 
@@ -174,11 +174,19 @@ def create_graph_from_file(
         dev_graph_filename, dev_data_filename)
 
 
-def export_graph(graph, filename):
+def export_dev_graph(graph, filename):
     plot_utils.plot(
         graph,
         with_edge=True,
-        which_edge_label=None,
+        which_edge_label=GdInfo.LATENCY,
+        filepath=filename)
+
+
+def export_nw_graph(graph, filename):
+    plot_utils.plot(
+        graph,
+        with_edge=True,
+        which_edge_label=GnInfo.LATENCY,
         filepath=filename)
 
 

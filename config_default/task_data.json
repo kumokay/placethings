@@ -72,14 +72,14 @@
             },
             "GtInfoEnum.RESRC_RQMT": {
                 "Flavor.CPU": {
-                    "Hardware.CPU": 80,
-                    "Hardware.HD": 2516582400,
+                    "Hardware.CPU": 60,
+                    "Hardware.HD": 251658240,
                     "Hardware.RAM": 8589934592,
                     "Hardware.GPU": 0
                 },
                 "Flavor.GPU": {
                     "Hardware.CPU": 5,
-                    "Hardware.HD": 4194304000,
+                    "Hardware.HD": 251658240,
                     "Hardware.RAM": 34359738368,
                     "Hardware.GPU": 60
                 }

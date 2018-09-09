@@ -5,13 +5,14 @@ from __future__ import unicode_literals
 
 from builtins import range
 from collections import defaultdict
-from future.utils import listvalues
+from future.utils import listvalues, iteritems
 import logging
 from itertools import izip as zip
 import pulp
 import networkx as nx
 
 from placethings.definition import Const, GdInfo, GtInfo, Hardware
+from placethings.utils import common_utils, plot_utils
 
 
 log = logging.getLogger()
@@ -20,7 +21,8 @@ log = logging.getLogger()
 def _find_src_nodes(Gt):
     src_list = []
     for node in Gt.nodes():
-        if not Gt.predecessors(node):
+        predecessors = list(Gt.predecessors(node))
+        if not predecessors:
             src_list.append(node)
     return src_list
 
@@ -28,12 +30,35 @@ def _find_src_nodes(Gt):
 def _find_dst_nodes(Gt):
     dst_list = []
     for node in Gt.nodes():
-        if not Gt.successors(node):
+        successors = list(Gt.successors(node))
+        if not successors:
             dst_list.append(node)
     return dst_list
 
 
-def place_things(target_latency, Gt, Gd):
+def _find_all_simple_path(Gt):
+    """
+    Generate all simple paths in the graph G from source to target.
+    Args:
+        Gt (nx.DiGraph)
+    Returns:
+        src_list (list of str): source nodes
+        dst_list (list of str): dstination nodes
+        all_paths (list of list(str)): all simple paths of nodes' names
+    """
+    src_list = _find_src_nodes(Gt)
+    dst_list = _find_dst_nodes(Gt)
+    log.info('find all path from {} to {}'.format(src_list, dst_list))
+    all_paths = []
+    for src in src_list:
+        for dst in dst_list:
+            paths = list(nx.all_simple_paths(Gt, src, dst))
+            log.info('found path: {}'.format(paths))
+            all_paths += paths
+    return src_list, dst_list, all_paths
+
+
+def _solver(target_latency, Gt, Gd):
     """
     Args:
         target_latency (int): latency constrain for this task graph
@@ -275,14 +300,12 @@ def place_things(target_latency, Gt, Gd):
     prob += pulp.lpSum(all_XX) == len(Gt.edges())
 
     # Generate all simple paths in the graph G from source to target.
-    src_list = _find_src_nodes(Gt)
-    dst_list = _find_dst_nodes(Gt)
-    all_paths = []
-    for src in src_list:
-        for dst in dst_list:
-            paths = list(nx.all_simple_paths(Gt, src, dst))
-            all_paths += paths
-    all_mappings = pulp.combination(devices, len(tasks))
+    src_list, dst_list, all_paths = _find_all_simple_path(Gt)
+    log.info('find all path from {} to {}'.format(src_list, dst_list))
+    # Generate all possible mappings
+    all_mappings = list(pulp.permutation(devices, len(tasks)))
+    log.info('{} possible mappings for {} devices and {} tasks'.format(
+        len(all_mappings), len(devices), len(tasks)))
     task_to_idx = dict(zip(tasks, range(len(tasks))))
     # use constrains to model Y, the longest path for each mapping
     for device_mapping in all_mappings:
@@ -303,12 +326,16 @@ def place_things(target_latency, Gt, Gd):
                 Ld_di_dj = Gd[di][dj][GdInfo.LATENCY]
                 # path_vars.append((X[ti][di] * X[tj][dj]) * Ld_di_dj)
                 path_vars.append(XX[(ti, di)][(tj, dj)] * Ld_di_dj)
+                log.debug('Ld_di_dj (move from {} to {}) = {}'.format(
+                    di, dj, Ld_di_dj))
                 # get computation latency for task tj at dj
                 dj_type = Gd.node[dj][GdInfo.DEVICE_TYPE]
                 # get latency of the default build flavor
                 Lt_tj_dj = listvalues(
                     Gt.node[tj][GtInfo.LATENCY_INFO][dj_type])[0]
                 path_vars.append(X[tj][dj] * Lt_tj_dj)
+                log.debug('Lt_tj_dj (compute {} at {}) = {}'.format(
+                    tj, dj, Lt_tj_dj))
                 ti = tj
                 di = dj
             # last node: dst
@@ -317,6 +344,9 @@ def place_things(target_latency, Gt, Gd):
             Ld_di_dj = Gd[di][dj][GdInfo.LATENCY]
             # path_vars.append(X[ti][di] * X[tj][dj] * Ld_di_dj)
             path_vars.append(XX[(ti, di)][(tj, dj)] * Ld_di_dj)
+            log.debug('Ld_di_dj (move from {} to {}) = {}'.format(
+                di, dj, Ld_di_dj))
+            log.debug('add constrain for path:\n Y >= {}'.format(path_vars))
             # add constrain
             prob += Y >= pulp.lpSum(path_vars)
 
@@ -334,19 +364,94 @@ def place_things(target_latency, Gt, Gd):
             for ti in tasks:
                 di_type = Gd.node[di][GdInfo.DEVICE_TYPE]
                 # get the default flavor
-                ti_flavor = list(
-                    Gt.node[ti][GtInfo.LATENCY_INFO][di_type])[0]
+                ti_flavor = list(Gt.node[ti][GtInfo.LATENCY_INFO][di_type])[0]
                 Rt_t_r_d = (
-                    Gt.node[ti][GtInfo.RESRC_RQMT][ti_flavor].get(
-                        resrc, 0))
-                var_list.append(X[t][d] * Rt_t_r_d)
-            prob += Rd_d_r - pulp.lpSum(var_list) >= 0
+                    Gt.node[ti][GtInfo.RESRC_RQMT][ti_flavor].get(resrc, 0))
+                if Rt_t_r_d > 0:
+                    var_list.append(X[ti][di] * Rt_t_r_d)
+            if var_list:
+                log.debug('add constrain for {}({}):\n {} <= {}'.format(
+                    di, resrc, var_list, Rd_d_r))
+                prob += pulp.lpSum(var_list) <= Rd_d_r
 
     # solve
-    status = prob.solve()
+    status = prob.solve(pulp.solvers.GLPK(msg=1))
     log.info('status={}'.format(pulp.LpStatus[status]))
+    result_mapping = {}
     for t in Gt.nodes():
         for d in Gd.nodes():
             if pulp.value(X[t][d]):
                 log.info('map: {} <-> {}, X_t_d={}'.format(
                     t, d, pulp.value(X[t][d])))
+                result_mapping[t] = d
+    return status, result_mapping
+
+
+def _get_path_length(path, Gt, Gd, result_mapping):
+    log.info('path: {}'.format(path))
+    path_vars = []
+    # first node: src
+    ti = path[0]
+    di = Gt.node[ti][GtInfo.DEVICE]
+    # device_mapping start from path[1] to path[N-1]
+    for j in range(1, len(path)-1):
+        tj = path[j]
+        dj = result_mapping[tj]
+        # get transmission latency from di -> dj
+        Ld_di_dj = Gd[di][dj][GdInfo.LATENCY]
+        path_vars.append(Ld_di_dj)
+        log.debug('Ld_di_dj (move {} -> {}) = {}'.format(di, dj, Ld_di_dj))
+        # get computation latency for task tj at dj
+        dj_type = Gd.node[dj][GdInfo.DEVICE_TYPE]
+        # get latency of the default build flavor
+        Lt_tj_dj = listvalues(Gt.node[tj][GtInfo.LATENCY_INFO][dj_type])[0]
+        path_vars.append(Lt_tj_dj)
+        log.debug('Lt_tj_dj (do {} at {}) = {}'.format(tj, dj, Lt_tj_dj))
+        ti = tj
+        di = dj
+    # last node: dst
+    tj = path[len(path)-1]
+    dj = Gt.node[tj][GtInfo.DEVICE]
+    Ld_di_dj = Gd[di][dj][GdInfo.LATENCY]
+    path_vars.append(Ld_di_dj)
+    log.debug('Ld_di_dj (move {} -> {}) = {}'.format(di, dj, Ld_di_dj))
+    path_length = sum(path_vars)
+    log.info('\tlength: {}, {}'.format(path_length, path_vars))
+    return path_length
+
+
+def place_things(target_latency, Gt, Gd):
+    status, result_mapping = _solver(target_latency, Gt, Gd)
+    log.info('solver status: {}'.format(pulp.LpStatus[status]))
+    assert status == pulp.constants.LpStatusOptimal
+    log.info('check solution for all simple path from src to dst')
+    src_list, dst_list, all_paths = _find_all_simple_path(Gt)
+    max_latency = 0
+    for path in all_paths:
+        path_length = _get_path_length(path, Gt, Gd, result_mapping)
+        max_latency = max(path_length, max_latency)
+    log.info('max_latency={}'.format(max_latency))
+    # update mapping and gen node labels
+    node_labels = {}
+    for task, device in iteritems(result_mapping):
+        if Gt.node[task][GtInfo.DEVICE]:
+            assert device == Gt.node[task][GtInfo.DEVICE]
+        Gt.node[task][GtInfo.DEVICE] = device
+        device_type = Gd.node[device][GdInfo.DEVICE_TYPE]
+        compute_latency = 0
+        latency_info = Gt.node[task][GtInfo.LATENCY_INFO]
+        if latency_info:
+            compute_latency = listvalues(latency_info[device_type])[0]
+        node_labels[task] = '{}\n{}({}ms)'.format(
+            task, device, compute_latency)
+    edge_labels = {}
+    for edge in Gt.edges():
+        t1, t2 = edge
+        d1, d2 = Gt.node[t1][GtInfo.DEVICE], Gt.node[t2][GtInfo.DEVICE]
+        transmission_latency = Gd[d1][d2][GdInfo.LATENCY]
+        edge_labels[edge] = '{}ms'.format(transmission_latency)
+    # plot
+    plot_utils.plot(
+        Gt, node_label_dict=node_labels,
+        with_edge=True, edge_label_dict=edge_labels,
+        filepath=common_utils.get_file_path('output/result_mapping.png'))
