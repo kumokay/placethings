@@ -10,12 +10,29 @@ from placethings.config import device_data, nw_device_data
 from placethings.definition import GnInfo, Unit
 from placethings.graph_gen import graph_factory, device_graph
 from placethings.config.config_factory import FileHelper
+from placethings.netgen.network import NetGen
 
 
 log = logging.getLogger()
 
 
 _DEFAULT_CONFIG = 'config_default'
+
+
+def test_netgen(config_name=None, is_export=False):
+    if not config_name:
+        config_name = _DEFAULT_CONFIG
+    # generate topo device graph
+    dev_file = FileHelper.gen_config_filepath(config_name, 'device_data')
+    nw_file = FileHelper.gen_config_filepath(config_name, 'nw_device_data')
+    spec, inventory, links = device_data.import_data(dev_file)
+    nw_spec, nw_inventory, nw_links = nw_device_data.import_data(nw_file)
+    topo_device_graph, _device_graph = device_graph.create_topo_device_graph(
+        spec, inventory, links, nw_spec, nw_inventory, nw_links, is_export)
+    net = NetGen.create(topo_device_graph)
+    net.start()
+    net.validate()
+    net.stop()
 
 
 def test_config(config_name=None, is_export=False):

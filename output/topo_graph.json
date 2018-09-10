@@ -3,6 +3,7 @@
         "HOME_IOTGW.0": {
             "GnInfoEnum.DEVICE_CAT": "NwDeviceCategory.HOME",
             "GnInfoEnum.DEVICE_TYPE": "NwDevice.HOME_IOTGW",
+            "GInfoEnum.NODE_TYPE": "NodeType.NW_DEVICE",
             "GnInfoEnum.LINK_INFO": {
                 "LinkType.WAN": {
                     "LinkInfo.ULINK_BW": 524288000,
@@ -21,6 +22,7 @@
         "BB_SWITCH.0": {
             "GnInfoEnum.DEVICE_CAT": "NwDeviceCategory.BACKBONE",
             "GnInfoEnum.DEVICE_TYPE": "NwDevice.BB_SWITCH",
+            "GInfoEnum.NODE_TYPE": "NodeType.NW_DEVICE",
             "GnInfoEnum.LINK_INFO": {
                 "LinkType.ANY": {
                     "LinkInfo.ULINK_BW": 2147483647,
@@ -33,6 +35,7 @@
         "HOME_ROUTER.0": {
             "GnInfoEnum.DEVICE_CAT": "NwDeviceCategory.HOME",
             "GnInfoEnum.DEVICE_TYPE": "NwDevice.HOME_ROUTER",
+            "GInfoEnum.NODE_TYPE": "NodeType.NW_DEVICE",
             "GnInfoEnum.LINK_INFO": {
                 "LinkType.WAN": {
                     "LinkInfo.ULINK_BW": 524288000,
@@ -51,6 +54,7 @@
         "CLOUD_SWITCH.0": {
             "GnInfoEnum.DEVICE_CAT": "NwDeviceCategory.CLOUD",
             "GnInfoEnum.DEVICE_TYPE": "NwDevice.CLOUD_SWITCH",
+            "GInfoEnum.NODE_TYPE": "NodeType.NW_DEVICE",
             "GnInfoEnum.LINK_INFO": {
                 "LinkType.WAN": {
                     "LinkInfo.ULINK_BW": 2147483647,
@@ -69,6 +73,7 @@
         "BB_AP.0": {
             "GnInfoEnum.DEVICE_CAT": "NwDeviceCategory.BACKBONE",
             "GnInfoEnum.DEVICE_TYPE": "NwDevice.BB_AP",
+            "GInfoEnum.NODE_TYPE": "NodeType.NW_DEVICE",
             "GnInfoEnum.LINK_INFO": {
                 "LinkType.WAN": {
                     "LinkInfo.ULINK_BW": 2147483647,

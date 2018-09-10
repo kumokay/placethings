@@ -9,7 +9,7 @@ import logging
 
 from placethings.config import nw_device_data
 from placethings.config.common import LinkHelper, InventoryManager
-from placethings.definition import GnInfo, LinkInfo
+from placethings.definition import GInfo, GnInfo, LinkInfo, NodeType
 from placethings.graph_gen.graph_utils import GraphGen, FileHelper
 
 
@@ -26,6 +26,7 @@ def _derive_node_info(device_spec, device_inventory):
                 # copy link spec
                 link_spec_dict = device_spec[device_cat][device_type]
                 device_info = {
+                    GInfo.NODE_TYPE: NodeType.NW_DEVICE,
                     GnInfo.DEVICE_CAT: device_cat,
                     GnInfo.DEVICE_TYPE: device_type,
                     GnInfo.LINK_INFO: deepcopy(link_spec_dict),

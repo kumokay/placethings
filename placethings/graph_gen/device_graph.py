@@ -11,7 +11,7 @@ import networkx as nx
 from placethings.config import device_data, nw_device_data
 from placethings.config.common import LinkHelper, InventoryManager
 from placethings.definition import (
-    Const, GdInfo, GnInfo, Hardware, LinkType, LinkInfo, Unit)
+    Const, GInfo, GdInfo, GnInfo, Hardware, LinkType, LinkInfo, NodeType, Unit)
 from placethings.graph_gen import topo_graph
 from placethings.graph_gen.graph_utils import GraphGen, FileHelper
 
@@ -29,6 +29,7 @@ def _derive_node_info(device_spec, device_inventory):
                 # copy hardware spec
                 spec = device_spec[device_cat][device_type]
                 device_info = {
+                    GInfo.NODE_TYPE: NodeType.DEVICE,
                     GdInfo.DEVICE_CAT: device_cat,
                     GdInfo.DEVICE_TYPE: device_type,
                     GdInfo.COST: spec[GdInfo.COST],
@@ -124,29 +125,40 @@ def _derive_graph_info(spec, inventory, links, nw_spec, nw_inventory):
     return node_info, edge_info
 
 
-def create_graph(
+def create_topo_device_graph(
         spec, inventory, links,
         nw_spec, nw_inventory, nw_links,
         is_export=False, export_suffix=''):
     # create topo graph
-    graph = topo_graph.create_graph(
+    topo = topo_graph.create_graph(
         nw_spec, nw_inventory, nw_links, is_export, export_suffix)
     # add devices to topo graph
     node_info, edge_info = _derive_graph_info(
         spec, inventory, links, nw_spec, nw_inventory)
-    graph = GraphGen.create(node_info, edge_info, base_graph=graph)
+    topo_device_graph = GraphGen.create(node_info, edge_info, base_graph=topo)
     # derive device_graph
-    dev_edge_info = _derive_device_graph_edge_info(graph, list(node_info))
+    dev_edge_info = _derive_device_graph_edge_info(
+        topo_device_graph, list(node_info))
     dev_graph = GraphGen.create(node_info, dev_edge_info)
     if is_export:
         export_name = 'topo_device_graph{}'.format(export_suffix)
         FileHelper.export_graph(
-            graph, export_name, which_edge_label=GnInfo.LATENCY)
+            topo_device_graph, export_name, which_edge_label=GnInfo.LATENCY)
         FileHelper.export_data(node_info, edge_info, export_name)
         export_name = 'device_graph{}'.format(export_suffix)
         FileHelper.export_graph(
             dev_graph, export_name, which_edge_label=GdInfo.LATENCY)
         FileHelper.export_data(node_info, dev_edge_info, export_name)
+    return topo_device_graph, dev_graph
+
+
+def create_graph(
+        spec, inventory, links,
+        nw_spec, nw_inventory, nw_links,
+        is_export=False, export_suffix=''):
+    _, dev_graph = create_topo_device_graph(
+        spec, inventory, links, nw_spec, nw_inventory, nw_links,
+        is_export, export_suffix)
     return dev_graph
 
 

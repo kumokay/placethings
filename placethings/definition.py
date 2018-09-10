@@ -92,6 +92,23 @@ class Flavor(Enum):
     CPU = auto()
 
 
+class NodeType(Enum):
+    DEVICE = auto()
+    NW_DEVICE = auto()
+
+
+class GInfo(object):
+    # common field Gd and Gn
+    class GInfoEnum(Enum):
+        NODE_TYPE = auto()
+
+    class helper(type):
+        # used as keys for **kwargs for networkx.Digraph.add_node
+        def __getattr__(self, name):
+            return str(getattr(GInfo.GInfoEnum, name))
+    __metaclass__ = helper
+
+
 class GtInfo(object):
     class GtInfoEnum(Enum):
         TRAFFIC = auto()

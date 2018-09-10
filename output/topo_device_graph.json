@@ -10,6 +10,7 @@
             },
             "GdInfoEnum.DEVICE_TYPE": "Device.PHONE",
             "GdInfoEnum.DEVICE_CAT": "DeviceCategory.ACTUATOR",
+            "GInfoEnum.NODE_TYPE": "NodeType.DEVICE",
             "GdInfoEnum.RESRC": {},
             "GdInfoEnum.COST": 0
         },
@@ -23,6 +24,7 @@
             },
             "GdInfoEnum.DEVICE_TYPE": "Device.THERMAL",
             "GdInfoEnum.DEVICE_CAT": "DeviceCategory.SENSOR",
+            "GInfoEnum.NODE_TYPE": "NodeType.DEVICE",
             "GdInfoEnum.RESRC": {},
             "GdInfoEnum.COST": 0
         },
@@ -36,6 +38,7 @@
             },
             "GdInfoEnum.DEVICE_TYPE": "Device.THERMAL",
             "GdInfoEnum.DEVICE_CAT": "DeviceCategory.SENSOR",
+            "GInfoEnum.NODE_TYPE": "NodeType.DEVICE",
             "GdInfoEnum.RESRC": {},
             "GdInfoEnum.COST": 0
         },
@@ -49,6 +52,7 @@
             },
             "GdInfoEnum.DEVICE_TYPE": "Device.CAMERA",
             "GdInfoEnum.DEVICE_CAT": "DeviceCategory.SENSOR",
+            "GInfoEnum.NODE_TYPE": "NodeType.DEVICE",
             "GdInfoEnum.RESRC": {},
             "GdInfoEnum.COST": 0
         },
@@ -67,6 +71,7 @@
             },
             "GdInfoEnum.DEVICE_TYPE": "Device.T3_LARGE",
             "GdInfoEnum.DEVICE_CAT": "DeviceCategory.PROCESSOR",
+            "GInfoEnum.NODE_TYPE": "NodeType.DEVICE",
             "GdInfoEnum.RESRC": {
                 "Hardware.CPU": 100,
                 "Hardware.HD": 140737488355328,
@@ -90,6 +95,7 @@
             },
             "GdInfoEnum.DEVICE_TYPE": "Device.T3_LARGE",
             "GdInfoEnum.DEVICE_CAT": "DeviceCategory.PROCESSOR",
+            "GInfoEnum.NODE_TYPE": "NodeType.DEVICE",
             "GdInfoEnum.RESRC": {
                 "Hardware.CPU": 100,
                 "Hardware.HD": 140737488355328,
@@ -113,6 +119,7 @@
             },
             "GdInfoEnum.DEVICE_TYPE": "Device.P3_2XLARGE",
             "GdInfoEnum.DEVICE_CAT": "DeviceCategory.PROCESSOR",
+            "GInfoEnum.NODE_TYPE": "NodeType.DEVICE",
             "GdInfoEnum.RESRC": {
                 "Hardware.CPU": 100,
                 "Hardware.HD": 140737488355328,
@@ -136,6 +143,7 @@
             },
             "GdInfoEnum.DEVICE_TYPE": "Device.T2_MICRO",
             "GdInfoEnum.DEVICE_CAT": "DeviceCategory.PROCESSOR",
+            "GInfoEnum.NODE_TYPE": "NodeType.DEVICE",
             "GdInfoEnum.RESRC": {
                 "Hardware.CPU": 100,
                 "Hardware.HD": 257698037760,
@@ -159,6 +167,7 @@
             },
             "GdInfoEnum.DEVICE_TYPE": "Device.T2_MICRO",
             "GdInfoEnum.DEVICE_CAT": "DeviceCategory.PROCESSOR",
+            "GInfoEnum.NODE_TYPE": "NodeType.DEVICE",
             "GdInfoEnum.RESRC": {
                 "Hardware.CPU": 100,
                 "Hardware.HD": 257698037760,
