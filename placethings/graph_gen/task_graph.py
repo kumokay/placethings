@@ -63,7 +63,6 @@ def _gen_update_info(result_mapping, Gt, Gd):
     for task, device in iteritems(result_mapping):
         if Gt.node[task][GtInfo.DEVICE]:
             assert device == Gt.node[task][GtInfo.DEVICE]
-        Gt.node[task][GtInfo.DEVICE] = device
         device_type = Gd.node[device][GdInfo.DEVICE_TYPE]
         latency_info = Gt.node[task][GtInfo.LATENCY_INFO]
         compute_latency = 0 if not latency_info else (
@@ -99,14 +98,15 @@ def _gen_graph_labels(Gt):
     return node_labels, edge_labels
 
 
-def update_graph(result_mapping, Gt, Gd, is_export):
+def update_graph(result_mapping, Gt, Gd, is_export, export_suffix=''):
     node_info, edge_info = _gen_update_info(result_mapping, Gt, Gd)
-    Gt = GraphGen.update(node_info, edge_info, Gt)
+    Gt = GraphGen.create(node_info, edge_info, base_graph=Gt)
     if is_export:
+        export_data_name = 'task_graph_map{}'.format(export_suffix)
         node_labels, edge_labels = _gen_graph_labels(Gt)
         FileHelper.export_graph(
-            Gt, 'task_graph_update',
+            Gt, export_data_name,
             with_edge=True, edge_label_dict=edge_labels,
             node_label_dict=node_labels)
-        FileHelper.export_data(node_info, edge_info, 'task_graph_update')
+        FileHelper.export_data(node_info, edge_info, export_data_name)
     return Gt

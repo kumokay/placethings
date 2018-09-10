@@ -69,12 +69,13 @@ def _derive_graph_info(spec, inventory, links):
     return node_info, edge_info
 
 
-def create_graph(spec, inventory, links, is_export=False):
+def create_graph(spec, inventory, links, is_export=False, export_suffix=''):
     node_info, edge_info = _derive_graph_info(spec, inventory, links)
     graph = GraphGen.create(node_info, edge_info)
     if is_export:
-        FileHelper.export_graph(graph, 'topo_graph')
-        FileHelper.export_data(node_info, edge_info, 'topo_graph')
+        export_data_name = 'topo_graph{}'.format(export_suffix)
+        FileHelper.export_graph(graph, export_data_name)
+        FileHelper.export_data(node_info, edge_info, export_data_name)
     return graph
 
 

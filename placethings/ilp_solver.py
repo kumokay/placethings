@@ -58,7 +58,7 @@ def _find_all_simple_path(Gt):
     return src_list, dst_list, all_paths
 
 
-def _solver(target_latency, Gt, Gd):
+def _solver(Gt, Gd, target_latency=None):
     """
     Args:
         target_latency (int): latency constrain for this task graph
@@ -206,7 +206,10 @@ def _solver(target_latency, Gt, Gd):
     """
     # define invalid_latency as a constrain to filter out meaningless
     # solutions
-    invalid_latency = target_latency * 2
+    if target_latency:
+        invalid_latency = target_latency * 2
+    else:
+        invalid_latency = Const.INT_MAX
     log.info((
         'set invalid_latency={latency}. skip neighbors cannot be reached '
         'within {latency} ms.').format(
@@ -420,8 +423,8 @@ def _get_path_length(path, Gt, Gd, result_mapping):
     return path_length
 
 
-def place_things(target_latency, Gt, Gd, is_export):
-    status, result_mapping = _solver(target_latency, Gt, Gd)
+def place_things(Gt, Gd, is_export, export_suffix=''):
+    status, result_mapping = _solver(Gt, Gd)
     log.info('solver status: {}'.format(pulp.LpStatus[status]))
     assert status == pulp.constants.LpStatusOptimal
     log.info('check solution for all simple path from src to dst')
@@ -432,5 +435,6 @@ def place_things(target_latency, Gt, Gd, is_export):
         max_latency = max(path_length, max_latency)
     log.info('max_latency={}'.format(max_latency))
     # update mapping and gen node labels
-    Gt = task_graph.update_graph(result_mapping, Gt, Gd, is_export)
+    Gt = task_graph.update_graph(
+        result_mapping, Gt, Gd, is_export, export_suffix)
     return Gt

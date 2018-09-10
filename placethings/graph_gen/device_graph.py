@@ -127,17 +127,26 @@ def _derive_graph_info(spec, inventory, links, nw_spec, nw_inventory):
 def create_graph(
         spec, inventory, links,
         nw_spec, nw_inventory, nw_links,
-        is_export=False):
+        is_export=False, export_suffix=''):
+    # create topo graph
+    graph = topo_graph.create_graph(
+        nw_spec, nw_inventory, nw_links, is_export, export_suffix)
+    # add devices to topo graph
     node_info, edge_info = _derive_graph_info(
         spec, inventory, links, nw_spec, nw_inventory)
-    graph = topo_graph.create_graph(nw_spec, nw_inventory, nw_links, is_export)
     graph = GraphGen.create(node_info, edge_info, base_graph=graph)
     # derive device_graph
     dev_edge_info = _derive_device_graph_edge_info(graph, list(node_info))
     dev_graph = GraphGen.create(node_info, dev_edge_info)
     if is_export:
-        FileHelper.export_graph(dev_graph, 'device_graph')
-        FileHelper.export_data(node_info, dev_edge_info, 'device_graph')
+        export_name = 'topo_device_graph{}'.format(export_suffix)
+        FileHelper.export_graph(
+            graph, export_name, which_edge_label=GnInfo.LATENCY)
+        FileHelper.export_data(node_info, edge_info, export_name)
+        export_name = 'device_graph{}'.format(export_suffix)
+        FileHelper.export_graph(
+            dev_graph, export_name, which_edge_label=GdInfo.LATENCY)
+        FileHelper.export_data(node_info, dev_edge_info, export_name)
     return dev_graph
 
 

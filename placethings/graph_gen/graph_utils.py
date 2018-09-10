@@ -36,39 +36,18 @@ class GraphGen(object):
             base_graph.add_edge(src_node, dst_node, **attr)
         return base_graph
 
-    @classmethod
-    def update(cls, node_info, edge_info, base_graph):
-        """
-        Args:
-            task_info (dict)
-            edge_info (dict)
-            graph (networkx.DiGraph): the base graph to add nodes / edges
-        Returns:
-            graph (networkx.DiGraph)
-        """
-        assert base_graph is not None
-        return cls.create(node_info, edge_info, base_graph=base_graph)
-
 
 class FileHelper(object):
-    _FILES = {
-        'topo_graph',
-        'device_graph',
-        'task_graph',
-        'task_graph_update',
-    }
     OUTPUT_FOLDER = 'output'
 
     @classmethod
-    def gen_config_filepath(cls, data_type):
-        assert data_type in cls._FILES
-        filename = '{}.json'.format(data_type)
+    def gen_config_filepath(cls, data_name):
+        filename = '{}.json'.format(data_name)
         return common_utils.get_config_filepath(cls.OUTPUT_FOLDER, filename)
 
     @classmethod
-    def gen_graph_filepath(cls, data_type):
-        assert data_type in cls._FILES
-        filename = '{}.png'.format(data_type)
+    def gen_graph_filepath(cls, data_name):
+        filename = '{}.png'.format(data_name)
         return common_utils.get_config_filepath(cls.OUTPUT_FOLDER, filename)
 
     @classmethod
@@ -86,21 +65,21 @@ class FileHelper(object):
             filepath=filepath)
 
     @classmethod
-    def export_data(cls, node_info, edge_info, data_type):
-        filepath = cls.gen_config_filepath(data_type)
+    def export_data(cls, node_info, edge_info, data_name):
+        filepath = cls.gen_config_filepath(data_name)
         filemap = dict(
             node_info=node_info,
             edge_info=edge_info)
         json_utils.export_bundle(filepath, filemap)
 
     @classmethod
-    def import_data(cls, data_type):
+    def import_data(cls, data_name):
         """
         Returns:
             node_info (dict)
             edge_info (dict)
         """
-        filepath = cls.gen_config_filepath(data_type)
+        filepath = cls.gen_config_filepath(data_name)
         filemap = json_utils.import_bundle(filepath)
         node_info = filemap['node_info']
         edge_info = filemap['edge_info']

@@ -6,8 +6,7 @@ from __future__ import unicode_literals
 import argparse
 import logging
 
-from placethings import ilp_solver
-from placethings.definition import Unit
+from placethings import demo_case
 from placethings.config import config_factory
 from placethings.graph_gen import graph_factory
 
@@ -38,11 +37,22 @@ class SubArgsManager(object):
             '--config',
             type=str,
             dest='config_name',
-            default='config_default',
+            default=None,
             required=required,
             help=(
                 'gen graph base on confiig files. '
                 'If not specified, use config_dafult')
+        )
+
+    def case_name(self, required=False):
+        self.subparser.add_argument(
+            '-tc',
+            '--test_case',
+            type=str,
+            dest='case_name',
+            default=None,
+            required=required,
+            help=('demo case name')
         )
 
 
@@ -91,9 +101,17 @@ class FuncManager(object):
     def place_things(args):
         config_name = args.config_name
         is_export = args.is_export
-        Gt = graph_factory.gen_task_graph(config_name, is_export)
-        Gd = graph_factory.gen_device_graph(config_name, is_export)
-        ilp_solver.place_things(Unit.sec(2), Gt, Gd, is_export)
+        demo_case.test_config(config_name, is_export)
+
+    @staticmethod
+    def demo(args):
+        case_name = args.case_name
+        config_name = args.config_name
+        is_export = args.is_export
+        if not case_name:
+            log.error('must specify test case name')
+            return
+        getattr(demo_case, case_name)(config_name, is_export)
 
     @staticmethod
     def export_default_config(args):
@@ -138,6 +156,15 @@ def main():
         help='compute placement')
     subargs_manager.visualize(required=False)
     subargs_manager.config(required=False)
+
+    name = 'demo'
+    subargs_manager = args_manager.add_subparser(
+        name,
+        func=getattr(FuncManager, name),
+        help='run demo cases')
+    subargs_manager.visualize(required=False)
+    subargs_manager.config(required=False)
+    subargs_manager.case_name(required=False)
 
     name = 'export_default_config'
     subargs_manager = args_manager.add_subparser(
