@@ -4,7 +4,7 @@
             "GdInfoEnum.HARDWARE": {},
             "GdInfoEnum.NIC": {
                 "LinkInfo.ULINK_BW": 52428800,
-                "LinkInfo.PROTOCOL": "NwLink.LTE_CAT4",
+                "LinkInfo.PROTOCOL": "NwLink.WIFI",
                 "LinkInfo.N_LINKS": 1,
                 "LinkInfo.DLINK_BW": 157286400
             },

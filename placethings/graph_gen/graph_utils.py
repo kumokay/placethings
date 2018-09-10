@@ -36,13 +36,26 @@ class GraphGen(object):
             base_graph.add_edge(src_node, dst_node, **attr)
         return base_graph
 
+    @classmethod
+    def update(cls, node_info, edge_info, base_graph):
+        """
+        Args:
+            task_info (dict)
+            edge_info (dict)
+            graph (networkx.DiGraph): the base graph to add nodes / edges
+        Returns:
+            graph (networkx.DiGraph)
+        """
+        assert base_graph is not None
+        return cls.create(node_info, edge_info, base_graph=base_graph)
+
 
 class FileHelper(object):
     _FILES = {
         'topo_graph',
         'device_graph',
         'task_graph',
-        'result',
+        'task_graph_update',
     }
     OUTPUT_FOLDER = 'output'
 

@@ -15,7 +15,7 @@ NW_DEVICE_INVENTORY = {
     },
     NwDeviceCategory.BACKBONE: {
         NwDevice.BB_SWITCH: 1,
-        NwDevice.BASESTATION: 1,
+        NwDevice.BB_AP: 1,
     },
     NwDeviceCategory.CLOUD: {
         NwDevice.CLOUD_SWITCH: 1,
@@ -45,12 +45,12 @@ NW_LINKS = {
         GnInfo.DST_LINK_TYPE: LinkType.WAN,
         GnInfo.LATENCY: Unit.ms(20),
     },
-    'BASESTATION.0 -> BB_SWITCH.0': {
+    'BB_AP.0 -> BB_SWITCH.0': {
         GnInfo.SRC_LINK_TYPE: LinkType.WAN,
         GnInfo.DST_LINK_TYPE: LinkType.ANY,
         GnInfo.LATENCY: Unit.ms(10),
     },
-    'BB_SWITCH.0 -> BASESTATION.0': {
+    'BB_SWITCH.0 -> BB_AP.0': {
         GnInfo.SRC_LINK_TYPE: LinkType.ANY,
         GnInfo.DST_LINK_TYPE: LinkType.WAN,
         GnInfo.LATENCY: Unit.ms(10),
@@ -125,10 +125,10 @@ DEVICE_LINKS = {
     'CLOUD_SWITCH.0 -> P3_2XLARGE.0': {
         GnInfo.LATENCY: Unit.ms(1),
     },
-    'PHONE.0 -> BASESTATION.0': {
+    'PHONE.0 -> BB_AP.0': {
         GnInfo.LATENCY: Unit.ms(10),
     },
-    'BASESTATION.0 -> PHONE.0': {
+    'BB_AP.0 -> PHONE.0': {
         GnInfo.LATENCY: Unit.ms(10),
     },
 }

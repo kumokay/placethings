@@ -53,7 +53,7 @@
                 "GdInfoEnum.HARDWARE": {},
                 "GdInfoEnum.NIC": {
                     "LinkInfo.ULINK_BW": 52428800,
-                    "LinkInfo.PROTOCOL": "NwLink.LTE_CAT4",
+                    "LinkInfo.PROTOCOL": "NwLink.WIFI",
                     "LinkInfo.N_LINKS": 1,
                     "LinkInfo.DLINK_BW": 157286400
                 }
@@ -103,16 +103,19 @@
         "T2_MICRO.0 -> HOME_ROUTER.0": {
             "GnInfoEnum.LATENCY": 1
         },
+        "T3_LARGE.1 -> CLOUD_SWITCH.0": {
+            "GnInfoEnum.LATENCY": 1
+        },
         "CLOUD_SWITCH.0 -> P3_2XLARGE.0": {
             "GnInfoEnum.LATENCY": 1
         },
-        "T2_MICRO.1 -> CLOUD_SWITCH.0": {
-            "GnInfoEnum.LATENCY": 1
+        "BB_AP.0 -> PHONE.0": {
+            "GnInfoEnum.LATENCY": 10
         },
         "T3_LARGE.0 -> HOME_ROUTER.0": {
             "GnInfoEnum.LATENCY": 1
         },
-        "T3_LARGE.1 -> CLOUD_SWITCH.0": {
+        "T2_MICRO.1 -> CLOUD_SWITCH.0": {
             "GnInfoEnum.LATENCY": 1
         },
         "CAMERA.0 -> HOME_IOTGW.0": {
@@ -121,7 +124,10 @@
         "THERMAL.0 -> HOME_IOTGW.0": {
             "GnInfoEnum.LATENCY": 3
         },
-        "PHONE.0 -> BASESTATION.0": {
+        "P3_2XLARGE.0 -> CLOUD_SWITCH.0": {
+            "GnInfoEnum.LATENCY": 1
+        },
+        "PHONE.0 -> BB_AP.0": {
             "GnInfoEnum.LATENCY": 10
         },
         "CLOUD_SWITCH.0 -> T2_MICRO.1": {
@@ -129,12 +135,6 @@
         },
         "CLOUD_SWITCH.0 -> T3_LARGE.1": {
             "GnInfoEnum.LATENCY": 1
-        },
-        "P3_2XLARGE.0 -> CLOUD_SWITCH.0": {
-            "GnInfoEnum.LATENCY": 1
-        },
-        "BASESTATION.0 -> PHONE.0": {
-            "GnInfoEnum.LATENCY": 10
         },
         "HOME_ROUTER.0 -> T2_MICRO.0": {
             "GnInfoEnum.LATENCY": 1

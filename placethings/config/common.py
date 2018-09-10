@@ -66,21 +66,6 @@ class LinkHelper(object):
         return src, dst
 
 
-class SetManager(object):
-    def __init__(self, dataset):
-        self._dataset = dataset
-
-    def __contains__(self, item):
-        return item in self._dataset
-
-    def get(self, data):
-        assert data in self._dataset
-        return data
-
-    def get_set(self):
-        return self._dataset
-
-
 class InventoryManager(object):
 
     def __init__(self, inventory, spec=None):

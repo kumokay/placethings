@@ -93,7 +93,7 @@ class FuncManager(object):
         is_export = args.is_export
         Gt = graph_factory.gen_task_graph(config_name, is_export)
         Gd = graph_factory.gen_device_graph(config_name, is_export)
-        ilp_solver.place_things(Unit.sec(2), Gt, Gd)
+        ilp_solver.place_things(Unit.sec(2), Gt, Gd, is_export)
 
     @staticmethod
     def export_default_config(args):

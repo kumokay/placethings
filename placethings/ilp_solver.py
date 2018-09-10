@@ -5,14 +5,14 @@ from __future__ import unicode_literals
 
 from builtins import range
 from collections import defaultdict
-from future.utils import listvalues, iteritems
+from future.utils import listvalues
 import logging
 from itertools import izip as zip
 import pulp
 import networkx as nx
 
 from placethings.definition import Const, GdInfo, GtInfo, Hardware
-from placethings.graph_gen.graph_utils import FileHelper
+from placethings.graph_gen import task_graph
 
 
 log = logging.getLogger()
@@ -420,7 +420,7 @@ def _get_path_length(path, Gt, Gd, result_mapping):
     return path_length
 
 
-def place_things(target_latency, Gt, Gd):
+def place_things(target_latency, Gt, Gd, is_export):
     status, result_mapping = _solver(target_latency, Gt, Gd)
     log.info('solver status: {}'.format(pulp.LpStatus[status]))
     assert status == pulp.constants.LpStatusOptimal
@@ -432,24 +432,5 @@ def place_things(target_latency, Gt, Gd):
         max_latency = max(path_length, max_latency)
     log.info('max_latency={}'.format(max_latency))
     # update mapping and gen node labels
-    node_labels = {}
-    for task, device in iteritems(result_mapping):
-        if Gt.node[task][GtInfo.DEVICE]:
-            assert device == Gt.node[task][GtInfo.DEVICE]
-        Gt.node[task][GtInfo.DEVICE] = device
-        device_type = Gd.node[device][GdInfo.DEVICE_TYPE]
-        compute_latency = 0
-        latency_info = Gt.node[task][GtInfo.LATENCY_INFO]
-        if latency_info:
-            compute_latency = listvalues(latency_info[device_type])[0]
-        node_labels[task] = '{}\n{}({}ms)'.format(
-            task, device, compute_latency)
-    edge_labels = {}
-    for edge in Gt.edges():
-        t1, t2 = edge
-        d1, d2 = Gt.node[t1][GtInfo.DEVICE], Gt.node[t2][GtInfo.DEVICE]
-        transmission_latency = Gd[d1][d2][GdInfo.LATENCY]
-        edge_labels[edge] = '{}ms'.format(transmission_latency)
-    FileHelper.export_graph(
-        Gt, 'result', with_edge=True,
-        edge_label_dict=edge_labels, node_label_dict=node_labels)
+    Gt = task_graph.update_graph(result_mapping, Gt, Gd, is_export)
+    return Gt

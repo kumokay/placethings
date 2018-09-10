@@ -6,7 +6,6 @@ from __future__ import unicode_literals
 from placethings.definition import (
     Const, Device, DeviceCategory, GdInfo, Hardware, LinkInfo, LinkType,
     NwDevice, NwDeviceCategory, NwLink, Unit)
-from placethings.utils import common_utils, json_utils
 
 
 NW_DEVICE_SPEC = {
@@ -49,7 +48,7 @@ NW_DEVICE_SPEC = {
                 LinkInfo.DLINK_BW: Const.INT_MAX,
             },
         },
-        NwDevice.BASESTATION: {
+        NwDevice.BB_AP: {
             LinkType.WAN: {
                 LinkInfo.PROTOCOL: NwLink.ETHERNET,
                 LinkInfo.N_LINKS: 1,
@@ -57,7 +56,7 @@ NW_DEVICE_SPEC = {
                 LinkInfo.DLINK_BW: Const.INT_MAX,
             },
             LinkType.LAN: {
-                LinkInfo.PROTOCOL: NwLink.LTE_CAT4,
+                LinkInfo.PROTOCOL: NwLink.WIFI,
                 LinkInfo.N_LINKS: Const.INT_MAX,
                 LinkInfo.ULINK_BW: Unit.mbps(150),
                 LinkInfo.DLINK_BW: Unit.mbps(50),
@@ -89,7 +88,7 @@ DEVICE_SPEC = {
             GdInfo.COST: Unit.rph(0),
             GdInfo.HARDWARE: {},
             GdInfo.NIC: {
-                LinkInfo.PROTOCOL: NwLink.LTE_CAT4,
+                LinkInfo.PROTOCOL: NwLink.WIFI,
                 LinkInfo.N_LINKS: 1,
                 LinkInfo.ULINK_BW: Unit.mbps(50),
                 LinkInfo.DLINK_BW: Unit.mbps(150),

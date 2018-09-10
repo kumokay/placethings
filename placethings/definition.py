@@ -37,7 +37,6 @@ class Const:
 class NwLink(Enum):
     ETHERNET = auto()
     WIFI = auto()
-    LTE_CAT4 = auto()
 
 
 class LinkInfo(Enum):
@@ -59,7 +58,7 @@ class NwDevice(Enum):
     HOME_IOTGW = auto()
     # backbone
     BB_SWITCH = auto()
-    BASESTATION = auto()
+    BB_AP = auto()
     # third_party
     CLOUD_SWITCH = auto()
 
@@ -98,7 +97,10 @@ class GtInfo(object):
         TRAFFIC = auto()
         LATENCY_INFO = auto()
         RESRC_RQMT = auto()
-        DEVICE = auto()
+        DEVICE = auto()  # initial assigned
+        # assign on the fly
+        CUR_DEVICE = auto()
+        CUR_LATENCY = auto()
 
     class helper(type):
         # used as keys for **kwargs for networkx.Digraph.add_node
