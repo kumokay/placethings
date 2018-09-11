@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 import argparse
 import logging
 
-from placethings import demo_case
+from placethings.demo import demo_case
 from placethings.config import config_factory
 from placethings.graph_gen import graph_factory
 

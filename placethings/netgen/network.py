@@ -37,7 +37,6 @@ class NetGen(object):
                 net.addSwitch(node)
             else:
                 assert False, 'unkown node_type: {}'.format(node_type)
-        log.info('*** Creating links')
         for d1, d2 in Gn.edges():
             edge_info = Gn[d1][d2]
             net.addLink(

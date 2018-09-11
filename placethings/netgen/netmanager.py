@@ -95,13 +95,23 @@ class NetManager(object):
         log.info('*** Stopping network')
         self._net.stop()
 
+    def run_cmd(self, device_name, command, async=False):
+        host = self._host_dict[device_name]
+        if async:
+            # no waiting
+            host.sendCmd(command)
+            return 'command sent: {}'.format(command)
+        else:
+            output = host.cmd(command)
+            return output
+
     def validate(self):
         log.info('*** Validate network')
         for h1 in self._host_dict:
             for h2 in self._host_dict:
                 if h1 == h2:
                     continue
-                output = self._host_dict[h1].cmd(
-                    'ping {} -c 1'.format(self._host_dict[h2].IP()))
+                output = self.run_cmd(
+                    h1, 'ping {} -c 1'.format(self._host_dict[h2].IP()))
                 assert '0% packet loss' in output, output
         log.info('ping all success!')
