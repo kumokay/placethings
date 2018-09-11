@@ -33,6 +33,17 @@ class SubArgsManager(object):
             help=('address')
         )
 
+    def exectime(self, required=False):
+        self.subparser.add_argument(
+            '-t',
+            '--exectime',
+            type=int,
+            dest='exectime',
+            default=None,
+            required=required,
+            help=('exectime (ms)')
+        )
+
     def testcase(self, required=False):
         self.subparser.add_argument(
             '-tc',
@@ -82,7 +93,8 @@ class FuncManager(object):
     @staticmethod
     def run_task(args):
         ip, port = args.address.split(':')
-        task = Task('task1', 1000, None, None)
+        exectime = args.exectime
+        task = Task('task1', exectime, None, None)
         task.start('127.0.0.1', 19000)
 
 
@@ -109,6 +121,7 @@ def main():
         func=getattr(FuncManager, name),
         help='run_task')
     subargs_manager.address(required=True)
+    subargs_manager.exectime(required=True)
 
     name = 'run_manager'
     subargs_manager = args_manager.add_subparser(

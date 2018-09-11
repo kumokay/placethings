@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 
 import logging
 import msgpackrpc
+import time
 
 from placethings.demo.entity.manager import Manager
 
@@ -18,6 +19,9 @@ def _call(ip, port, method, *args):
 
 
 def test_task():
+    ret = _call(
+        '127.0.0.1', 19000, 'push', [1, 2, 3, 4], {'test_task': time.time()})
+    log.info('push: {}'.format(ret))
     ret = _call('127.0.0.1', 19000, 'STOP')
     log.info('stop task: {}'.format(ret))
 

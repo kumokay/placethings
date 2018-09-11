@@ -23,7 +23,7 @@ class StoppableServer(msgpackrpc.Server):
             self.stop()
             self.close()
         else:
-            super(msgpackrpc.Server, self).dispatch(method, param, responder)
+            super(StoppableServer, self).dispatch(method, param, responder)
 
 
 class RPCServer(object):
