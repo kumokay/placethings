@@ -73,9 +73,7 @@ class NetManager(object):
     def addLink(
             self, src, dst, bw_bps=102400, delay_ms=1,
             max_queue_size=None, pkt_loss_rate=None):
-        n1 = self._devNameToNodeName[src]
-        n2 = self._devNameToNodeName[dst]
-        if (n2, n1) in self._edge_dict:
+        if (dst, src) in self._edge_dict:
             # mininet is not DiGraph! everything is bidirectional
             return
         # mininet bandwidth supported range 0..1000
@@ -83,8 +81,8 @@ class NetManager(object):
         delay = '{}ms'.format(delay_ms)
         loss = int(pkt_loss_rate*100) if pkt_loss_rate else None
         link = self._net.addLink(
-            n1, n2, bw=bw_mbps, delay=delay,
-            max_queue_size=max_queue_size, loss=loss)
+            self._devNameToNodeName[src], self._devNameToNodeName[dst],
+            bw=bw_mbps, delay=delay, max_queue_size=max_queue_size, loss=loss)
         self._edge_dict[(src, dst)] = link
         log.debug('link {} <-> {}: delay={}'.format(src, dst, delay))
 
