@@ -11,12 +11,69 @@ from placethings.definition import GnInfo, Unit
 from placethings.graph_gen import graph_factory, device_graph
 from placethings.config.config_factory import FileHelper
 from placethings.netgen.network import NetGen
+from placethings.demo.entity.baseserver import ServerGen
 
 
 log = logging.getLogger()
 
 
 _DEFAULT_CONFIG = 'config_default'
+
+
+def test_deploy(config_name=None, is_export=False):
+    if not config_name:
+        config_name = _DEFAULT_CONFIG
+    # generate topo device graph
+    dev_file = FileHelper.gen_config_filepath(config_name, 'device_data')
+    nw_file = FileHelper.gen_config_filepath(config_name, 'nw_device_data')
+    spec, inventory, links = device_data.import_data(dev_file)
+    nw_spec, nw_inventory, nw_links = nw_device_data.import_data(nw_file)
+    topo_device_graph, _device_graph = device_graph.create_topo_device_graph(
+        spec, inventory, links, nw_spec, nw_inventory, nw_links, is_export)
+    net = NetGen.create(topo_device_graph)
+    net.start()
+    net.validate()
+
+    command_switch_dir = 'cd /home/kumokay/github/placethings'
+    port = 18800
+    all_ips = set()
+
+    device = 'PHONE.0'
+    ip = net.get_device_ip(device)
+    port += 1
+    command_start = 'python main_entity.py run_agent -a {}:{}'.format(
+        ip, port)
+    net.run_cmd(device, command_switch_dir, async=False)
+    net.run_cmd(device, command_start, async=True)
+    all_ips.add((ip, port))
+
+    device = 'CAMERA.0'
+    ip = net.get_device_ip(device)
+    port += 1
+    command_start = 'python main_entity.py run_task -a {}:{} -t {}'.format(
+        ip, port, 5000)
+    net.run_cmd(device, command_switch_dir, async=False)
+    net.run_cmd(device, command_start, async=True)
+    all_ips.add((ip, port))
+
+    device = 'T2_MICRO.0'
+    port += 1
+    ip = net.get_device_ip(device)
+    command_start = 'python main_entity.py run_agent -a {}:{}'.format(
+        ip, port)
+    net.run_cmd(device, command_switch_dir, async=False)
+    net.run_cmd(device, command_start, async=True)
+    all_ips.add((ip, port))
+
+    # cleanup
+    for ip, port in all_ips:
+        device = 'T2_MICRO.1'
+        command_start = 'python main_entity.py stop_server -a {}:{}'.format(
+            ip, port)
+        net.run_cmd(device, command_switch_dir, async=False)
+        net.run_cmd(device, command_start, async=False)
+        all_ips.add((ip, port))
+    net.stop()
 
 
 def test_netgen(config_name=None, is_export=False):

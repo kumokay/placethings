@@ -19,8 +19,9 @@ def _call(ip, port, method, *args):
 
 
 def test_task():
+    t1 = time.time()
     ret = _call(
-        '127.0.0.1', 19000, 'push', [1, 2, 3, 4], {'test_task': time.time()})
+        '127.0.0.1', 19000, 'push', [1, 2, 3], {'trigger': (t1, time.time())})
     log.info('push: {}'.format(ret))
     ret = _call('127.0.0.1', 19000, 'STOP')
     log.info('stop task: {}'.format(ret))

@@ -7,9 +7,7 @@ import argparse
 import logging
 
 from placethings.demo.entity import test_entity
-from placethings.demo.entity.agent import Agent
-from placethings.demo.entity.fileserver import FileServer
-from placethings.demo.entity.task import Task
+from placethings.demo.entity.baseserver import ServerGen, Entity
 
 
 logging.basicConfig(
@@ -78,12 +76,14 @@ class FuncManager(object):
     @staticmethod
     def run_agent(args):
         ip, port = args.address.split(':')
-        Agent().start(ip, int(port))
+        agent = ServerGen.create(Entity.AGENT)
+        agent.start(ip, int(port))
 
     @staticmethod
     def run_fileserver(args):
         ip, port = args.address.split(':')
-        FileServer().start(ip, port)
+        fileserver = ServerGen.create(Entity.FILESERVER)
+        fileserver.start(ip, int(port))
 
     @staticmethod
     def run_manager(args):
@@ -91,11 +91,19 @@ class FuncManager(object):
         getattr(test_entity, case_name)()
 
     @staticmethod
+    def stop_server(args):
+        ip, port = args.address.split(':')
+        ServerGen.stop_server(ip, int(port))
+
+    @staticmethod
     def run_task(args):
         ip, port = args.address.split(':')
-        exectime = args.exectime
-        task = Task('task1', exectime, None, None)
-        task.start('127.0.0.1', 19000)
+        exec_time_ms = args.exectime
+        next_task_ip = None
+        next_task_port = None
+        taskserver = ServerGen.create(
+            Entity.TASK, 'task1', exec_time_ms, next_task_ip, next_task_port)
+        taskserver.start(ip, int(port))
 
 
 def main():
@@ -113,6 +121,13 @@ def main():
         name,
         func=getattr(FuncManager, name),
         help='run_fileserver')
+    subargs_manager.address(required=True)
+
+    name = 'stop_server'
+    subargs_manager = args_manager.add_subparser(
+        name,
+        func=getattr(FuncManager, name),
+        help='stop_server')
     subargs_manager.address(required=True)
 
     name = 'run_task'

@@ -28,6 +28,12 @@ class Manager(object):
         result = client.call(method, *args)
         return result
 
+    @classmethod
+    def clean_up(cls, servermap):
+        for ip, port in iteritems(servermap):
+            result = cls._call(ip, port, 'STOP')
+            log.info('stop server @{}:{}, {}'.format(ip, port, result))
+
     def init_deploy(self, mapping, device_addr):
         log.info('deploy {} ===='.format(self.cur_deploy_cnt))
         for task, device in iteritems(mapping):

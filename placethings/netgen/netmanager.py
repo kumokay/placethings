@@ -27,6 +27,7 @@ class NetManager(object):
         self._switch_dict = {}
         self._edge_dict = {}
         self._devNameToNodeName = {}
+        self._device_ips = {}
 
     @classmethod
     def create(cls):
@@ -84,7 +85,7 @@ class NetManager(object):
         link = self._net.addLink(
             n1, n2, bw=bw_mbps, delay=delay,
             max_queue_size=max_queue_size, loss=loss)
-        self._edge_dict[(n1, n2)] = link
+        self._edge_dict[(src, dst)] = link
         log.debug('link {} <-> {}: delay={}'.format(src, dst, delay))
 
     def start(self):
@@ -97,13 +98,18 @@ class NetManager(object):
 
     def run_cmd(self, device_name, command, async=False):
         host = self._host_dict[device_name]
+        log.info('send command: {}'.format(command))
         if async:
             # no waiting
             host.sendCmd(command)
-            return 'command sent: {}'.format(command)
+            output = 'command sent: {}'.format(command)
         else:
             output = host.cmd(command)
-            return output
+        log.info('output: {}'.format(output))
+        return output
+
+    def get_device_ip(self, device_name):
+        return self._host_dict[device_name].IP()
 
     def validate(self):
         log.info('*** Validate network')
@@ -113,5 +119,5 @@ class NetManager(object):
                     continue
                 output = self.run_cmd(
                     h1, 'ping {} -c 1'.format(self._host_dict[h2].IP()))
-                assert '0% packet loss' in output, output
+                assert ' 0% packet loss' in output, output
         log.info('ping all success!')
