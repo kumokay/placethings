@@ -7,7 +7,7 @@ import argparse
 import logging
 
 from placethings.demo.entity import test_entity
-from placethings.demo.entity.baseserver import ServerGen, Entity
+from placethings.demo.entity.base_server import ServerGen, Entity
 
 
 logging.basicConfig(
@@ -20,6 +20,17 @@ class SubArgsManager(object):
     def __init__(self, subparser):
         self.subparser = subparser
 
+    def name(self, required=False):
+        self.subparser.add_argument(
+            '-n',
+            '--name',
+            type=str,
+            dest='name',
+            default=None,
+            required=required,
+            help=('name')
+        )
+
     def address(self, required=False):
         self.subparser.add_argument(
             '-a',
@@ -28,7 +39,7 @@ class SubArgsManager(object):
             dest='address',
             default=None,
             required=required,
-            help=('address')
+            help=('address (ip:port). e.g. 10.11.12.13:1234')
         )
 
     def exectime(self, required=False):
@@ -75,15 +86,29 @@ class FuncManager(object):
 
     @staticmethod
     def run_agent(args):
+        name = args.name
         ip, port = args.address.split(':')
-        agent = ServerGen.create(Entity.AGENT)
-        agent.start(ip, int(port))
+        port = int(port)
+        ServerGen.start_server(name, Entity.AGENT, ip, port)
 
     @staticmethod
     def run_fileserver(args):
+        name = args.name
         ip, port = args.address.split(':')
-        fileserver = ServerGen.create(Entity.FILESERVER)
-        fileserver.start(ip, int(port))
+        port = int(port)
+        ServerGen.start_server(name, Entity.FILESERVER, ip, port)
+
+    @staticmethod
+    def run_task(args):
+        name = args.name
+        ip, port = args.address.split(':')
+        port = int(port)
+        exec_time_ms = args.exectime
+        next_task_ip = None
+        next_task_port = None
+        ServerGen.start_server(
+            name, Entity.TASK, ip, port,
+            exec_time_ms, next_task_ip, next_task_port)
 
     @staticmethod
     def run_manager(args):
@@ -95,16 +120,6 @@ class FuncManager(object):
         ip, port = args.address.split(':')
         ServerGen.stop_server(ip, int(port))
 
-    @staticmethod
-    def run_task(args):
-        ip, port = args.address.split(':')
-        exec_time_ms = args.exectime
-        next_task_ip = None
-        next_task_port = None
-        taskserver = ServerGen.create(
-            Entity.TASK, 'task1', exec_time_ms, next_task_ip, next_task_port)
-        taskserver.start(ip, int(port))
-
 
 def main():
     args_manager = ArgsManager()
@@ -114,6 +129,7 @@ def main():
         name,
         func=getattr(FuncManager, name),
         help='run_agent')
+    subargs_manager.name(required=True)
     subargs_manager.address(required=True)
 
     name = 'run_fileserver'
@@ -121,6 +137,7 @@ def main():
         name,
         func=getattr(FuncManager, name),
         help='run_fileserver')
+    subargs_manager.name(required=True)
     subargs_manager.address(required=True)
 
     name = 'stop_server'
@@ -128,6 +145,7 @@ def main():
         name,
         func=getattr(FuncManager, name),
         help='stop_server')
+    subargs_manager.name(required=True)
     subargs_manager.address(required=True)
 
     name = 'run_task'
@@ -135,6 +153,7 @@ def main():
         name,
         func=getattr(FuncManager, name),
         help='run_task')
+    subargs_manager.name(required=True)
     subargs_manager.address(required=True)
     subargs_manager.exectime(required=True)
 

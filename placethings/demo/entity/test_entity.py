@@ -30,7 +30,7 @@ def test_task():
 def test_basic():
     fileserver_ip = '127.0.0.1'
     fileserver_port = 18800
-    manager = Manager(fileserver_ip, fileserver_port, None, None)
+    manager = Manager('manager', fileserver_ip, fileserver_port, None, None)
     device_addr = {
         'device1': ('127.0.0.1', 18901),
         'device2': ('127.0.0.1', 18902),

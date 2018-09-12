@@ -5,7 +5,8 @@ from __future__ import unicode_literals
 
 from future.utils import iteritems
 import logging
-import msgpackrpc
+
+from placethings.demo.entity.base_client import BaseClient
 
 
 log = logging.getLogger()
@@ -13,7 +14,10 @@ log = logging.getLogger()
 
 class Manager(object):
 
-    def __init__(self, fileserver_ip, fileserver_port, task_data, device_data):
+    def __init__(
+            self, name, fileserver_ip, fileserver_port,
+            task_data, device_data):
+        self.name = name
         self.fileserver_ip = fileserver_ip
         self.fileserver_port = fileserver_port
         self.task_data = task_data
@@ -22,23 +26,21 @@ class Manager(object):
         self.cur_device_addr = None
         self.cur_deploy_cnt = 0
 
-    @staticmethod
-    def _call(ip, port, method, *args):
-        client = msgpackrpc.Client(msgpackrpc.Address(ip, port))
+    def call(self, ip, port, method, *args):
+        client = BaseClient(self.name, ip, port, logging.getLogger())
         result = client.call(method, *args)
         return result
 
-    @classmethod
-    def clean_up(cls, servermap):
+    def clean_up(self, servermap):
         for ip, port in iteritems(servermap):
-            result = cls._call(ip, port, 'STOP')
+            result = self.call(ip, port, 'STOP')
             log.info('stop server @{}:{}, {}'.format(ip, port, result))
 
     def init_deploy(self, mapping, device_addr):
         log.info('deploy {} ===='.format(self.cur_deploy_cnt))
         for task, device in iteritems(mapping):
             ip, port = device_addr[device]
-            result = self._call(
+            result = self.call(
                 ip, port, 'fetch_from', task,
                 self.fileserver_ip, self.fileserver_port)
             log.info('depoly {} to {}: {}'.format(task, device, result))
@@ -53,8 +55,8 @@ class Manager(object):
                 continue
             ip, port = device_addr[device]
             server_ip, server_port = device_addr[device_has_task]
-            result = self._call(
-                ip, port, 'fetch_from123', task, server_ip, server_port)
+            result = self.call(
+                ip, port, 'fetch_from', task, server_ip, server_port)
             log.info('move {} from {} to {}: {}'.format(
                 task, device_has_task, device, result))
         self.cur_map = mapping
