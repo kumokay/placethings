@@ -8,6 +8,7 @@ import logging
 
 from placethings.demo.entity import test_entity
 from placethings.demo.entity.base_server import ServerGen, Entity
+from placethings.demo.entity.manager import Manager
 from placethings.utils.common_utils import update_rootlogger
 
 update_rootlogger()
@@ -40,6 +41,17 @@ class SubArgsManager(object):
             help=('address (ip:port). e.g. 10.11.12.13:1234')
         )
 
+    def next_address(self, required=False):
+        self.subparser.add_argument(
+            '-na',
+            '--next_address',
+            type=str,
+            dest='next_address',
+            default=None,
+            required=required,
+            help=('next address (ip:port). e.g. 10.11.12.13:1234')
+        )
+
     def exectime(self, required=False):
         self.subparser.add_argument(
             '-t',
@@ -49,6 +61,17 @@ class SubArgsManager(object):
             default=None,
             required=required,
             help=('exectime (ms)')
+        )
+
+    def run_procedure(self, required=False):
+        self.subparser.add_argument(
+            '-r',
+            '--run_procedure',
+            type=int,
+            dest='run_procedure',
+            default=None,
+            required=required,
+            help=('run a procedure: init_deploy or re_deploy')
         )
 
     def testcase(self, required=False):
@@ -113,8 +136,14 @@ class FuncManager(object):
 
     @staticmethod
     def run_manager(args):
+        # name = args.name
+        # procedure = args.run_procedure
+        assert False, 'command not enabled'
+
+    @staticmethod
+    def run_test(args):
         case_name = args.testcase
-        update_rootlogger('manager', is_log_to_file=True)
+        update_rootlogger(case_name, is_log_to_file=True)
         getattr(test_entity, case_name)()
 
     @staticmethod
@@ -158,12 +187,21 @@ def main():
     subargs_manager.name(required=True)
     subargs_manager.address(required=True)
     subargs_manager.exectime(required=True)
+    subargs_manager.next_address(required=True)
 
     name = 'run_manager'
     subargs_manager = args_manager.add_subparser(
         name,
         func=getattr(FuncManager, name),
         help='run_manager')
+    subargs_manager.name(required=True)
+    subargs_manager.run_procedure(required=True)
+
+    name = 'run_test'
+    subargs_manager = args_manager.add_subparser(
+        name,
+        func=getattr(FuncManager, name),
+        help='run_test')
     subargs_manager.testcase(required=True)
 
     args = args_manager.parse_args()

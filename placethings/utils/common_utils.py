@@ -41,7 +41,8 @@ def _init_rootlogger(name='', format_str=None, is_log_to_file=False):
         logging.StreamHandler()
     ]
     if is_log_to_file:
-        logpath = get_file_path('log/{}.log'.format(name))
+        logpath = get_file_path('log/{}.txt'.format(name))
+        check_file_folder(logpath)
         handlers.append(logging.FileHandler(logpath))
     # set root logger
     logger = logging.getLogger()

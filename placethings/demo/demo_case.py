@@ -3,15 +3,15 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from future.utils import iteritems
 import logging
 
 from placethings import ilp_solver
 from placethings.config import device_data, nw_device_data
-from placethings.definition import GnInfo, Unit
+from placethings.definition import GnInfo, Unit, GdInfo, DeviceCategory
 from placethings.graph_gen import graph_factory, device_graph
 from placethings.config.config_factory import FileHelper
 from placethings.netgen.network import NetGen
-from placethings.demo.entity.baseserver import ServerGen
 
 
 log = logging.getLogger()
@@ -20,7 +20,50 @@ log = logging.getLogger()
 _DEFAULT_CONFIG = 'config_default'
 
 
-def test_deploy(config_name=None, is_export=False):
+def test_deploy_default(config_name=None, is_export=False):
+    if not config_name:
+        config_name = _DEFAULT_CONFIG
+    # generate topo device graph
+    dev_file = FileHelper.gen_config_filepath(config_name, 'device_data')
+    nw_file = FileHelper.gen_config_filepath(config_name, 'nw_device_data')
+    spec, inventory, links = device_data.import_data(dev_file)
+    nw_spec, nw_inventory, nw_links = nw_device_data.import_data(nw_file)
+    topo_device_graph, _device_graph = device_graph.create_topo_device_graph(
+        spec, inventory, links, nw_spec, nw_inventory, nw_links, is_export)
+    net = NetGen.create(topo_device_graph)
+    net.start()
+    net.validate()
+    # install manager / agents
+    port = 18800
+    all_ips = {}
+    # run agents
+    command = (
+        'cd /home/kumokay/github/placethings '
+        '&& python main_entity.py run_agent -a {ip}:{port}')
+    for dev_name in topo_device_graph.nodes():
+        ip = net.get_device_ip(dev_name)
+        node = topo_device_graph.node[dev_name]
+        if node[GdInfo.DEVICE_CAT] == DeviceCategory.PROCESSOR:
+            net.run_cmd(dev_name, command.format(ip, port), async=True)
+            all_ips[dev_name] = (ip, port)
+    # deploy tasks
+    command = (
+        'cd /home/kumokay/github/placethings '
+        '&& python main_entity.py run_task '
+        '-a {ip}:{port} -t {exectime} -na {next_ip}:{next_port}')
+    for dev_name in topo_device_graph.nodes():
+        # TODO
+    # cleanup
+    command = (
+        'cd /home/kumokay/github/placethings '
+        '&& python main_entity.py stop_server -a {ip}:{port}')
+    for dev_name, (ip, port) in iteritems(all_ips):
+        command = 'python main_entity.py stop_server -a {}:{}'.format(ip, port)
+        net.run_cmd(dev_name, command.format(ip, port), async=True)
+    net.stop()
+
+
+def test_deploy_basic(config_name=None, is_export=False):
     if not config_name:
         config_name = _DEFAULT_CONFIG
     # generate topo device graph
