@@ -8,12 +8,11 @@ from placethings.demo.entity.base_client import BaseClient
 
 class RPCServer(object):
 
-    def __init__(self, name, logger):
+    def __init__(self, name):
         self.name = name
-        self.logger = logger
 
     def _call(self, ip, port, method, *args):
-        client = BaseClient(self.name, ip, port, self.logger)
+        client = BaseClient(self.name, ip, port)
         result = client.call(method, *args)
         return result
 

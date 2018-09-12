@@ -27,7 +27,7 @@ class Manager(object):
         self.cur_deploy_cnt = 0
 
     def call(self, ip, port, method, *args):
-        client = BaseClient(self.name, ip, port, logging.getLogger())
+        client = BaseClient(self.name, ip, port)
         result = client.call(method, *args)
         return result
 

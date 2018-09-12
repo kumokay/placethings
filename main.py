@@ -9,12 +9,10 @@ import logging
 from placethings.demo import demo_case
 from placethings.config import config_factory
 from placethings.graph_gen import graph_factory
+from placethings.utils.common_utils import init_rootlogger
 
-
-logging.basicConfig(
-    format='%(asctime)s [%(levelname)s] %(funcName)s: %(message)s')
+init_rootlogger()
 log = logging.getLogger()
-log.setLevel(logging.DEBUG)
 
 
 class SubArgsManager(object):

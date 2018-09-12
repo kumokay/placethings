@@ -8,12 +8,10 @@ import logging
 
 from placethings.demo.entity import test_entity
 from placethings.demo.entity.base_server import ServerGen, Entity
+from placethings.utils.common_utils import update_rootlogger
 
-
-logging.basicConfig(
-    format='%(asctime)s [%(levelname)s] %(funcName)s: %(message)s')
+update_rootlogger()
 log = logging.getLogger()
-log.setLevel(logging.DEBUG)
 
 
 class SubArgsManager(object):
@@ -89,6 +87,7 @@ class FuncManager(object):
         name = args.name
         ip, port = args.address.split(':')
         port = int(port)
+        update_rootlogger(name, is_log_to_file=True)
         ServerGen.start_server(name, Entity.AGENT, ip, port)
 
     @staticmethod
@@ -96,6 +95,7 @@ class FuncManager(object):
         name = args.name
         ip, port = args.address.split(':')
         port = int(port)
+        update_rootlogger(name, is_log_to_file=True)
         ServerGen.start_server(name, Entity.FILESERVER, ip, port)
 
     @staticmethod
@@ -106,6 +106,7 @@ class FuncManager(object):
         exec_time_ms = args.exectime
         next_task_ip = None
         next_task_port = None
+        update_rootlogger(name, is_log_to_file=True)
         ServerGen.start_server(
             name, Entity.TASK, ip, port,
             exec_time_ms, next_task_ip, next_task_port)
@@ -113,6 +114,7 @@ class FuncManager(object):
     @staticmethod
     def run_manager(args):
         case_name = args.testcase
+        update_rootlogger('manager', is_log_to_file=True)
         getattr(test_entity, case_name)()
 
     @staticmethod

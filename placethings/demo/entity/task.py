@@ -3,9 +3,13 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import logging
 import time
 
 from placethings.demo.entity.base_client import BaseClient
+
+
+log = logging.getLogger()
 
 
 class RPCServer(object):
@@ -13,7 +17,6 @@ class RPCServer(object):
             self, name, logger, exec_time_ms,
             next_task_ip, next_task_port):
         self.name = name
-        self.logger = logger
         self.exec_time_sec = exec_time_ms / 1000.0
         self.next_task_ip = next_task_ip
         self.next_task_port = next_task_port
@@ -40,7 +43,6 @@ class RPCServer(object):
                 self.next_task_ip, self.next_task_port,
                 'push', data, timestamp_dict)
         # logging
-        self._log_method('push', data)
         log.info('timestamp_dict: {}'.format(timestamp_dict))
         log.info('got data: {}'.format(data))
         log.info('compute result: {}'.format(result))
