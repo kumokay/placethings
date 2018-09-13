@@ -31,3 +31,19 @@ class BaseClient(msgpackrpc.Client):
             '(TIME) send: t1={}'.format(t1))
         log.info('(SEND) {}: {}'.format(method, args))
         return self.send_request(method, args)
+
+
+class ClientGen(object):
+    @staticmethod
+    def create_client(name, ip, port):
+        return BaseClient(name, ip, port)
+
+    @classmethod
+    def call(cls, ip, port, method, *args):
+        client = cls.create_client('ClientGen', ip, port)
+        return client.call(method, args)
+
+    @classmethod
+    def call_async(cls, ip, port, method, *args):
+        client = cls.create_client('ClientGen', ip, port)
+        return client.call_async(method, args)

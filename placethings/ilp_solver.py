@@ -4,6 +4,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from builtins import range
+from copy import deepcopy
 from collections import defaultdict
 from future.utils import listvalues
 import logging
@@ -423,16 +424,29 @@ def _get_path_length(path, Gt, Gd, result_mapping):
     return path_length
 
 
-def place_things(Gt, Gd, is_export, export_suffix=''):
+def find_mapping(Gt, Gd):
     status, result_mapping = _solver(Gt, Gd)
-    log.info('solver status: {}'.format(pulp.LpStatus[status]))
     assert status == pulp.constants.LpStatusOptimal
-    log.info('check solution for all simple path from src to dst')
+    return status, result_mapping
+
+
+def get_max_latency(Gt, Gd, result_mapping):
     src_list, dst_list, all_paths = _find_all_simple_path(Gt)
     max_latency = 0
     for path in all_paths:
         path_length = _get_path_length(path, Gt, Gd, result_mapping)
         max_latency = max(path_length, max_latency)
+    return max_latency
+
+
+def place_things(Gt_ro, Gd_ro, is_export, export_suffix=''):
+    Gt = deepcopy(Gt_ro)
+    Gd = deepcopy(Gd_ro)
+    status, result_mapping = find_mapping(Gt, Gd)
+    log.info('solver status: {}'.format(pulp.LpStatus[status]))
+    log.info('check solution for all simple path from src to dst')
+    src_list, dst_list, all_paths = _find_all_simple_path(Gt)
+    max_latency = get_max_latency(Gt, Gd, result_mapping)
     log.info('max_latency={}'.format(max_latency))
     # update mapping and gen node labels
     Gt = task_graph.update_graph(

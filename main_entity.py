@@ -8,7 +8,7 @@ import logging
 
 from placethings.demo.entity import test_entity
 from placethings.demo.entity.base_server import ServerGen, Entity
-from placethings.demo.entity.manager import Manager
+from placethings.demo.entity.sensor import SensorGen
 from placethings.utils.common_utils import update_rootlogger
 
 update_rootlogger()
@@ -43,13 +43,24 @@ class SubArgsManager(object):
 
     def next_address(self, required=False):
         self.subparser.add_argument(
-            '-na',
-            '--next_address',
+            '-ra',
+            '--recv_address',
             type=str,
-            dest='next_address',
+            dest='recv_address',
             default=None,
             required=required,
-            help=('next address (ip:port). e.g. 10.11.12.13:1234')
+            help=('receiver address (ip:port). e.g. 10.11.12.13:1234')
+        )
+
+    def sensor_type(self, required=False):
+        self.subparser.add_argument(
+            '-st',
+            '--sensor_type',
+            type=int,
+            dest='sensor_type',
+            default=None,
+            required=required,
+            help=('sensor_type (int)')
         )
 
     def exectime(self, required=False):
@@ -127,12 +138,32 @@ class FuncManager(object):
         ip, port = args.address.split(':')
         port = int(port)
         exec_time_ms = args.exectime
-        next_task_ip = None
-        next_task_port = None
+        next_ip, next_port = args.recv_address.split(':')
+        next_port = int(next_port)
         update_rootlogger(name, is_log_to_file=True)
         ServerGen.start_server(
             name, Entity.TASK, ip, port,
-            exec_time_ms, next_task_ip, next_task_port)
+            exec_time_ms, [(next_ip, next_port)])
+
+    @staticmethod
+    def run_actuator(args):
+        name = args.name
+        ip, port = args.address.split(':')
+        port = int(port)
+        update_rootlogger(name, is_log_to_file=True)
+        ServerGen.start_server(
+            name, Entity.TASK, ip, port, 0, None)
+
+    @staticmethod
+    def run_sensor(args):
+        name = args.name
+        sensor_type = args.sensor_type
+        next_ip, next_port = args.recv_address.split(':')
+        next_port = int(next_port)
+        update_rootlogger(name, is_log_to_file=True)
+        # def create(cls, name, sensor_type, receiver_dict):
+        SensorGen.start_sensor(
+            name, sensor_type, [(next_ip, next_port)])
 
     @staticmethod
     def run_manager(args):
@@ -187,6 +218,24 @@ def main():
     subargs_manager.name(required=True)
     subargs_manager.address(required=True)
     subargs_manager.exectime(required=True)
+    subargs_manager.next_address(required=True)
+
+    name = 'run_actuator'
+    subargs_manager = args_manager.add_subparser(
+        name,
+        func=getattr(FuncManager, name),
+        help='run_actuator')
+    subargs_manager.name(required=True)
+    subargs_manager.address(required=True)
+
+    name = 'run_sensor'
+    subargs_manager = args_manager.add_subparser(
+        name,
+        func=getattr(FuncManager, name),
+        help='run_sensor')
+    subargs_manager.name(required=True)
+    subargs_manager.address(required=True)
+    subargs_manager.sensor_type(required=True)
     subargs_manager.next_address(required=True)
 
     name = 'run_manager'

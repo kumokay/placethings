@@ -1,0 +1,1 @@
+2018-09-13 09:40:13,403 task_thermal_loc1|[INFO] __init__: start BaseSensor: task_thermal_loc1

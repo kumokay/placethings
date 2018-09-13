@@ -3,13 +3,19 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import logging
+
 from placethings.demo.entity.base_client import BaseClient
+
+
+log = logging.getLogger()
 
 
 class RPCServer(object):
 
     def __init__(self, name):
         self.name = name
+        log.info('start RPCServer: {}'.format(self.name))
 
     def _call(self, ip, port, method, *args):
         client = BaseClient(self.name, ip, port)

@@ -5,13 +5,16 @@ from __future__ import unicode_literals
 
 from future.utils import iteritems
 import logging
+import time
 
 from placethings import ilp_solver
 from placethings.config import device_data, nw_device_data
-from placethings.definition import GnInfo, Unit, GdInfo, DeviceCategory
+from placethings.definition import (
+    GnInfo, Unit, GdInfo, GtInfo, DeviceCategory, Device)
 from placethings.graph_gen import graph_factory, device_graph
 from placethings.config.config_factory import FileHelper
 from placethings.netgen.network import NetGen
+from placethings.demo.entity.sensor import SensorType
 
 
 log = logging.getLogger()
@@ -20,46 +23,142 @@ log = logging.getLogger()
 _DEFAULT_CONFIG = 'config_default'
 
 
-def test_deploy_default(config_name=None, is_export=False):
-    if not config_name:
-        config_name = _DEFAULT_CONFIG
+def _gen_topo_device_graph(config_name, is_export):
     # generate topo device graph
     dev_file = FileHelper.gen_config_filepath(config_name, 'device_data')
     nw_file = FileHelper.gen_config_filepath(config_name, 'nw_device_data')
     spec, inventory, links = device_data.import_data(dev_file)
     nw_spec, nw_inventory, nw_links = nw_device_data.import_data(nw_file)
-    topo_device_graph, _device_graph = device_graph.create_topo_device_graph(
+    topo_device_graph, Gd = device_graph.create_topo_device_graph(
         spec, inventory, links, nw_spec, nw_inventory, nw_links, is_export)
+    return topo_device_graph, Gd
+
+
+def _gen_agent_name(device_name):
+    return 'A-{}'.format(device_name)
+
+
+class AddressManager(object):
+    def __init__(self, net):
+        self.net = net
+        self.address_book = {}
+
+    def get_address_book(self):
+        return self.address_book
+
+    def get_task_address(self, task_name, device_name):
+        if task_name in self.address_book:
+            _, ip, port = self.address_book[task_name]
+        else:
+            ip = self.net.get_device_ip(device_name)
+            port = self.net.get_device_free_port(device_name)
+            self.address_book[task_name] = (device_name, ip, port)
+        return ip, port
+
+
+def test_deploy_default(config_name=None, is_export=True):
+    if not config_name:
+        config_name = _DEFAULT_CONFIG
+    # generate input topo, device task data
+    Gt = graph_factory.gen_task_graph(config_name, is_export)
+    topo_device_graph, Gd = _gen_topo_device_graph(config_name, is_export)
+    G_map = ilp_solver.place_things(Gt, Gd, is_export)
+    # simulate network
     net = NetGen.create(topo_device_graph)
     net.start()
-    net.validate()
-    # install manager / agents
-    port = 18800
-    all_ips = {}
-    # run agents
-    command = (
-        'cd /home/kumokay/github/placethings '
-        '&& python main_entity.py run_agent -a {ip}:{port}')
-    for dev_name in topo_device_graph.nodes():
-        ip = net.get_device_ip(dev_name)
-        node = topo_device_graph.node[dev_name]
-        if node[GdInfo.DEVICE_CAT] == DeviceCategory.PROCESSOR:
-            net.run_cmd(dev_name, command.format(ip, port), async=True)
-            all_ips[dev_name] = (ip, port)
+    # net.validate()
+    # install manager / agents / tasks
+    _PROG_DIR = '/home/kumokay/github/placethings'
+    addr_manager = AddressManager(net)
+    # run agents on all processors
+    cmd_template = (
+        'cd {progdir} && python main_entity.py run_agent '
+        '-a {ip}:{port} -n {name}')
+    for device_name in Gd.nodes():
+        device_cat = Gd.node[device_name][GdInfo.DEVICE_CAT]
+        if device_cat == DeviceCategory.PROCESSOR:
+            name = _gen_agent_name(device_name)
+            ip, port = addr_manager.get_task_address(name, device_name)
+            command = cmd_template.format(
+                progdir=_PROG_DIR,
+                ip=ip,
+                port=port,
+                name=name)
+            net.run_cmd(device_name, command, async=True)
     # deploy tasks
-    command = (
-        'cd /home/kumokay/github/placethings '
-        '&& python main_entity.py run_task '
-        '-a {ip}:{port} -t {exectime} -na {next_ip}:{next_port}')
-    for dev_name in topo_device_graph.nodes():
-        # TODO
+    cmd_actuator_template = (
+        'cd {progdir} && python main_entity.py run_actuator '
+        '-a {ip}:{port} -n {name}')
+    cmd_sensor_template = (
+        'cd {progdir} && python main_entity.py run_sensor '
+        '-a {ip}:{port} -n {name} -st {sensor_type} -ra {next_ip}:{next_port}')
+    cmd_task_template = (
+        'cd {progdir} && python main_entity.py run_task '
+        '-a {ip}:{port} -n {name} -t {exectime} -ra {next_ip}:{next_port}')
+    for task_name in G_map.nodes():
+        device_name = G_map.node[task_name][GtInfo.CUR_DEVICE]
+        device_cat = Gd.node[device_name][GdInfo.DEVICE_CAT]
+        exectime = G_map.node[task_name][GtInfo.CUR_LATENCY]
+        name = task_name
+        ip, port = addr_manager.get_task_address(name, device_name)
+        if device_cat == DeviceCategory.ACTUATOR:
+            command = cmd_actuator_template.format(
+                progdir=_PROG_DIR,
+                ip=ip,
+                port=port,
+                name=name)
+            net.run_cmd(device_name, command, async=True)
+        elif device_cat == DeviceCategory.SENSOR:
+            device_type = Gd.node[device_name][GdInfo.DEVICE_TYPE]
+            if device_type == Device.CAMERA:
+                sensor_type = SensorType.CAMERA
+            elif device_type == Device.THERMAL:
+                sensor_type = SensorType.THERMAL
+            else:
+                assert False, 'undefined sensor'
+            next_task_list = list(G_map.successors(task_name))
+            assert len(next_task_list) == 1, 'support 1 successor now'
+            next_task = next_task_list[0]
+            next_device = G_map.node[next_task][GtInfo.CUR_DEVICE]
+            next_ip, next_port = addr_manager.get_task_address(
+                next_task, next_device)
+            command = cmd_sensor_template.format(
+                progdir=_PROG_DIR,
+                ip=ip,
+                port=port,
+                name=name,
+                sensor_type=sensor_type,
+                next_ip=next_ip,
+                next_port=next_port)
+            net.run_cmd(device_name, command, async=True)
+        elif device_cat == DeviceCategory.PROCESSOR:
+            next_task_list = list(G_map.successors(task_name))
+            assert len(next_task_list) == 1, 'support 1 successor now'
+            next_task = next_task_list[0]
+            next_device = G_map.node[next_task][GtInfo.CUR_DEVICE]
+            next_ip, next_port = addr_manager.get_task_address(
+                next_task, next_device)
+            command = cmd_task_template.format(
+                progdir=_PROG_DIR,
+                ip=ip,
+                port=port,
+                name=name,
+                exectime=exectime,
+                next_ip=next_ip,
+                next_port=next_port)
+            net.run_cmd(device_name, command, async=True)
+    # running
+    time.sleep(20)
     # cleanup
-    command = (
-        'cd /home/kumokay/github/placethings '
-        '&& python main_entity.py stop_server -a {ip}:{port}')
-    for dev_name, (ip, port) in iteritems(all_ips):
-        command = 'python main_entity.py stop_server -a {}:{}'.format(ip, port)
-        net.run_cmd(dev_name, command.format(ip, port), async=True)
+    cmd_template = (
+        'cd {progdir} && python main_entity.py stop_server -a {ip}:{port}')
+    for entity_name, addr_info in iteritems(addr_manager.get_address_book()):
+        device_name, ip, port = addr_info
+        command = cmd_template.format(
+            progdir=_PROG_DIR,
+            ip=ip,
+            port=port)
+        net.run_cmd(device_name, command, async=True)
     net.stop()
 
 

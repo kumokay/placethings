@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 from future.utils import iteritems
 import logging
 
-from placethings.demo.entity.base_client import BaseClient
+from placethings.demo.entity.base_client import ClientGen
 
 
 log = logging.getLogger()
@@ -26,21 +26,16 @@ class Manager(object):
         self.cur_device_addr = None
         self.cur_deploy_cnt = 0
 
-    def call(self, ip, port, method, *args):
-        client = BaseClient(self.name, ip, port)
-        result = client.call(method, *args)
-        return result
-
     def clean_up(self, servermap):
         for ip, port in iteritems(servermap):
-            result = self.call(ip, port, 'STOP')
+            result = ClientGen.call(ip, port, 'STOP')
             log.info('stop server @{}:{}, {}'.format(ip, port, result))
 
     def init_deploy(self, mapping, device_addr):
         log.info('deploy {} ===='.format(self.cur_deploy_cnt))
         for task, device in iteritems(mapping):
             ip, port = device_addr[device]
-            result = self.call(
+            result = ClientGen.call(
                 ip, port, 'fetch_from', task,
                 self.fileserver_ip, self.fileserver_port)
             log.info('depoly {} to {}: {}'.format(task, device, result))
@@ -55,7 +50,7 @@ class Manager(object):
                 continue
             ip, port = device_addr[device]
             server_ip, server_port = device_addr[device_has_task]
-            result = self.call(
+            result = ClientGen.call(
                 ip, port, 'fetch_from', task, server_ip, server_port)
             log.info('move {} from {} to {}: {}'.format(
                 task, device_has_task, device, result))

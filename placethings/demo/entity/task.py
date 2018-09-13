@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 import logging
 import time
 
-from placethings.demo.entity.base_client import BaseClient
+from placethings.demo.entity.base_client import ClientGen
 
 
 log = logging.getLogger()
@@ -14,36 +14,25 @@ log = logging.getLogger()
 
 class RPCServer(object):
     def __init__(
-            self, name, logger, exec_time_ms,
-            next_task_ip, next_task_port):
+            self, name, logger, exec_time_ms, receiver_list=None):
         self.name = name
         self.exec_time_sec = exec_time_ms / 1000.0
-        self.next_task_ip = next_task_ip
-        self.next_task_port = next_task_port
+        self.receiver_list = receiver_list
+        log.info('start RPCServer: {}'.format(self.name))
 
-    @staticmethod
-    def _call_async(self, ip, port, method, *args):
-        client = BaseClient(self.name, ip, port, self.logger)
-        result = client.call_async(method, *args)
-        return result
-
-    def compute(self, data):
+    def _compute(self, data):
         time.sleep(self.exec_time_sec)
         return 'spent {} to compute result'.format(self.exec_time_sec)
 
-    def push(self, data, timestamp_dict):
-        t1 = time.time()
-        # compute data and push to the next task
-        result = self.compute(data)
-        # dont care about result
-        t2 = time.time()
-        timestamp_dict[self.name] = (t1, t2)
-        if self.next_task_ip and self.next_task_port:
-            self._call_async(
-                self.next_task_ip, self.next_task_port,
-                'push', data, timestamp_dict)
-        # logging
-        log.info('timestamp_dict: {}'.format(timestamp_dict))
-        log.info('got data: {}'.format(data))
-        log.info('compute result: {}'.format(result))
-        return 'compute data'
+    def push(self, data):
+        if not self.receiver_list:
+            log.info('got data: {}'.format(data))
+            return 'receive data'
+        else:
+            result = self._compute(data)
+            for next_ip, next_port in self.receiver_list:
+                ClientGen.call_async(next_ip, next_port, 'push', result)
+            # logging
+            log.info('got data: {}'.format(data))
+            log.info('compute result: {}'.format(result))
+        return 'compute data and send result'

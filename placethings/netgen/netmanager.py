@@ -20,10 +20,12 @@ class NetManager(object):
     _NEXT_SWITCH_ID = 0
     _HOST_PREFIX = 'h'
     _SWITCH_PREFIX = 's'
+    _PORT_START = 18800
 
     def __init__(self, net):
         self._net = net
         self._host_dict = {}
+        self._host_next_free_port = {}
         self._switch_dict = {}
         self._edge_dict = {}
         self._devNameToNodeName = {}
@@ -60,6 +62,7 @@ class NetManager(object):
         name = self._new_host_name()
         host = self._net.addHost(name, ip=self._new_ip())
         self._host_dict[device_name] = host
+        self._host_next_free_port[device_name] = self._PORT_START
         self._devNameToNodeName[device_name] = name
         log.debug('add host {}'.format(device_name))
 
@@ -108,6 +111,11 @@ class NetManager(object):
 
     def get_device_ip(self, device_name):
         return self._host_dict[device_name].IP()
+
+    def get_device_free_port(self, device_name):
+        next_port = self._host_next_free_port[device_name]
+        self._host_next_free_port[device_name] += 1
+        return next_port
 
     def validate(self):
         log.info('*** Validate network')
