@@ -74,13 +74,16 @@ class NetManager(object):
         log.debug('add switch {}'.format(device_name))
 
     def addLink(
-            self, src, dst, bw_bps=102400, delay_ms=1,
+            self, src, dst, bw_bps=None, delay_ms=1,
             max_queue_size=None, pkt_loss_rate=None):
         if (dst, src) in self._edge_dict:
             # mininet is not DiGraph! everything is bidirectional
             return
         # mininet bandwidth supported range 0..1000
-        bw_mbps = None if bw_bps > 1000000 else int(bw_bps / 1024000)
+        if bw_bps is None:
+            bw_mbps = None
+        else:
+            bw_mbps = None if bw_bps > 1000000 else int(bw_bps / 1000000)
         delay = '{}ms'.format(delay_ms)
         loss = int(pkt_loss_rate*100) if pkt_loss_rate else None
         link = self._net.addLink(
@@ -88,6 +91,16 @@ class NetManager(object):
             bw=bw_mbps, delay=delay, max_queue_size=max_queue_size, loss=loss)
         self._edge_dict[(src, dst)] = link
         log.debug('link {} <-> {}: delay={}'.format(src, dst, delay))
+
+    def delLink(self, src, dst):
+        if (src, dst) in self._edge_dict:
+            assert (dst, src) not in self._edge_dict
+            self._net.delLink(src, dst)
+            del self._edge_dict[(src, dst)]
+        elif (dst, src) in self._edge_dict:
+            self._net.delLink(dst, src)
+            del self._edge_dict[(dst, src)]
+        log.debug('delete link {} <-> {}'.format(src, dst))
 
     def start(self):
         log.info('*** Starting network')

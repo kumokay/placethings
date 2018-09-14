@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 
 import logging
 
-from placethings.demo.entity.base_client import BaseClient
+from placethings.demo.entity.base_client import ClientGen
 
 
 log = logging.getLogger()
@@ -15,15 +15,10 @@ class RPCServer(object):
 
     def __init__(self, name):
         self.name = name
-        log.info('start RPCServer: {}'.format(self.name))
-
-    def _call(self, ip, port, method, *args):
-        client = BaseClient(self.name, ip, port)
-        result = client.call(method, *args)
-        return result
+        log.info('start Agent RPCServer: {}'.format(self.name))
 
     def fetch_from(self, filename, from_ip, from_port):
-        result = self._call(from_ip, from_port, 'fetch', filename)
+        result = ClientGen.call(from_ip, from_port, 'fetch', filename)
         return 'fetch {} from {}:{}, got: {}'.format(
             filename, from_ip, from_port, result)
 
@@ -33,8 +28,9 @@ class RPCServer(object):
     def delete(self, filename):
         return 'delete {}'.format(filename)
 
-    def start_prog(self, program_name):
-        return 'start_prog {}'.format(program_name)
+    def start_prog(self, cmd):
+        log.info('try to start prog: {}'.format(cmd))
+        return 'start_prog'
 
     def stop_prog(self, program_name):
         return 'stop_prog {}'.format(program_name)

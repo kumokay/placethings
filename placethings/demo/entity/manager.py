@@ -31,6 +31,12 @@ class Manager(object):
             result = ClientGen.call(ip, port, 'STOP')
             log.info('stop server @{}:{}, {}'.format(ip, port, result))
 
+    @staticmethod
+    def trigger_start_prog(agent, ip, port, command):
+        log.info('ask agent {} to run command: {}'.format(agent, command))
+        result = ClientGen.call(ip, port, 'start_prog', command)
+        log.info('result: {}'.format(result))
+
     def init_deploy(self, mapping, device_addr):
         log.info('deploy {} ===='.format(self.cur_deploy_cnt))
         for task, device in iteritems(mapping):

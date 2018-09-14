@@ -14,11 +14,12 @@ log = logging.getLogger()
 
 class RPCServer(object):
     def __init__(
-            self, name, logger, exec_time_ms, receiver_list=None):
+            self, name, exec_time_ms, receiver_list=None):
         self.name = name
         self.exec_time_sec = exec_time_ms / 1000.0
         self.receiver_list = receiver_list
-        log.info('start RPCServer: {}'.format(self.name))
+        log.info('start Task RPCServer: {}, exec_time={} sec'.format(
+            self.name, self.exec_time_sec))
 
     def _compute(self, data):
         time.sleep(self.exec_time_sec)

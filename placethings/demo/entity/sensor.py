@@ -33,7 +33,7 @@ class BaseSensor(object):
     def _send_data(self, *args):
         data = self.datagen_func(*args)
         for ip, port in self.receiver_list:
-            ClientGen.call_async(ip, port, 'push', data)
+            ClientGen.call(ip, port, 'push', data)
 
     def create_schedule(self):
         log.info('create schedule from {} to {}, cycle={}'.format(
@@ -68,17 +68,17 @@ class SensorGen(object):
             + (2 * cls._DELAY_START_TIME_TICK))
 
     @staticmethod
-    def _gen_random_bytearray(n):
-        return bytearray(os.urandom(n))
+    def _gen_random_byte_str(n):
+        return os.urandom(n)
 
     @classmethod
-    def _gen_random_size_byte_array(cls, a, b):
+    def _gen_random_size_byte_str(cls, a, b):
         n = random.randint(a, b)
-        return cls._gen_random_bytearray(n)
+        return cls._gen_random_byte_str(n)
 
     @staticmethod
-    def _gen_random_int_bytearry(a, b, n):
-        return bytearray([random.randint(a, b) for _ in range(n)])
+    def _gen_random_int_list(a, b, n):
+        return [random.randint(a, b) for _ in range(n)]
 
     @classmethod
     def start_sensor(cls, name, sensor_type, receiver_list):
@@ -86,11 +86,11 @@ class SensorGen(object):
 
         if sensor_type == SensorType.THERMAL:
             # cls._gen_random_int_bytearry(40, 120, 100)
-            datagen_func = cls._gen_random_int_bytearry
+            datagen_func = cls._gen_random_int_list
             datagen_args = (40, 120, 100)
         elif sensor_type == SensorType.CAMERA:
             # cls._gen_random_bytearray(random.randint(2000, 4000))
-            datagen_func = cls._gen_random_size_byte_array
+            datagen_func = cls._gen_random_size_byte_str
             datagen_args = (2000, 4000)
         else:
             assert False, 'no sensor type: {}'.format(sensor_type)

@@ -149,14 +149,14 @@ def create_topo_device_graph(
         FileHelper.export_graph(
             dev_graph, export_name, which_edge_label=GdInfo.LATENCY)
         FileHelper.export_data(node_info, dev_edge_info, export_name)
-    return topo_device_graph, dev_graph
+    return topo, topo_device_graph, dev_graph
 
 
 def create_graph(
         spec, inventory, links,
         nw_spec, nw_inventory, nw_links,
         is_export=False, export_suffix=''):
-    _, dev_graph = create_topo_device_graph(
+    _, _, dev_graph = create_topo_device_graph(
         spec, inventory, links, nw_spec, nw_inventory, nw_links,
         is_export, export_suffix)
     return dev_graph

@@ -13,8 +13,10 @@ from placethings.definition import (
     GnInfo, Unit, GdInfo, GtInfo, DeviceCategory, Device)
 from placethings.graph_gen import graph_factory, device_graph
 from placethings.config.config_factory import FileHelper
-from placethings.netgen.network import NetGen
+from placethings.netgen.network import ControlPlane, DataPlane
 from placethings.demo.entity.sensor import SensorType
+from placethings.demo.entity.manager import Manager
+from placethings.demo.utils import AddressManager
 
 
 log = logging.getLogger()
@@ -29,31 +31,13 @@ def _gen_topo_device_graph(config_name, is_export):
     nw_file = FileHelper.gen_config_filepath(config_name, 'nw_device_data')
     spec, inventory, links = device_data.import_data(dev_file)
     nw_spec, nw_inventory, nw_links = nw_device_data.import_data(nw_file)
-    topo_device_graph, Gd = device_graph.create_topo_device_graph(
+    topo_graph, topo_device_graph, Gd = device_graph.create_topo_device_graph(
         spec, inventory, links, nw_spec, nw_inventory, nw_links, is_export)
-    return topo_device_graph, Gd
+    return topo_graph, topo_device_graph, Gd
 
 
 def _gen_agent_name(device_name):
     return 'A-{}'.format(device_name)
-
-
-class AddressManager(object):
-    def __init__(self, net):
-        self.net = net
-        self.address_book = {}
-
-    def get_address_book(self):
-        return self.address_book
-
-    def get_task_address(self, task_name, device_name):
-        if task_name in self.address_book:
-            _, ip, port = self.address_book[task_name]
-        else:
-            ip = self.net.get_device_ip(device_name)
-            port = self.net.get_device_free_port(device_name)
-            self.address_book[task_name] = (device_name, ip, port)
-        return ip, port
 
 
 def test_deploy_default(config_name=None, is_export=True):
@@ -61,13 +45,22 @@ def test_deploy_default(config_name=None, is_export=True):
         config_name = _DEFAULT_CONFIG
     # generate input topo, device task data
     Gt = graph_factory.gen_task_graph(config_name, is_export)
-    topo_device_graph, Gd = _gen_topo_device_graph(config_name, is_export)
+    topo_graph, topo_device_graph, Gd = _gen_topo_device_graph(
+        config_name, is_export)
     G_map = ilp_solver.place_things(Gt, Gd, is_export)
     # simulate network
-    net = NetGen.create(topo_device_graph)
+    control_plane = ControlPlane(topo_device_graph)
+    control_plane.addManagerDevice('Manager', 'HOME_ROUTER.0')
+    data_plane = DataPlane(topo_device_graph)
+    # TODO: rewrite
+
+
+
     net.start()
     # net.validate()
     # install manager / agents / tasks
+    net.addHost('Manager')
+    net.addLink('Manager', 'HOME_ROUTER.0', )
     _PROG_DIR = '/home/kumokay/github/placethings'
     addr_manager = AddressManager(net)
     # run agents on all processors
@@ -146,7 +139,7 @@ def test_deploy_default(config_name=None, is_export=True):
                 exectime=exectime,
                 next_ip=next_ip,
                 next_port=next_port)
-            net.run_cmd(device_name, command, async=True)
+            net.run_cmd('Manager', command)
     # running
     time.sleep(20)
     # cleanup

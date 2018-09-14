@@ -30,6 +30,8 @@ class BaseClient(msgpackrpc.Client):
         log.info(
             '(TIME) send: t1={}'.format(t1))
         log.info('(SEND) {}: {}'.format(method, args))
+        args = list(args)
+        args.append(t1)
         return self.send_request(method, args)
 
 
@@ -41,9 +43,9 @@ class ClientGen(object):
     @classmethod
     def call(cls, ip, port, method, *args):
         client = cls.create_client('ClientGen', ip, port)
-        return client.call(method, args)
+        return client.call(method, *args)
 
     @classmethod
     def call_async(cls, ip, port, method, *args):
         client = cls.create_client('ClientGen', ip, port)
-        return client.call_async(method, args)
+        return client.call_async(method, *args)

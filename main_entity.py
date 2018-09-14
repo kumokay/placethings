@@ -9,6 +9,7 @@ import logging
 from placethings.demo.entity import test_entity
 from placethings.demo.entity.base_server import ServerGen, Entity
 from placethings.demo.entity.sensor import SensorGen
+from placethings.demo.entity.base_client import ClientGen
 from placethings.utils.common_utils import update_rootlogger
 
 update_rootlogger()
@@ -74,15 +75,38 @@ class SubArgsManager(object):
             help=('exectime (ms)')
         )
 
-    def run_procedure(self, required=False):
+    def method(self, required=False):
         self.subparser.add_argument(
-            '-r',
-            '--run_procedure',
-            type=int,
-            dest='run_procedure',
+            '-m',
+            '--method',
+            type=str,
+            dest='method',
             default=None,
             required=required,
-            help=('run a procedure: init_deploy or re_deploy')
+            help=('rpc method name')
+        )
+
+    def command(self, required=False):
+        self.subparser.add_argument(
+            '-cmd',
+            '--command',
+            type=str,
+            dest='command',
+            default=None,
+            required=required,
+            help=('command to run')
+        )
+
+    def args_list(self, required=False):
+        self.subparser.add_argument(
+            '-al',
+            '--args_list',
+            type=str,
+            nargs='+',
+            dest='args_list',
+            default=[],
+            required=required,
+            help=('args list')
         )
 
     def testcase(self, required=False):
@@ -117,25 +141,29 @@ class ArgsManager(object):
 class FuncManager(object):
 
     @staticmethod
-    def run_agent(args):
+    def _split_addr(address):
+        ip, port = address.split(':')
+        return ip, int(port)
+
+    @classmethod
+    def run_agent(cls, args):
         name = args.name
-        ip, port = args.address.split(':')
-        port = int(port)
+        ip, port = cls._split_addr(args.address)
         update_rootlogger(name, is_log_to_file=True)
         ServerGen.start_server(name, Entity.AGENT, ip, port)
 
-    @staticmethod
-    def run_fileserver(args):
+    @classmethod
+    def run_fileserver(cls, args):
         name = args.name
-        ip, port = args.address.split(':')
+        ip, port = cls._split_addr(args.address)
         port = int(port)
         update_rootlogger(name, is_log_to_file=True)
         ServerGen.start_server(name, Entity.FILESERVER, ip, port)
 
-    @staticmethod
-    def run_task(args):
+    @classmethod
+    def run_task(cls, args):
         name = args.name
-        ip, port = args.address.split(':')
+        ip, port = cls._split_addr(args.address)
         port = int(port)
         exec_time_ms = args.exectime
         next_ip, next_port = args.recv_address.split(':')
@@ -145,31 +173,33 @@ class FuncManager(object):
             name, Entity.TASK, ip, port,
             exec_time_ms, [(next_ip, next_port)])
 
-    @staticmethod
-    def run_actuator(args):
+    @classmethod
+    def run_actuator(cls, args):
         name = args.name
-        ip, port = args.address.split(':')
-        port = int(port)
+        ip, port = cls._split_addr(args.address)
         update_rootlogger(name, is_log_to_file=True)
         ServerGen.start_server(
             name, Entity.TASK, ip, port, 0, None)
 
-    @staticmethod
-    def run_sensor(args):
+    @classmethod
+    def run_sensor(cls, args):
         name = args.name
         sensor_type = args.sensor_type
-        next_ip, next_port = args.recv_address.split(':')
+        next_ip, next_port = cls._split_addr(args.recv_address)
         next_port = int(next_port)
         update_rootlogger(name, is_log_to_file=True)
         # def create(cls, name, sensor_type, receiver_dict):
         SensorGen.start_sensor(
             name, sensor_type, [(next_ip, next_port)])
 
-    @staticmethod
-    def run_manager(args):
-        # name = args.name
-        # procedure = args.run_procedure
-        assert False, 'command not enabled'
+    @classmethod
+    def run_client(cls, args):
+        name = args.name
+        ip, port = cls._split_addr(args.address)
+        method = args.method
+        command = args.command
+        update_rootlogger(name, is_log_to_file=True)
+        ClientGen.call_async(ip, port, method, (command))
 
     @staticmethod
     def run_test(args):
@@ -238,13 +268,15 @@ def main():
     subargs_manager.sensor_type(required=True)
     subargs_manager.next_address(required=True)
 
-    name = 'run_manager'
+    name = 'run_client'
     subargs_manager = args_manager.add_subparser(
         name,
         func=getattr(FuncManager, name),
-        help='run_manager')
+        help='run_client')
     subargs_manager.name(required=True)
-    subargs_manager.run_procedure(required=True)
+    subargs_manager.address(required=True)
+    subargs_manager.method(required=True)
+    subargs_manager.command(required=True)
 
     name = 'run_test'
     subargs_manager = args_manager.add_subparser(
