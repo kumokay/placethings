@@ -1,0 +1,47 @@
+2018-09-15 10:17:18,722 task_getAvgTemperature|[INFO] start_server: start_server task_getAvgTemperature at 10.0.0.112:18800, args=['task_getAvgTemperature', 10, [(u'10.0.0.118', 18800)]]
+2018-09-15 10:17:18,723 task_getAvgTemperature|[INFO] __init__: start Task RPCServer: task_getAvgTemperature, exectime=0.01s, receivers=[(u'10.0.0.118', 18800)]
+2018-09-15 10:17:25,161 task_getAvgTemperature|[INFO] dispatch: (TIME) recv: t1=1537031845.01, t2=1537031845.16, t_transmit=0.155178070068
+2018-09-15 10:17:25,161 task_getAvgTemperature|[INFO] dispatch: (RECV) push: [[97, 109, 106, 50, 51, 57, 89, 64, 80, 118, 115, 115, 90, 116, 
+2018-09-15 10:17:25,172 task_getAvgTemperature|[INFO] push: push data to 10.0.0.118:18800
+2018-09-15 10:17:25,172 task_getAvgTemperature|[INFO] call: (TIME) send: t1=1537031845.17
+2018-09-15 10:17:25,172 task_getAvgTemperature|[INFO] call: (SEND) push: (u'spent 0.01 to compute result',)
+2018-09-15 10:17:25,387 task_getAvgTemperature|[INFO] push: got data: [97, 109, 106, 50, 51, 57, 89, 64, 80, 118, 115, 115, 90, 116, 110, 67, 55, 50, 74, 112, 88, 106, 117, 96, 84, 71, 45, 67, 104, 85, 42, 79, 43, 88, 74, 120, 102, 116, 116, 115, 118, 96, 70, 99, 70, 65, 68, 100, 92, 52, 95, 98, 77, 56, 70, 120, 107, 89, 93, 88, 43, 75, 60, 106, 51, 58, 68, 71, 63, 80, 90, 96, 89, 41, 67, 81, 40, 84, 81, 93, 100, 104, 89, 70, 53, 82, 91, 80, 111, 96, 98, 52, 67, 118, 90, 69, 97, 64, 95, 100]
+2018-09-15 10:17:25,387 task_getAvgTemperature|[INFO] push: compute result: spent 0.01 to compute result
+2018-09-15 10:17:25,388 task_getAvgTemperature|[INFO] dispatch: (TIME) recv: t1=1537031845.01, t2=1537031845.39, t_transmit=0.3818359375
+2018-09-15 10:17:25,388 task_getAvgTemperature|[INFO] dispatch: (RECV) push: [[95, 68, 81, 79, 84, 54, 107, 111, 50, 47, 113, 111, 57, 102, 9
+2018-09-15 10:17:25,398 task_getAvgTemperature|[INFO] push: push data to 10.0.0.118:18800
+2018-09-15 10:17:25,399 task_getAvgTemperature|[INFO] call: (TIME) send: t1=1537031845.4
+2018-09-15 10:17:25,399 task_getAvgTemperature|[INFO] call: (SEND) push: (u'spent 0.01 to compute result',)
+2018-09-15 10:17:25,608 task_getAvgTemperature|[INFO] push: got data: [95, 68, 81, 79, 84, 54, 107, 111, 50, 47, 113, 111, 57, 102, 91, 94, 47, 45, 96, 116, 109, 108, 59, 118, 86, 88, 101, 76, 105, 41, 56, 43, 44, 98, 99, 65, 53, 49, 120, 114, 106, 94, 94, 83, 88, 101, 65, 115, 58, 92, 59, 78, 96, 112, 80, 69, 46, 71, 94, 99, 41, 82, 41, 91, 49, 113, 105, 73, 41, 76, 42, 70, 83, 51, 112, 61, 90, 69, 58, 94, 112, 64, 91, 117, 85, 77, 52, 48, 62, 120, 48, 101, 88, 111, 93, 98, 68, 52, 110, 63]
+2018-09-15 10:17:25,608 task_getAvgTemperature|[INFO] push: compute result: spent 0.01 to compute result
+2018-09-15 10:17:30,135 task_getAvgTemperature|[INFO] dispatch: (TIME) recv: t1=1537031850.0, t2=1537031850.14, t_transmit=0.134734153748
+2018-09-15 10:17:30,136 task_getAvgTemperature|[INFO] dispatch: (RECV) push: [[63, 88, 85, 94, 86, 66, 120, 58, 83, 46, 102, 65, 87, 53, 81, 
+2018-09-15 10:17:30,146 task_getAvgTemperature|[INFO] push: push data to 10.0.0.118:18800
+2018-09-15 10:17:30,146 task_getAvgTemperature|[INFO] call: (TIME) send: t1=1537031850.15
+2018-09-15 10:17:30,147 task_getAvgTemperature|[INFO] call: (SEND) push: (u'spent 0.01 to compute result',)
+2018-09-15 10:17:30,371 task_getAvgTemperature|[INFO] push: got data: [63, 88, 85, 94, 86, 66, 120, 58, 83, 46, 102, 65, 87, 53, 81, 40, 96, 110, 51, 46, 60, 75, 54, 44, 47, 67, 105, 67, 51, 50, 44, 119, 118, 83, 104, 80, 111, 119, 57, 81, 75, 41, 48, 115, 74, 91, 75, 90, 44, 68, 46, 53, 107, 50, 42, 112, 42, 71, 57, 64, 83, 64, 44, 117, 115, 74, 44, 63, 80, 46, 94, 48, 89, 88, 76, 55, 65, 78, 62, 49, 99, 55, 65, 112, 84, 58, 96, 115, 76, 116, 114, 53, 99, 109, 40, 93, 96, 62, 96, 78]
+2018-09-15 10:17:30,371 task_getAvgTemperature|[INFO] push: compute result: spent 0.01 to compute result
+2018-09-15 10:17:30,371 task_getAvgTemperature|[INFO] dispatch: (TIME) recv: t1=1537031850.0, t2=1537031850.37, t_transmit=0.369112968445
+2018-09-15 10:17:30,372 task_getAvgTemperature|[INFO] dispatch: (RECV) push: [[81, 61, 85, 61, 61, 44, 72, 40, 52, 83, 41, 113, 59, 103, 81, 
+2018-09-15 10:17:30,382 task_getAvgTemperature|[INFO] push: push data to 10.0.0.118:18800
+2018-09-15 10:17:30,382 task_getAvgTemperature|[INFO] call: (TIME) send: t1=1537031850.38
+2018-09-15 10:17:30,382 task_getAvgTemperature|[INFO] call: (SEND) push: (u'spent 0.01 to compute result',)
+2018-09-15 10:17:30,607 task_getAvgTemperature|[INFO] push: got data: [81, 61, 85, 61, 61, 44, 72, 40, 52, 83, 41, 113, 59, 103, 81, 91, 80, 54, 75, 54, 53, 63, 118, 99, 93, 42, 88, 94, 85, 54, 104, 114, 86, 110, 75, 98, 49, 64, 80, 90, 41, 104, 120, 101, 100, 82, 66, 74, 49, 74, 102, 66, 89, 96, 64, 108, 74, 80, 115, 81, 54, 104, 106, 98, 76, 66, 96, 90, 111, 62, 57, 104, 102, 62, 109, 94, 104, 72, 74, 82, 66, 41, 68, 89, 65, 86, 97, 63, 109, 58, 68, 79, 47, 73, 56, 50, 90, 71, 68, 73]
+2018-09-15 10:17:30,607 task_getAvgTemperature|[INFO] push: compute result: spent 0.01 to compute result
+2018-09-15 10:17:35,175 task_getAvgTemperature|[INFO] dispatch: (TIME) recv: t1=1537031855.01, t2=1537031855.18, t_transmit=0.168335199356
+2018-09-15 10:17:35,175 task_getAvgTemperature|[INFO] dispatch: (RECV) push: [[103, 113, 118, 56, 54, 120, 69, 78, 81, 119, 70, 81, 104, 76, 
+2018-09-15 10:17:35,185 task_getAvgTemperature|[INFO] push: push data to 10.0.0.118:18800
+2018-09-15 10:17:35,186 task_getAvgTemperature|[INFO] call: (TIME) send: t1=1537031855.19
+2018-09-15 10:17:35,186 task_getAvgTemperature|[INFO] call: (SEND) push: (u'spent 0.01 to compute result',)
+2018-09-15 10:17:35,405 task_getAvgTemperature|[INFO] push: got data: [103, 113, 118, 56, 54, 120, 69, 78, 81, 119, 70, 81, 104, 76, 60, 80, 114, 81, 69, 65, 43, 70, 109, 101, 75, 80, 62, 59, 63, 40, 64, 54, 118, 109, 91, 107, 52, 69, 69, 113, 66, 111, 65, 112, 65, 63, 93, 93, 98, 54, 65, 79, 52, 87, 107, 106, 73, 43, 60, 52, 82, 55, 67, 111, 48, 117, 50, 68, 44, 77, 79, 119, 79, 117, 87, 85, 85, 54, 84, 97, 88, 113, 92, 74, 41, 61, 107, 78, 108, 46, 116, 109, 51, 119, 108, 112, 90, 47, 114, 47]
+2018-09-15 10:17:35,406 task_getAvgTemperature|[INFO] push: compute result: spent 0.01 to compute result
+2018-09-15 10:17:35,406 task_getAvgTemperature|[INFO] dispatch: (TIME) recv: t1=1537031855.0, t2=1537031855.41, t_transmit=0.401841878891
+2018-09-15 10:17:35,406 task_getAvgTemperature|[INFO] dispatch: (RECV) push: [[49, 110, 66, 45, 119, 46, 113, 44, 53, 43, 83, 73, 113, 47, 10
+2018-09-15 10:17:35,417 task_getAvgTemperature|[INFO] push: push data to 10.0.0.118:18800
+2018-09-15 10:17:35,417 task_getAvgTemperature|[INFO] call: (TIME) send: t1=1537031855.42
+2018-09-15 10:17:35,417 task_getAvgTemperature|[INFO] call: (SEND) push: (u'spent 0.01 to compute result',)
+2018-09-15 10:17:35,645 task_getAvgTemperature|[INFO] push: got data: [49, 110, 66, 45, 119, 46, 113, 44, 53, 43, 83, 73, 113, 47, 105, 55, 108, 69, 77, 61, 90, 110, 54, 119, 69, 108, 63, 47, 53, 109, 113, 54, 106, 78, 82, 101, 45, 94, 69, 92, 73, 109, 65, 88, 100, 105, 100, 63, 102, 71, 63, 97, 94, 65, 75, 98, 117, 57, 120, 112, 83, 98, 104, 108, 100, 108, 61, 69, 96, 115, 91, 80, 42, 50, 64, 102, 112, 94, 115, 113, 83, 116, 45, 70, 47, 87, 115, 92, 67, 112, 50, 40, 117, 84, 79, 106, 57, 116, 102, 106]
+2018-09-15 10:17:35,645 task_getAvgTemperature|[INFO] push: compute result: spent 0.01 to compute result
+2018-09-15 10:17:39,102 task_getAvgTemperature|[INFO] dispatch: (TIME) recv: t1=1537031858.98, t2=1537031859.1, t_transmit=0.119346857071
+2018-09-15 10:17:39,103 task_getAvgTemperature|[INFO] dispatch: (RECV) STOP: []
+2018-09-15 10:17:39,103 task_getAvgTemperature|[INFO] dispatch: stop server: task_getAvgTemperature

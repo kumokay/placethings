@@ -11,6 +11,7 @@ from placethings.demo.entity.base_server import ServerGen, Entity
 from placethings.demo.entity.sensor import SensorGen
 from placethings.demo.entity.base_client import ClientGen
 from placethings.utils.common_utils import update_rootlogger
+from placethings.definition import EnumHelper
 
 update_rootlogger()
 log = logging.getLogger()
@@ -57,7 +58,7 @@ class SubArgsManager(object):
         self.subparser.add_argument(
             '-st',
             '--sensor_type',
-            type=int,
+            type=str,
             dest='sensor_type',
             default=None,
             required=required,
@@ -84,17 +85,6 @@ class SubArgsManager(object):
             default=None,
             required=required,
             help=('rpc method name')
-        )
-
-    def command(self, required=False):
-        self.subparser.add_argument(
-            '-cmd',
-            '--command',
-            type=str,
-            dest='command',
-            default=None,
-            required=required,
-            help=('command to run')
         )
 
     def args_list(self, required=False):
@@ -184,7 +174,7 @@ class FuncManager(object):
     @classmethod
     def run_sensor(cls, args):
         name = args.name
-        sensor_type = args.sensor_type
+        sensor_type = EnumHelper.str_to_enum(args.sensor_type)
         next_ip, next_port = cls._split_addr(args.recv_address)
         next_port = int(next_port)
         update_rootlogger(name, is_log_to_file=True)
@@ -197,9 +187,9 @@ class FuncManager(object):
         name = args.name
         ip, port = cls._split_addr(args.address)
         method = args.method
-        command = args.command
+        args_list = args.args_list
         update_rootlogger(name, is_log_to_file=True)
-        ClientGen.call_async(ip, port, method, (command))
+        ClientGen.call(ip, port, method, *args_list)
 
     @staticmethod
     def run_test(args):
@@ -207,10 +197,12 @@ class FuncManager(object):
         update_rootlogger(case_name, is_log_to_file=True)
         getattr(test_entity, case_name)()
 
-    @staticmethod
-    def stop_server(args):
-        ip, port = args.address.split(':')
-        ServerGen.stop_server(ip, int(port))
+    @classmethod
+    def stop_server(cls, args):
+        name = args.name
+        ip, port = cls._split_addr(args.address)
+        update_rootlogger(name, is_log_to_file=True)
+        ServerGen.stop_server(ip, port)
 
 
 def main():
@@ -276,7 +268,7 @@ def main():
     subargs_manager.name(required=True)
     subargs_manager.address(required=True)
     subargs_manager.method(required=True)
-    subargs_manager.command(required=True)
+    subargs_manager.args_list(required=False)
 
     name = 'run_test'
     subargs_manager = args_manager.add_subparser(

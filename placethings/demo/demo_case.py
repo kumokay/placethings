@@ -13,8 +13,7 @@ from placethings.definition import (
     GnInfo, Unit, GdInfo, GtInfo, DeviceCategory, Device)
 from placethings.graph_gen import graph_factory, device_graph
 from placethings.config.config_factory import FileHelper
-from placethings.netgen.network import ControlPlane, DataPlane
-from placethings.demo.entity.sensor import SensorType
+from placethings.netgen.network import ControlPlane, DataPlane, NetGen
 from placethings.demo.entity.manager import Manager
 from placethings.demo.utils import AddressManager
 
@@ -50,109 +49,16 @@ def test_deploy_default(config_name=None, is_export=True):
     G_map = ilp_solver.place_things(Gt, Gd, is_export)
     # simulate network
     control_plane = ControlPlane(topo_device_graph)
-    control_plane.addManagerDevice('Manager', 'HOME_ROUTER.0')
+    control_plane.add_manager('HOME_ROUTER.0')
+    control_plane.deploy_agent()
+    # control_plane.runAgent()
     data_plane = DataPlane(topo_device_graph)
-    # TODO: rewrite
-
-
-
-    net.start()
-    # net.validate()
-    # install manager / agents / tasks
-    net.addHost('Manager')
-    net.addLink('Manager', 'HOME_ROUTER.0', )
-    _PROG_DIR = '/home/kumokay/github/placethings'
-    addr_manager = AddressManager(net)
-    # run agents on all processors
-    cmd_template = (
-        'cd {progdir} && python main_entity.py run_agent '
-        '-a {ip}:{port} -n {name}')
-    for device_name in Gd.nodes():
-        device_cat = Gd.node[device_name][GdInfo.DEVICE_CAT]
-        if device_cat == DeviceCategory.PROCESSOR:
-            name = _gen_agent_name(device_name)
-            ip, port = addr_manager.get_task_address(name, device_name)
-            command = cmd_template.format(
-                progdir=_PROG_DIR,
-                ip=ip,
-                port=port,
-                name=name)
-            net.run_cmd(device_name, command, async=True)
-    # deploy tasks
-    cmd_actuator_template = (
-        'cd {progdir} && python main_entity.py run_actuator '
-        '-a {ip}:{port} -n {name}')
-    cmd_sensor_template = (
-        'cd {progdir} && python main_entity.py run_sensor '
-        '-a {ip}:{port} -n {name} -st {sensor_type} -ra {next_ip}:{next_port}')
-    cmd_task_template = (
-        'cd {progdir} && python main_entity.py run_task '
-        '-a {ip}:{port} -n {name} -t {exectime} -ra {next_ip}:{next_port}')
-    for task_name in G_map.nodes():
-        device_name = G_map.node[task_name][GtInfo.CUR_DEVICE]
-        device_cat = Gd.node[device_name][GdInfo.DEVICE_CAT]
-        exectime = G_map.node[task_name][GtInfo.CUR_LATENCY]
-        name = task_name
-        ip, port = addr_manager.get_task_address(name, device_name)
-        if device_cat == DeviceCategory.ACTUATOR:
-            command = cmd_actuator_template.format(
-                progdir=_PROG_DIR,
-                ip=ip,
-                port=port,
-                name=name)
-            net.run_cmd(device_name, command, async=True)
-        elif device_cat == DeviceCategory.SENSOR:
-            device_type = Gd.node[device_name][GdInfo.DEVICE_TYPE]
-            if device_type == Device.CAMERA:
-                sensor_type = SensorType.CAMERA
-            elif device_type == Device.THERMAL:
-                sensor_type = SensorType.THERMAL
-            else:
-                assert False, 'undefined sensor'
-            next_task_list = list(G_map.successors(task_name))
-            assert len(next_task_list) == 1, 'support 1 successor now'
-            next_task = next_task_list[0]
-            next_device = G_map.node[next_task][GtInfo.CUR_DEVICE]
-            next_ip, next_port = addr_manager.get_task_address(
-                next_task, next_device)
-            command = cmd_sensor_template.format(
-                progdir=_PROG_DIR,
-                ip=ip,
-                port=port,
-                name=name,
-                sensor_type=sensor_type,
-                next_ip=next_ip,
-                next_port=next_port)
-            net.run_cmd(device_name, command, async=True)
-        elif device_cat == DeviceCategory.PROCESSOR:
-            next_task_list = list(G_map.successors(task_name))
-            assert len(next_task_list) == 1, 'support 1 successor now'
-            next_task = next_task_list[0]
-            next_device = G_map.node[next_task][GtInfo.CUR_DEVICE]
-            next_ip, next_port = addr_manager.get_task_address(
-                next_task, next_device)
-            command = cmd_task_template.format(
-                progdir=_PROG_DIR,
-                ip=ip,
-                port=port,
-                name=name,
-                exectime=exectime,
-                next_ip=next_ip,
-                next_port=next_port)
-            net.run_cmd('Manager', command)
-    # running
+    data_plane.add_manager('HOME_ROUTER.0')
+    data_plane.deploy_task(G_map, Gd)
+    data_plane.start()
     time.sleep(20)
     # cleanup
-    cmd_template = (
-        'cd {progdir} && python main_entity.py stop_server -a {ip}:{port}')
-    for entity_name, addr_info in iteritems(addr_manager.get_address_book()):
-        device_name, ip, port = addr_info
-        command = cmd_template.format(
-            progdir=_PROG_DIR,
-            ip=ip,
-            port=port)
-        net.run_cmd(device_name, command, async=True)
-    net.stop()
+    data_plane.stop()
 
 
 def test_deploy_basic(config_name=None, is_export=False):

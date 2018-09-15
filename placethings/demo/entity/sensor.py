@@ -10,6 +10,7 @@ import sched
 import time
 
 from placethings.demo.entity.base_client import ClientGen
+from placethings.definition import Device
 
 
 log = logging.getLogger()
@@ -50,11 +51,6 @@ class BaseSensor(object):
         self.create_schedule().run()
 
 
-class SensorType:
-    THERMAL = 0
-    CAMERA = 1
-
-
 class SensorGen(object):
     _DELAY_START_TIME_TICK = 5
     _CYCLE_S = 5
@@ -81,19 +77,20 @@ class SensorGen(object):
         return [random.randint(a, b) for _ in range(n)]
 
     @classmethod
-    def start_sensor(cls, name, sensor_type, receiver_list):
+    def start_sensor(cls, name, device_type, receiver_list):
         t_start = cls._get_delay_start_time()
 
-        if sensor_type == SensorType.THERMAL:
+        if device_type == Device.THERMAL:
             # cls._gen_random_int_bytearry(40, 120, 100)
             datagen_func = cls._gen_random_int_list
             datagen_args = (40, 120, 100)
-        elif sensor_type == SensorType.CAMERA:
+        elif device_type == Device.CAMERA:
             # cls._gen_random_bytearray(random.randint(2000, 4000))
             datagen_func = cls._gen_random_size_byte_str
             datagen_args = (2000, 4000)
         else:
-            assert False, 'no sensor type: {}'.format(sensor_type)
+            log.error('no sensor for device type: {}'.format(device_type))
+            exit(1)
 
         BaseSensor(
             name, datagen_func, datagen_args, receiver_list,

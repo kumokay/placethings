@@ -25,11 +25,15 @@ class NetManager(object):
     def __init__(self, net):
         self._net = net
         self._host_dict = {}
+        self._host_ip_dict = {}  # assigned host ip
         self._host_next_free_port = {}
         self._switch_dict = {}
         self._edge_dict = {}
         self._devNameToNodeName = {}
         self._device_ips = {}
+
+    def get_host_list(self):
+        return list(self._host_dict)
 
     @classmethod
     def create(cls):
@@ -60,8 +64,10 @@ class NetManager(object):
     def addHost(self, device_name):
         # auto generate name bc name cannot be too long =.=
         name = self._new_host_name()
-        host = self._net.addHost(name, ip=self._new_ip())
+        ip = self._new_ip()
+        host = self._net.addHost(name, ip=ip)
         self._host_dict[device_name] = host
+        self._host_ip_dict[device_name] = ip
         self._host_next_free_port[device_name] = self._PORT_START
         self._devNameToNodeName[device_name] = name
         log.debug('add host {}'.format(device_name))
@@ -116,14 +122,17 @@ class NetManager(object):
         if async:
             # no waiting
             host.sendCmd(command)
-            output = 'command sent: {}'.format(command)
+            output = 'command sent'
         else:
             output = host.cmd(command)
         log.info('output: {}'.format(output))
         return output
 
     def get_device_ip(self, device_name):
-        return self._host_dict[device_name].IP()
+        ip = self._host_ip_dict[device_name]
+        # ip = self._host_dict[device_name].IP()
+        assert ip is not None, 'host={}, ip={}'.format(device_name, ip)
+        return ip
 
     def get_device_free_port(self, device_name):
         next_port = self._host_next_free_port[device_name]

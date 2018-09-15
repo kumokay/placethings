@@ -1,5 +1,0 @@
-2018-09-14 00:52:28,696 A-T2_MICRO.0|[INFO] __init__: start Agent RPCServer: A-T2_MICRO.0
-2018-09-14 00:57:37,933 A-T2_MICRO.0|[INFO] __init__: start Agent RPCServer: A-T2_MICRO.0
-2018-09-14 01:00:06,725 A-T2_MICRO.0|[INFO] __init__: start Agent RPCServer: A-T2_MICRO.0
-2018-09-14 01:07:09,004 A-T2_MICRO.0|[INFO] __init__: start Agent RPCServer: A-T2_MICRO.0
-2018-09-14 01:11:54,137 A-T2_MICRO.0|[INFO] __init__: start Agent RPCServer: A-T2_MICRO.0

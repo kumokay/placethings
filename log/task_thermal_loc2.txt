@@ -1,0 +1,18 @@
+2018-09-15 10:17:18,840 task_thermal_loc2|[INFO] __init__: start BaseSensor: task_thermal_loc2
+2018-09-15 10:17:18,841 task_thermal_loc2|[INFO] start: sensor start at 1537031838.84
+2018-09-15 10:17:18,841 task_thermal_loc2|[INFO] create_schedule: create schedule from 1537031845 to 1537031865, cycle=5
+2018-09-15 10:17:18,841 task_thermal_loc2|[INFO] create_schedule: add event at 1537031845
+2018-09-15 10:17:18,841 task_thermal_loc2|[INFO] create_schedule: add event at 1537031850
+2018-09-15 10:17:18,841 task_thermal_loc2|[INFO] create_schedule: add event at 1537031855
+2018-09-15 10:17:18,841 task_thermal_loc2|[INFO] create_schedule: add event at 1537031860
+2018-09-15 10:17:25,006 task_thermal_loc2|[INFO] call: (TIME) send: t1=1537031845.01
+2018-09-15 10:17:25,008 task_thermal_loc2|[INFO] call: (SEND) push: ([97, 109, 106, 50, 51, 57, 89, 64, 80, 118, 115, 115, 90, 116, 
+2018-09-15 10:17:30,001 task_thermal_loc2|[INFO] call: (TIME) send: t1=1537031850.0
+2018-09-15 10:17:30,001 task_thermal_loc2|[INFO] call: (SEND) push: ([63, 88, 85, 94, 86, 66, 120, 58, 83, 46, 102, 65, 87, 53, 81, 
+2018-09-15 10:17:35,006 task_thermal_loc2|[INFO] call: (TIME) send: t1=1537031855.01
+2018-09-15 10:17:35,007 task_thermal_loc2|[INFO] call: (SEND) push: ([103, 113, 118, 56, 54, 120, 69, 78, 81, 119, 70, 81, 104, 76, 
+2018-09-15 10:17:40,004 task_thermal_loc2|[INFO] call: (TIME) send: t1=1537031860.0
+2018-09-15 10:17:40,005 task_thermal_loc2|[INFO] call: (SEND) push: ([76, 115, 43, 112, 54, 101, 43, 63, 120, 95, 57, 49, 70, 109, 6
+2018-09-15 10:17:40,135 task_thermal_loc2|[WARNING] _handle_connect: Connect error on fd 20: ECONNREFUSED
+2018-09-15 10:17:40,235 task_thermal_loc2|[WARNING] _handle_connect: Connect error on fd 20: ECONNREFUSED
+2018-09-15 10:17:40,337 task_thermal_loc2|[WARNING] _handle_connect: Connect error on fd 20: ECONNREFUSED

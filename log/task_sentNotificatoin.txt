@@ -1,4 +1,54 @@
-2018-09-14 00:57:38,125 task_sentNotificatoin|[INFO] __init__: start Task RPCServer: task_sentNotificatoin, exec_time=0.005 sec
-2018-09-14 01:00:06,653 task_sentNotificatoin|[INFO] __init__: start Task RPCServer: task_sentNotificatoin, exec_time=0.005 sec
-2018-09-14 01:07:08,975 task_sentNotificatoin|[INFO] __init__: start Task RPCServer: task_sentNotificatoin, exec_time=0.005 sec
-2018-09-14 01:11:54,171 task_sentNotificatoin|[INFO] __init__: start Task RPCServer: task_sentNotificatoin, exec_time=0.005 sec
+2018-09-15 10:17:18,867 task_sentNotificatoin|[INFO] start_server: start_server task_sentNotificatoin at 10.0.0.111:18800, args=['task_sentNotificatoin', 5, [(u'10.0.0.116', 18800)]]
+2018-09-15 10:17:18,867 task_sentNotificatoin|[INFO] __init__: start Task RPCServer: task_sentNotificatoin, exectime=0.005s, receivers=[(u'10.0.0.116', 18800)]
+2018-09-15 10:17:25,217 task_sentNotificatoin|[INFO] dispatch: (TIME) recv: t1=1537031845.2, t2=1537031845.22, t_transmit=0.0181670188904
+2018-09-15 10:17:25,217 task_sentNotificatoin|[INFO] dispatch: (RECV) push: ['spent 0.005 to compute result']
+2018-09-15 10:17:25,223 task_sentNotificatoin|[INFO] push: push data to 10.0.0.116:18800
+2018-09-15 10:17:25,223 task_sentNotificatoin|[INFO] call: (TIME) send: t1=1537031845.22
+2018-09-15 10:17:25,223 task_sentNotificatoin|[INFO] call: (SEND) push: (u'spent 0.005 to compute result',)
+2018-09-15 10:17:25,381 task_sentNotificatoin|[INFO] push: got data: spent 0.005 to compute result
+2018-09-15 10:17:25,382 task_sentNotificatoin|[INFO] push: compute result: spent 0.005 to compute result
+2018-09-15 10:17:25,438 task_sentNotificatoin|[INFO] dispatch: (TIME) recv: t1=1537031845.42, t2=1537031845.44, t_transmit=0.0181879997253
+2018-09-15 10:17:25,438 task_sentNotificatoin|[INFO] dispatch: (RECV) push: ['spent 0.005 to compute result']
+2018-09-15 10:17:25,443 task_sentNotificatoin|[INFO] push: push data to 10.0.0.116:18800
+2018-09-15 10:17:25,444 task_sentNotificatoin|[INFO] call: (TIME) send: t1=1537031845.44
+2018-09-15 10:17:25,444 task_sentNotificatoin|[INFO] call: (SEND) push: (u'spent 0.005 to compute result',)
+2018-09-15 10:17:25,602 task_sentNotificatoin|[INFO] push: got data: spent 0.005 to compute result
+2018-09-15 10:17:25,602 task_sentNotificatoin|[INFO] push: compute result: spent 0.005 to compute result
+2018-09-15 10:17:25,817 task_sentNotificatoin|[INFO] dispatch: (TIME) recv: t1=1537031845.79, t2=1537031845.82, t_transmit=0.023099899292
+2018-09-15 10:17:25,817 task_sentNotificatoin|[INFO] dispatch: (RECV) push: ['spent 0.005 to compute result']
+2018-09-15 10:17:25,822 task_sentNotificatoin|[INFO] push: push data to 10.0.0.116:18800
+2018-09-15 10:17:25,823 task_sentNotificatoin|[INFO] call: (TIME) send: t1=1537031845.82
+2018-09-15 10:17:25,823 task_sentNotificatoin|[INFO] call: (SEND) push: (u'spent 0.005 to compute result',)
+2018-09-15 10:17:25,980 task_sentNotificatoin|[INFO] push: got data: spent 0.005 to compute result
+2018-09-15 10:17:25,981 task_sentNotificatoin|[INFO] push: compute result: spent 0.005 to compute result
+2018-09-15 10:17:30,199 task_sentNotificatoin|[INFO] dispatch: (TIME) recv: t1=1537031850.18, t2=1537031850.2, t_transmit=0.0202078819275
+2018-09-15 10:17:30,199 task_sentNotificatoin|[INFO] dispatch: (RECV) push: ['spent 0.005 to compute result']
+2018-09-15 10:17:30,205 task_sentNotificatoin|[INFO] push: push data to 10.0.0.116:18800
+2018-09-15 10:17:30,205 task_sentNotificatoin|[INFO] call: (TIME) send: t1=1537031850.21
+2018-09-15 10:17:30,205 task_sentNotificatoin|[INFO] call: (SEND) push: (u'spent 0.005 to compute result',)
+2018-09-15 10:17:30,365 task_sentNotificatoin|[INFO] push: got data: spent 0.005 to compute result
+2018-09-15 10:17:30,366 task_sentNotificatoin|[INFO] push: compute result: spent 0.005 to compute result
+2018-09-15 10:17:30,435 task_sentNotificatoin|[INFO] dispatch: (TIME) recv: t1=1537031850.41, t2=1537031850.44, t_transmit=0.0233209133148
+2018-09-15 10:17:30,435 task_sentNotificatoin|[INFO] dispatch: (RECV) push: ['spent 0.005 to compute result']
+2018-09-15 10:17:30,441 task_sentNotificatoin|[INFO] push: push data to 10.0.0.116:18800
+2018-09-15 10:17:30,441 task_sentNotificatoin|[INFO] call: (TIME) send: t1=1537031850.44
+2018-09-15 10:17:30,441 task_sentNotificatoin|[INFO] call: (SEND) push: (u'spent 0.005 to compute result',)
+2018-09-15 10:17:30,601 task_sentNotificatoin|[INFO] push: got data: spent 0.005 to compute result
+2018-09-15 10:17:30,602 task_sentNotificatoin|[INFO] push: compute result: spent 0.005 to compute result
+2018-09-15 10:17:35,236 task_sentNotificatoin|[INFO] dispatch: (TIME) recv: t1=1537031855.21, t2=1537031855.24, t_transmit=0.0225300788879
+2018-09-15 10:17:35,236 task_sentNotificatoin|[INFO] dispatch: (RECV) push: ['spent 0.005 to compute result']
+2018-09-15 10:17:35,241 task_sentNotificatoin|[INFO] push: push data to 10.0.0.116:18800
+2018-09-15 10:17:35,242 task_sentNotificatoin|[INFO] call: (TIME) send: t1=1537031855.24
+2018-09-15 10:17:35,242 task_sentNotificatoin|[INFO] call: (SEND) push: (u'spent 0.005 to compute result',)
+2018-09-15 10:17:35,400 task_sentNotificatoin|[INFO] push: got data: spent 0.005 to compute result
+2018-09-15 10:17:35,400 task_sentNotificatoin|[INFO] push: compute result: spent 0.005 to compute result
+2018-09-15 10:17:35,477 task_sentNotificatoin|[INFO] dispatch: (TIME) recv: t1=1537031855.45, t2=1537031855.48, t_transmit=0.0291290283203
+2018-09-15 10:17:35,478 task_sentNotificatoin|[INFO] dispatch: (RECV) push: ['spent 0.005 to compute result']
+2018-09-15 10:17:35,483 task_sentNotificatoin|[INFO] push: push data to 10.0.0.116:18800
+2018-09-15 10:17:35,483 task_sentNotificatoin|[INFO] call: (TIME) send: t1=1537031855.48
+2018-09-15 10:17:35,483 task_sentNotificatoin|[INFO] call: (SEND) push: (u'spent 0.005 to compute result',)
+2018-09-15 10:17:35,640 task_sentNotificatoin|[INFO] push: got data: spent 0.005 to compute result
+2018-09-15 10:17:35,640 task_sentNotificatoin|[INFO] push: compute result: spent 0.005 to compute result
+2018-09-15 10:17:38,735 task_sentNotificatoin|[INFO] dispatch: (TIME) recv: t1=1537031858.62, t2=1537031858.74, t_transmit=0.117880105972
+2018-09-15 10:17:38,735 task_sentNotificatoin|[INFO] dispatch: (RECV) STOP: []
+2018-09-15 10:17:38,736 task_sentNotificatoin|[INFO] dispatch: stop server: task_sentNotificatoin

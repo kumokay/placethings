@@ -1,0 +1,10 @@
+2018-09-15 10:17:38,617 Manager|[INFO] call: (TIME) send: t1=1537031858.62
+2018-09-15 10:17:38,618 Manager|[INFO] call: (SEND) STOP: ()
+2018-09-15 10:17:38,983 Manager|[INFO] call: (TIME) send: t1=1537031858.98
+2018-09-15 10:17:38,983 Manager|[INFO] call: (SEND) STOP: ()
+2018-09-15 10:17:39,378 Manager|[INFO] call: (TIME) send: t1=1537031859.38
+2018-09-15 10:17:39,378 Manager|[INFO] call: (SEND) STOP: ()
+2018-09-15 10:17:39,754 Manager|[INFO] call: (TIME) send: t1=1537031859.75
+2018-09-15 10:17:39,754 Manager|[INFO] call: (SEND) STOP: ()
+2018-09-15 10:17:40,189 Manager|[INFO] call: (TIME) send: t1=1537031860.19
+2018-09-15 10:17:40,189 Manager|[INFO] call: (SEND) STOP: ()

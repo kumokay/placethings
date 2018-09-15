@@ -18,8 +18,8 @@ class RPCServer(object):
         self.name = name
         self.exec_time_sec = exec_time_ms / 1000.0
         self.receiver_list = receiver_list
-        log.info('start Task RPCServer: {}, exec_time={} sec'.format(
-            self.name, self.exec_time_sec))
+        log.info('start Task RPCServer: {}, exectime={}s, receivers={}'.format(
+            self.name, self.exec_time_sec, self.receiver_list))
 
     def _compute(self, data):
         time.sleep(self.exec_time_sec)
@@ -32,7 +32,8 @@ class RPCServer(object):
         else:
             result = self._compute(data)
             for next_ip, next_port in self.receiver_list:
-                ClientGen.call_async(next_ip, next_port, 'push', result)
+                log.info('push data to {}:{}'.format(next_ip, next_port))
+                ClientGen.call(next_ip, next_port, 'push', result)
             # logging
             log.info('got data: {}'.format(data))
             log.info('compute result: {}'.format(result))

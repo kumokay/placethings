@@ -1,0 +1,10 @@
+2018-09-15 10:17:18,687 task_findObject|[INFO] start_server: start_server task_findObject at 10.0.0.117:18800, args=['task_findObject', 600, [(u'10.0.0.118', 18800)]]
+2018-09-15 10:17:18,687 task_findObject|[INFO] __init__: start Task RPCServer: task_findObject, exectime=0.6s, receivers=[(u'10.0.0.118', 18800)]
+2018-09-15 10:17:25,161 task_findObject|[INFO] dispatch: (TIME) recv: t1=1537031845.01, t2=1537031845.16, t_transmit=0.153573036194
+2018-09-15 10:17:25,161 task_findObject|[INFO] dispatch: (RECV) push: ['w\xde\xc0\x95\x84S\xe3\xbd \xf6&4"\xfd>\x01Cr\x0b_,& \x8c\x0fy
+2018-09-15 10:17:25,762 task_findObject|[INFO] push: push data to 10.0.0.118:18800
+2018-09-15 10:17:25,763 task_findObject|[INFO] call: (TIME) send: t1=1537031845.76
+2018-09-15 10:17:25,763 task_findObject|[INFO] call: (SEND) push: (u'spent 0.6 to compute result',)
+2018-09-15 10:17:39,876 task_findObject|[INFO] dispatch: (TIME) recv: t1=1537031859.75, t2=1537031859.88, t_transmit=0.121958971024
+2018-09-15 10:17:39,876 task_findObject|[INFO] dispatch: (RECV) STOP: []
+2018-09-15 10:17:39,876 task_findObject|[INFO] dispatch: stop server: task_findObject

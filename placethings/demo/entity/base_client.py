@@ -12,15 +12,22 @@ log = logging.getLogger()
 
 
 class BaseClient(msgpackrpc.Client):
+
     def __init__(self, name, ip, port):
         self.name = name
         super(BaseClient, self).__init__(msgpackrpc.Address(ip, port))
+
+    @staticmethod
+    def _obj_to_str(obj):
+        obj_str = str(obj)
+        limit_len = min(64, len(obj_str))
+        return obj_str[:limit_len]
 
     def call(self, method, *args):
         t1 = time.time()
         log.info(
             '(TIME) send: t1={}'.format(t1))
-        log.info('(SEND) {}: {}'.format(method, args))
+        log.info('(SEND) {}: {}'.format(method, self._obj_to_str(args)))
         args = list(args)
         args.append(t1)
         return self.send_request(method, args).get()
@@ -29,7 +36,7 @@ class BaseClient(msgpackrpc.Client):
         t1 = time.time()
         log.info(
             '(TIME) send: t1={}'.format(t1))
-        log.info('(SEND) {}: {}'.format(method, args))
+        log.info('(SEND) {}: {}'.format(method, self._obj_to_str(args)))
         args = list(args)
         args.append(t1)
         return self.send_request(method, args)

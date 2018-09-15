@@ -3,10 +3,12 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from future.utils import iteritems
 import logging
+
 from placethings.netgen.netmanager import NetManager
 from placethings.definition import (
-    GInfo, GnInfo, GdInfo, NwLink, NodeType, Device)
+    GInfo, GnInfo, GdInfo, GtInfo, NwLink, NodeType, Device, DeviceCategory)
 
 
 log = logging.getLogger()
@@ -18,14 +20,37 @@ _PKT_LOSS = {
 }
 
 
+class AddressManager(object):
+    def __init__(self, net):
+        self.net = net
+        self.address_book = {}
+
+    def get_address_book(self):
+        return self.address_book
+
+    def get_task_address(self, task_name, device_name):
+        if task_name in self.address_book:
+            _, ip, port = self.address_book[task_name]
+        else:
+            ip = self.net.get_device_ip(device_name)
+            port = self.net.get_device_free_port(device_name)
+            self.address_book[task_name] = (device_name, ip, port)
+        return ip, port
+
+
 class ControlPlane(object):
 
     _cmd_agent_template = (
         'cd {progdir} && python main_entity.py run_agent '
         '-n {name} -a {ip}:{port}')
-    _manager_name = 'Manager'
+    _cmd_stop_template = (
+        'cd {progdir} && python main_entity.py stop_server -a {ip}:{port}')
+    _PROG_DIR = '/home/kumokay/github/placethings'
+    _AGENT_PORT = 18800
+    _MANAGER_NAME = 'Manager'
 
     def __init__(self, Gn):
+        self.agent_dict = {}
         self.net = NetManager.create()
         for node in Gn.nodes():
             node_type = Gn.node[node][GInfo.NODE_TYPE]
@@ -43,24 +68,69 @@ class ControlPlane(object):
                 delay_ms=edge_info[GnInfo.LATENCY],
                 pkt_loss_rate=_PKT_LOSS[edge_info[GnInfo.PROTOCOL]])
 
-    def runAgent(self, device_name, agent_name, progdir, ip, port):
-        command = self._cmd_agent_template.format(
-            progdir=progdir,
+    def get_agent_address(self, name):
+        return self.net.get_device_ip(name), self._AGENT_PORT
+
+    @staticmethod
+    def get_agent_name(device_name):
+        return 'A-{}'.format(device_name)
+
+    def gen_agent_run_cmd(self, device_name, agent_name):
+        ip, port = self.get_agent_address(device_name)
+        cmd = self._cmd_agent_template.format(
+            progdir=self._PROG_DIR,
             name=agent_name,
             ip=ip,
             port=port)
-        self.net.run_cmd(device_name, command, async=True)
+        return cmd
 
-    def addManager(self, device_name):
-        self.net.addHost(self._manager_name)
+    def add_agent_to_host(self, host_name):
+        agent_name = self.get_agent_name(host_name)
+        log.info('add agent {} to host {}'.format(agent_name, host_name))
+        self.agent_dict[agent_name] = self.gen_agent_run_cmd(
+            host_name, agent_name)
+
+    def deploy_agent(self):
+        for host_name in self.net.get_host_list():
+            self.add_agent_to_host(host_name)
+
+    def add_manager(self, device_name):
+        """
+        add manager and link it to a nw device
+        """
+        self.net.addHost(self._MANAGER_NAME)
         self.net.addLink(
-            self._manager_name, device_name,
+            self._MANAGER_NAME, device_name,
             bw_bps=None,
             delay_ms=0,
             pkt_loss_rate=0)
 
-    def runManageCmd(self, command):
-        self.net.run_cmd(self._manager_name, command, async=False)
+    def run_manager_cmd(self, command):
+        self.net.run_cmd(self._MANAGER_NAME, command, async=False)
+
+    def run_agent(self, name):
+        log.info('run agent: {}'.format(name))
+        run_worker_cmd = self.worker_dict[name]
+        self.net.run_cmd(name, run_worker_cmd, async=True)
+
+    def stop_agent(self, name):
+        log.info('stop worker: {}'.format(name))
+        ip, port = self.get_agent_address(name)
+        command = self._cmd_stop_template.format(
+            progdir=self._PROG_DIR,
+            ip=ip,
+            port=port)
+        self.run_manager_cmd(command, async=True)
+
+    def start(self):
+        log.info('start control plane. run all agents')
+        for name in self.agent_dict:
+            self.run_agent(name)
+
+    def stop(self):
+        log.info('stop control plane. stop all agents')
+        for name in self.agent_dict:
+            self.stop_agent(name)
 
 
 class DataPlane(object):
@@ -73,16 +143,18 @@ class DataPlane(object):
         '-n {name} -a {ip}:{port} -st {sensor_type} -ra {next_ip}:{next_port}')
     _cmd_task_template = (
         'cd {progdir} && python main_entity.py run_task '
-        '-a {ip}:{port} -n {name} -t {exectime} -ra {next_ip}:{next_port}')
+        '-n {name} -a {ip}:{port} -t {exectime} -ra {next_ip}:{next_port}')
+    _cmd_stop_template = (
+        'cd {progdir} && python main_entity.py run_client '
+        '-n {name} -a {ip}:{port} -m STOP')
+    _PROG_DIR = '/home/kumokay/github/placethings'
+    _TASK_PORT = 18800
+    _MANAGER_NAME = 'Manager'
 
     def __init__(self, Gn):
-        self.worker_dict = {}  # worker_name: (device_name, worker_start_cmd)
-        self.device_dict = {}
+        self.worker_dict = {}  # worker_name: start_cmd
         self.net = NetManager.create()
         for node in Gn.nodes():
-            node_type = self.Gn.node[node][GInfo.NODE_TYPE]
-            if node_type == NodeType.DEVICE:
-                self.device_dict[node] = self.Gn.node[node][GdInfo.DEVICE_TYPE]
             self.net.addSwitch(node)
         for d1, d2 in Gn.edges():
             edge_info = Gn[d1][d2]
@@ -92,29 +164,103 @@ class DataPlane(object):
                 delay_ms=edge_info[GnInfo.LATENCY],
                 pkt_loss_rate=_PKT_LOSS[edge_info[GnInfo.PROTOCOL]])
 
-    def _check_device(self, device_name, expect_device_type):
-        dev_type = self.device_dict[device_name]
-        assert dev_type == expect_device_type
+    def add_manager(self, device_name):
+        self.net.addHost(self._MANAGER_NAME)
+        self.net.addLink(
+            self._MANAGER_NAME, device_name,
+            bw_bps=None,
+            delay_ms=0,
+            pkt_loss_rate=0)
 
-    def _addWorker(self, name, device_name, run_worker_cmd):
+    def run_manager_cmd(self, command, async=False):
+        self.net.run_cmd(self._MANAGER_NAME, command, async=async)
+
+    def get_worker_address(self, name):
+        return self.net.get_device_ip(name), self._TASK_PORT
+
+    @staticmethod
+    def _get_next_task(G_map, task_name):
+        next_task_list = list(G_map.successors(task_name))
+        if not next_task_list:
+            return None
+        assert len(next_task_list) == 1, 'support 1 successor now'
+        next_task = next_task_list[0]
+        return next_task
+
+    def deploy_task(self, G_map, Gd):
+        # add all host
+        for task_name in G_map.nodes():
+            device_name = G_map.node[task_name][GtInfo.CUR_DEVICE]
+            self.add_worker(task_name, device_name)
+        # gen info
+        progdir = self._PROG_DIR
+        for task_name in G_map.nodes():
+            ip, port = self.get_worker_address(task_name)
+            device_name = G_map.node[task_name][GtInfo.CUR_DEVICE]
+            device_cat = Gd.node[device_name][GdInfo.DEVICE_CAT]
+            device_type = Gd.node[device_name][GdInfo.DEVICE_TYPE]
+            exectime = G_map.node[task_name][GtInfo.CUR_LATENCY]
+            next_task = self._get_next_task(G_map, task_name)
+            if not next_task:
+                assert device_cat == DeviceCategory.ACTUATOR
+            else:
+                next_ip, next_port = self.get_worker_address(next_task)
+            if device_cat == DeviceCategory.ACTUATOR:
+                cmd = self._cmd_actuator_template.format(
+                    progdir=self._PROG_DIR,
+                    name=task_name,
+                    ip=ip,
+                    port=port)
+            elif device_cat == DeviceCategory.SENSOR:
+                cmd = self._cmd_sensor_template.format(
+                    progdir=progdir,
+                    name=task_name,
+                    ip=ip,
+                    port=port,
+                    sensor_type=device_type,
+                    next_ip=next_ip,
+                    next_port=next_port)
+            elif device_cat == DeviceCategory.PROCESSOR:
+                cmd = self._cmd_task_template.format(
+                    progdir=progdir,
+                    name=task_name,
+                    ip=ip,
+                    port=port,
+                    exectime=exectime,
+                    next_ip=next_ip,
+                    next_port=next_port)
+            self.worker_dict[task_name] = cmd
+
+    def add_worker(self, name, device_name):
         self.net.addHost(name)
         self.net.addLink(
             name, device_name,
             bw_bps=None,
             delay_ms=0,
             pkt_loss_rate=0)
-        self.worker_dict[name] = (device_name, run_worker_cmd)
+        worker_ip = self.net.get_device_ip(name)
+        worker_port = self._TASK_PORT
+        return worker_ip, worker_port
 
-    def _runWorker(self, name):
-        assert name in self.worker_dict
-        _, run_worker_cmd = self.worker_dict[name]
+    def run_worker(self, name):
+        log.info('run {}'.format(name))
+        run_worker_cmd = self.worker_dict[name]
         self.net.run_cmd(name, run_worker_cmd, async=True)
 
-    def _stopWorker(self, name):
-        assert False, 'not implemented'
-        pass
+    def stop_worker(self, name):
+        log.info('stop {}'.format(name))
+        ip, port = self.get_worker_address(name)
+        command = self._cmd_stop_template.format(
+            progdir=self._PROG_DIR,
+            name=self._MANAGER_NAME,
+            ip=ip,
+            port=port)
+        # check connectivity
+        self.run_manager_cmd('ping {} -c 1'.format(ip))
+        # stop server
+        self.run_manager_cmd(command)
 
-    def _moveWorker(self, name, from_device, to_device):
+    def move_worker(self, name, from_device, to_device):
         assert name in self.worker_dict
         self.net.delLink(name, from_device)
         self.net.addLink(
@@ -123,42 +269,22 @@ class DataPlane(object):
             delay_ms=0,
             pkt_loss_rate=0)
 
-    def addActuator(self, device_name, worker_name, progdir, ip, port):
-        self._check_device(device_name, Device.ACTUATOR)
-        cmd = self._cmd_actuator_template.format(
-            progdir=progdir,
-            name=worker_name,
-            ip=ip,
-            port=port)
-        self._addWorker(worker_name, device_name, cmd)
+    def start(self):
+        log.info('start data plane.')
+        self.net.start()
+        self.net.validate()
+        log.info('run all workers')
+        for name in self.worker_dict:
+            self.run_worker(name)
 
-    def runSensor(
-            self, device_name, worker_name,
-            progdir, ip, port, sensor_type, next_ip, next_port):
-        self._check_device(device_name, Device.SENSOR)
-        cmd = self._cmd_sensor_template.format(
-            progdir=progdir,
-            name=worker_name,
-            ip=ip,
-            port=port,
-            sensor_type=sensor_type,
-            next_ip=next_ip,
-            next_port=next_port)
-        self._addWorker(worker_name, device_name, cmd)
-
-    def runTask(
-            self, device_name, worker_name,
-            progdir, ip, port, exectime, next_ip, next_port):
-        self._check_device(device_name, Device.PROCESSOR)
-        cmd = self._cmd_task_template.format(
-            progdir=progdir,
-            name=worker_name,
-            ip=ip,
-            port=port,
-            exectime=exectime,
-            next_ip=next_ip,
-            next_port=next_port)
-        self._addWorker(worker_name, device_name, cmd)
+    def stop(self):
+        log.info('stop data plane. stop all agents')
+        for name in self.worker_dict:
+            # TODO: fix this
+            if 'run_sensor' in self.worker_dict[name]:
+                continue
+            self.stop_worker(name)
+        self.net.stop()
 
 
 class NetGen(object):
