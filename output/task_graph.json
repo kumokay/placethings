@@ -1,17 +1,6 @@
 {
-    "task_info": {
+    "node_info": {
         "task_sentNotificatoin": {
-            "GtInfoEnum.LATENCY_INFO": {
-                "Device.P3_2XLARGE": {
-                    "Flavor.CPU": 5
-                },
-                "Device.T3_LARGE": {
-                    "Flavor.CPU": 5
-                },
-                "Device.T2_MICRO": {
-                    "Flavor.CPU": 5
-                }
-            },
             "GtInfoEnum.RESRC_RQMT": {
                 "Flavor.CPU": {
                     "Hardware.CPU": 5,
@@ -19,32 +8,36 @@
                     "Hardware.RAM": 8388608,
                     "Hardware.GPU": 0
                 }
-            }
-        },
-        "task_camera_0": {
-            "GtInfoEnum.LATENCY_INFO": {},
-            "GtInfoEnum.RESRC_RQMT": {}
-        },
-        "task_camera_1": {
-            "GtInfoEnum.LATENCY_INFO": {},
-            "GtInfoEnum.RESRC_RQMT": {}
-        },
-        "task_broadcast": {
-            "GtInfoEnum.LATENCY_INFO": {},
-            "GtInfoEnum.RESRC_RQMT": {}
-        },
-        "task_findObject": {
+            },
             "GtInfoEnum.LATENCY_INFO": {
                 "Device.P3_2XLARGE": {
-                    "Flavor.GPU": 600
+                    "Flavor.CPU": 5
                 },
                 "Device.T3_LARGE": {
-                    "Flavor.CPU": 2000
+                    "Flavor.CPU": 5
                 },
                 "Device.T2_MICRO": {
-                    "Flavor.CPU": 6000
+                    "Flavor.CPU": 5
                 }
             },
+            "GtInfoEnum.DEVICE": null
+        },
+        "task_broadcast": {
+            "GtInfoEnum.RESRC_RQMT": {},
+            "GtInfoEnum.LATENCY_INFO": {},
+            "GtInfoEnum.DEVICE": "PHONE.0"
+        },
+        "task_camera_1": {
+            "GtInfoEnum.RESRC_RQMT": {},
+            "GtInfoEnum.LATENCY_INFO": {},
+            "GtInfoEnum.DEVICE": "CAMERA.1"
+        },
+        "task_camera_0": {
+            "GtInfoEnum.RESRC_RQMT": {},
+            "GtInfoEnum.LATENCY_INFO": {},
+            "GtInfoEnum.DEVICE": "CAMERA.0"
+        },
+        "task_findObject": {
             "GtInfoEnum.RESRC_RQMT": {
                 "Flavor.CPU": {
                     "Hardware.CPU": 60,
@@ -58,9 +51,29 @@
                     "Hardware.RAM": 34359738368,
                     "Hardware.GPU": 60
                 }
-            }
+            },
+            "GtInfoEnum.LATENCY_INFO": {
+                "Device.P3_2XLARGE": {
+                    "Flavor.GPU": 600
+                },
+                "Device.T3_LARGE": {
+                    "Flavor.CPU": 2000
+                },
+                "Device.T2_MICRO": {
+                    "Flavor.CPU": 6000
+                }
+            },
+            "GtInfoEnum.DEVICE": null
         },
         "task_checkAbnormalEvent": {
+            "GtInfoEnum.RESRC_RQMT": {
+                "Flavor.CPU": {
+                    "Hardware.CPU": 5,
+                    "Hardware.HD": 24576,
+                    "Hardware.RAM": 8388608,
+                    "Hardware.GPU": 0
+                }
+            },
             "GtInfoEnum.LATENCY_INFO": {
                 "Device.P3_2XLARGE": {
                     "Flavor.CPU": 5
@@ -72,39 +85,24 @@
                     "Flavor.CPU": 5
                 }
             },
-            "GtInfoEnum.RESRC_RQMT": {
-                "Flavor.CPU": {
-                    "Hardware.CPU": 5,
-                    "Hardware.HD": 24576,
-                    "Hardware.RAM": 8388608,
-                    "Hardware.GPU": 0
-                }
-            }
+            "GtInfoEnum.DEVICE": null
         }
     },
-    "task_mapping": {
-        "task_sentNotificatoin": null,
-        "task_camera_0": "CAMERA.0",
-        "task_camera_1": "CAMERA.1",
-        "task_broadcast": "PHONE.0",
-        "task_findObject": null,
-        "task_checkAbnormalEvent": null
-    },
-    "task_links": {
-        "task_camera_0 -> task_findObject": {
-            "GtInfoEnum.TRAFFIC": 83886080
-        },
+    "edge_info": {
         "task_camera_1 -> task_findObject": {
             "GtInfoEnum.TRAFFIC": 83886080
         },
-        "task_findObject -> task_checkAbnormalEvent": {
-            "GtInfoEnum.TRAFFIC": 80
+        "task_camera_0 -> task_findObject": {
+            "GtInfoEnum.TRAFFIC": 83886080
+        },
+        "task_sentNotificatoin -> task_broadcast": {
+            "GtInfoEnum.TRAFFIC": 8
         },
         "task_checkAbnormalEvent -> task_sentNotificatoin": {
             "GtInfoEnum.TRAFFIC": 8
         },
-        "task_sentNotificatoin -> task_broadcast": {
-            "GtInfoEnum.TRAFFIC": 8
+        "task_findObject -> task_checkAbnormalEvent": {
+            "GtInfoEnum.TRAFFIC": 80
         }
     }
 }

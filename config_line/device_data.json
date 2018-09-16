@@ -69,8 +69,8 @@
                     "LinkInfo.N_LINKS": 1,
                     "LinkInfo.DLINK_BW": 62914560
                 }
-            },
-        },
+            }
+        }
     },
     "device_inventory": {
         "DeviceCategory.PROCESSOR": {
@@ -133,6 +133,6 @@
         },
         "BB_AP.1 -> CAMERA.1": {
             "GnInfoEnum.LATENCY": 10
-        },
+        }
     }
 }
