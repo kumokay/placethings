@@ -1,9 +1,0 @@
-2018-09-16 03:59:05,001 task_smoke|[INFO] __init__: start BaseSensor: task_smoke
-2018-09-16 03:59:05,002 task_smoke|[INFO] start: sensor start at 1537095545.0
-2018-09-16 03:59:05,002 task_smoke|[INFO] create_schedule: create schedule from 1537095555 to 1537095575, cycle=5
-2018-09-16 03:59:05,002 task_smoke|[INFO] create_schedule: add event at 1537095555
-2018-09-16 03:59:05,002 task_smoke|[INFO] create_schedule: add event at 1537095560
-2018-09-16 03:59:05,002 task_smoke|[INFO] create_schedule: add event at 1537095565
-2018-09-16 03:59:05,002 task_smoke|[INFO] create_schedule: add event at 1537095570
-2018-09-16 03:59:15,012 task_smoke|[INFO] call: (TIME) send: t1=1537095555.01
-2018-09-16 03:59:15,013 task_smoke|[INFO] call: (SEND) push: ([100, 103, 87, 84, 72, 86, 51, 102, 70, 52, 50, 67, 74, 95, 52,

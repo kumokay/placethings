@@ -28,17 +28,19 @@ def _init_netsim(topo_device_graph, Gd, G_map):
 
 class TestBasic(BaseTestCase):
     @staticmethod
-    def test(config_name=None, is_export=True):
+    def test(config_name=None, is_export=True, is_simulate=False):
         cfgHelper = ConfigDataHelper(config_name, is_export)
         cfgHelper.init_task_graph()
         cfgHelper.update_topo_device_graph()
         cfgHelper.update_task_map()
         _topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
         # simulate
-        control_plane, data_plane = _init_netsim(topo_device_graph, Gd, G_map)
-        # cleanup
-        data_plane.start(is_validate=True)
-        data_plane.stop()
+        if is_simulate:
+            control_plane, data_plane = _init_netsim(
+                topo_device_graph, Gd, G_map)
+            # cleanup
+            data_plane.start(is_validate=True)
+            data_plane.stop()
 
 
 class TestDynamic(BaseTestCase):

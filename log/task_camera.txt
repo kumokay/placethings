@@ -1,9 +1,0 @@
-2018-09-16 03:59:04,952 task_camera|[INFO] __init__: start BaseSensor: task_camera
-2018-09-16 03:59:04,953 task_camera|[INFO] start: sensor start at 1537095544.95
-2018-09-16 03:59:04,953 task_camera|[INFO] create_schedule: create schedule from 1537095550 to 1537095570, cycle=5
-2018-09-16 03:59:04,953 task_camera|[INFO] create_schedule: add event at 1537095550
-2018-09-16 03:59:04,953 task_camera|[INFO] create_schedule: add event at 1537095555
-2018-09-16 03:59:04,953 task_camera|[INFO] create_schedule: add event at 1537095560
-2018-09-16 03:59:04,953 task_camera|[INFO] create_schedule: add event at 1537095565
-2018-09-16 03:59:10,002 task_camera|[INFO] call: (TIME) send: t1=1537095550.0
-2018-09-16 03:59:10,002 task_camera|[INFO] call: (SEND) push: ('9Y\xd7\xe8,\xeb\xa9\x97G\x07\xae\x0b\xe9\xbeD\x01Q\xf3\x88\xc8

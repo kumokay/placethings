@@ -1,8 +1,0 @@
-2018-09-16 03:59:04,940 task_broadcast|[INFO] start_server: start_server task_broadcast at 10.0.0.113:18800, args=['task_broadcast', 0, None]
-2018-09-16 03:59:04,940 task_broadcast|[INFO] __init__: start Task RPCServer: task_broadcast, exectime=0.0s, receivers=None
-2018-09-16 03:59:10,926 task_broadcast|[INFO] dispatch: (TIME) recv: t1=1537095550.8, t2=1537095550.93, t_transmit=0.122272014618
-2018-09-16 03:59:10,927 task_broadcast|[INFO] dispatch: (RECV) push: ['spent 0.005 to compute result']
-2018-09-16 03:59:10,927 task_broadcast|[INFO] push: got data: spent 0.005 to compute result
-2018-09-16 03:59:15,318 task_broadcast|[INFO] dispatch: (TIME) recv: t1=1537095555.2, t2=1537095555.32, t_transmit=0.119323968887
-2018-09-16 03:59:15,319 task_broadcast|[INFO] dispatch: (RECV) push: ['spent 0.005 to compute result']
-2018-09-16 03:59:15,319 task_broadcast|[INFO] push: got data: spent 0.005 to compute result

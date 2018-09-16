@@ -58,7 +58,7 @@ class CustomDecoder(json.JSONDecoder):
         return new_dict
 
     def decode(self, obj):
-        log.info('encode using CustomDecoder')
+        log.info('encode using CustomDecoder: {}'.format(obj))
         obj = super(CustomDecoder, self).decode(obj)
         if isinstance(obj, dict):
             obj = self._convert_keys_from_strs(obj)

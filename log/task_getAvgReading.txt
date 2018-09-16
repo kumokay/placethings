@@ -1,9 +1,0 @@
-2018-09-16 03:59:04,939 task_getAvgReading|[INFO] start_server: start_server task_getAvgReading at 10.0.0.114:18800, args=['task_getAvgReading', 5, [(u'10.0.0.116', 18800)]]
-2018-09-16 03:59:04,939 task_getAvgReading|[INFO] __init__: start Task RPCServer: task_getAvgReading, exectime=0.005s, receivers=[(u'10.0.0.116', 18800)]
-2018-09-16 03:59:15,155 task_getAvgReading|[INFO] dispatch: (TIME) recv: t1=1537095555.01, t2=1537095555.16, t_transmit=0.143578052521
-2018-09-16 03:59:15,156 task_getAvgReading|[INFO] dispatch: (RECV) push: [[100, 103, 87, 84, 72, 86, 51, 102, 70, 52, 50, 67, 74, 95, 52,
-2018-09-16 03:59:15,161 task_getAvgReading|[INFO] push: push data to 10.0.0.116:18800
-2018-09-16 03:59:15,162 task_getAvgReading|[INFO] call: (TIME) send: t1=1537095555.16
-2018-09-16 03:59:15,162 task_getAvgReading|[INFO] call: (SEND) push: (u'spent 0.005 to compute result',)
-2018-09-16 03:59:15,364 task_getAvgReading|[INFO] push: got data: [100, 103, 87, 84, 72, 86, 51, 102, 70, 52, 50, 67, 74, 95, 52, 78, 111, 94, 44, 91, 47, 88, 52, 94, 59, 107, 60, 116, 85, 85, 104, 78, 60, 42, 74, 56, 73, 91, 72, 78, 62, 111, 56, 81, 72, 90, 66, 70, 114, 109, 97, 76, 58, 66, 113, 107, 40, 81, 111, 86, 103, 85, 59, 94, 70, 57, 111, 91, 80, 90, 116, 58, 74, 40, 61, 65, 86, 95, 81, 98, 70, 89, 102, 54, 119, 73, 96, 92, 116, 95, 53, 93, 107, 94, 109, 115, 74, 50, 112, 57]
-2018-09-16 03:59:15,365 task_getAvgReading|[INFO] push: compute result: spent 0.005 to compute result
