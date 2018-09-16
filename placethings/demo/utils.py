@@ -48,6 +48,8 @@ class ConfigDataHelper(object):
         self.Gt = None
         self.Gd = None
         self.G_map = None
+        self.result_mapping = None
+        self.max_latency_log = []
 
     def init_task_graph(self):
         log.info('init task graph')
@@ -68,10 +70,20 @@ class ConfigDataHelper(object):
         self.Gd = Gd
 
     def update_task_map(self):
-        G_map = ilp_solver.place_things(
+        G_map, result_mapping = ilp_solver.place_things(
             self.Gt, self.Gd,
             is_export=self.is_export, export_suffix=self.update_id)
         self.G_map = G_map
+        self.result_mapping = result_mapping
+
+    def update_max_latency_log(self):
+        max_latency = ilp_solver.get_max_latency(
+            self.Gt, self.Gd, self.result_mapping)
+        self.max_latency_log.append(max_latency)
+        log.info('max_latency_log: {}'.format(self.max_latency_log))
+
+    def get_max_latency_log(self):
+        return self.max_latency_log
 
     def get_graphs(self):
         return self.topo, self.topo_device_graph, self.Gd, self.G_map

@@ -50,13 +50,17 @@ class TestDynamic(BaseTestCase):
         data_plane.stop()
 
     @classmethod
-    def test(cls, config_name=None, is_export=True, is_update_map=False):
+    def test(
+            cls, config_name=None, is_export=True,
+            is_update_map=False, is_simulate=False):
         cfgHelper = ConfigDataHelper(config_name, is_export)
         cfgHelper.init_task_graph()
         cfgHelper.update_topo_device_graph()
         cfgHelper.update_task_map()
+        cfgHelper.update_max_latency_log()
         _topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
-        cls._simulate(topo_device_graph, Gd, G_map)
+        if is_simulate:
+            cls._simulate(topo_device_graph, Gd, G_map)
         update_id = 0
         log.info('=== update round {} ==='.format(update_id))
         dev = 'PHONE.0'
@@ -67,8 +71,10 @@ class TestDynamic(BaseTestCase):
         cfgHelper.update_topo_device_graph()
         if is_update_map:
             cfgHelper.update_task_map()
+        cfgHelper.update_max_latency_log()
         _topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
-        cls._simulate(topo_device_graph, Gd, G_map)
+        if is_simulate:
+            cls._simulate(topo_device_graph, Gd, G_map)
         # update device graph
         update_id += 1
         log.info('=== update round {} ==='.format(update_id))
@@ -79,8 +85,10 @@ class TestDynamic(BaseTestCase):
         cfgHelper.update_topo_device_graph()
         if is_update_map:
             cfgHelper.update_task_map()
+        cfgHelper.update_max_latency_log()
         _topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
-        cls._simulate(topo_device_graph, Gd, G_map)
+        if is_simulate:
+            cls._simulate(topo_device_graph, Gd, G_map)
         # update device graph
         update_id += 1
         log.info('=== update round {} ==='.format(update_id))
@@ -92,5 +100,8 @@ class TestDynamic(BaseTestCase):
         cfgHelper.update_topo_device_graph()
         if is_update_map:
             cfgHelper.update_task_map()
+        cfgHelper.update_max_latency_log()
         _topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
-        cls._simulate(topo_device_graph, Gd, G_map)
+        if is_simulate:
+            cls._simulate(topo_device_graph, Gd, G_map)
+        log.info('latency trend: {}'.format(cfgHelper.get_max_latency_log()))

@@ -445,10 +445,9 @@ def place_things(Gt_ro, Gd_ro, is_export, export_suffix=''):
     status, result_mapping = find_mapping(Gt, Gd)
     log.info('solver status: {}'.format(pulp.LpStatus[status]))
     log.info('check solution for all simple path from src to dst')
-    src_list, dst_list, all_paths = _find_all_simple_path(Gt)
     max_latency = get_max_latency(Gt, Gd, result_mapping)
     log.info('max_latency={}'.format(max_latency))
     # update mapping and gen node labels
     Gt = task_graph.update_graph(
         result_mapping, Gt, Gd, is_export, export_suffix)
-    return Gt
+    return Gt, result_mapping
