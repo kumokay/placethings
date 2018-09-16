@@ -3,8 +3,10 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from copy import deepcopy
 import logging
 import time
+import random
 
 from placethings.netgen.network import ControlPlane, DataPlane
 from placethings.demo.utils import ConfigDataHelper
@@ -107,3 +109,67 @@ class TestDynamic(BaseTestCase):
         if is_simulate:
             cls._simulate(topo_device_graph, Gd, G_map)
         log.info('latency trend: {}'.format(cfgHelper.get_max_latency_log()))
+
+
+class TestRandom(BaseTestCase):
+    @staticmethod
+    def _simulate(topo_device_graph, Gd, G_map):
+        control_plane, data_plane = _init_netsim(topo_device_graph, Gd, G_map)
+        data_plane.start(is_validate=True)
+        time.sleep(30)
+        data_plane.stop()
+
+    @classmethod
+    def test(
+            cls, config_name, is_export=True,
+            is_update_map=True, is_simulate=False):
+        assert config_name == 'config_line'
+        cfgHelper = ConfigDataHelper(config_name, is_export)
+        cfgHelper.init_task_graph()
+        cfgHelper.update_topo_device_graph()
+        cfgHelper.update_task_map()
+        cfgHelper.update_max_latency_log()
+        topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
+        if is_simulate:
+            cls._simulate(topo_device_graph, Gd, G_map)
+        all_mobiles = ['CAMERA.0', 'CAMERA.1', 'PHONE.0']
+        all_aps = ['BB_AP.0', 'BB_AP.1', 'BB_AP.2', 'BB_AP.3', 'BB_AP.4']
+        all_sws = ['BB_SWITCH.0', 'BB_SWITCH.1', 'BB_SWITCH.2', 'BB_SWITCH.3', 'BB_SWITCH.4']
+        update_id = -1
+        for i in range(1, 50):
+            update_id += 1
+            log.info('=== update {}: change link dst ==='.format(update_id))
+            dev = random.sample(all_mobiles, 1)[0]
+            edges = list(topo_device_graph.edges(dev))
+            assert len(edges) == 1
+            nw_dev = edges[0][1]
+            assert nw_dev in all_aps, '{} not in {}'.format(nw_dev, all_aps)
+            new_nw_dev = random.sample(all_aps, 1)[0]
+            new_latency = Unit.ms(random.randint(1, 500))
+            cfgHelper.update_dev_link(dev, nw_dev, new_nw_dev, new_latency)
+            cfgHelper.update_topo_device_graph()
+            if is_update_map:
+                cfgHelper.update_task_map()
+            cfgHelper.update_max_latency_log()
+            topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
+            if is_simulate:
+                cls._simulate(topo_device_graph, Gd, G_map)
+            # update device graph
+            update_id += 1
+            log.info('=== update {}: change latency ==='.format(update_id))
+            edges = list(topo_device_graph.edges())
+            [nw_dev1, nw_dev2] = random.sample(all_aps + all_sws, 2)
+            while (nw_dev1, nw_dev2) not in edges:
+                [nw_dev1, nw_dev2] = random.sample(all_aps + all_sws, 2)
+            latency = Unit.ms(random.randint(20, 5000))
+            cfgHelper.update_nw_link_latency(nw_dev1, nw_dev2, latency)
+            cfgHelper.update_topo_device_graph()
+            if is_update_map:
+                cfgHelper.update_task_map()
+            cfgHelper.update_max_latency_log()
+            topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
+            if is_simulate:
+                cls._simulate(topo_device_graph, Gd, G_map)
+        latency_dynamic, latency_static = cfgHelper.get_max_latency_log()
+        log.info('latency_dynamic: {}'.format(latency_dynamic))
+        log.info('latency_static: {}'.format(latency_static))

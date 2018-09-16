@@ -1,0 +1,74 @@
+GLPSOL: GLPK LP/MIP Solver, v4.57
+Parameter(s) specified in the command line:
+ --cpxlp /tmp/e707a9a269da4e1f8d1499191eb83d72-pulp.lp -o /tmp/e707a9a269da4e1f8d1499191eb83d72-pulp.sol
+Reading problem data from '/tmp/e707a9a269da4e1f8d1499191eb83d72-pulp.lp'...
+701 rows, 296 columns, 2366 non-zeros
+295 integer variables, all of which are binary
+3124 lines were read
+GLPK Integer Optimizer, v4.57
+701 rows, 296 columns, 2366 non-zeros
+295 integer variables, all of which are binary
+Preprocessing...
+30 hidden packing inequaliti(es) were detected
+2 constraint coefficient(s) were reduced
+387 rows, 71 columns, 1501 non-zeros
+70 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  1.678e+07  ratio =  1.678e+07
+GM: min|aij| =  1.699e-01  max|aij| =  5.886e+00  ratio =  3.464e+01
+EQ: min|aij| =  2.887e-02  max|aij| =  1.000e+00  ratio =  3.464e+01
+2N: min|aij| =  1.953e-02  max|aij| =  1.000e+00  ratio =  5.120e+01
+Constructing initial basis...
+Size of triangular part is 386
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.57
+387 rows, 71 columns, 1501 non-zeros
+      0: obj =   0.000000000e+00 inf =   1.700e+02 (65)
+     33: obj =   4.773510978e+02 inf =   3.293e-15 (0)
+*   131: obj =   3.931247901e+02 inf =   2.644e-15 (0) 1
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++   131: mip =     not found yet >=              -inf        (1; 0)
++   312: >>>>>   7.780000000e+02 >=   5.006350977e+02  35.7% (17; 0)
++   324: mip =   7.780000000e+02 >=     tree is empty   0.0% (0; 33)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   0.0 secs
+Memory used: 0.8 Mb (878043 bytes)
+Writing MIP solution to '/tmp/e707a9a269da4e1f8d1499191eb83d72-pulp.sol'...
+GLPSOL: GLPK LP/MIP Solver, v4.57
+Parameter(s) specified in the command line:
+ --cpxlp /tmp/ceb627c9ab894c599dcbc6d0e531dda2-pulp.lp -o /tmp/ceb627c9ab894c599dcbc6d0e531dda2-pulp.sol
+Reading problem data from '/tmp/ceb627c9ab894c599dcbc6d0e531dda2-pulp.lp'...
+701 rows, 296 columns, 2366 non-zeros
+295 integer variables, all of which are binary
+3124 lines were read
+GLPK Integer Optimizer, v4.57
+701 rows, 296 columns, 2366 non-zeros
+295 integer variables, all of which are binary
+Preprocessing...
+30 hidden packing inequaliti(es) were detected
+2 constraint coefficient(s) were reduced
+387 rows, 71 columns, 1501 non-zeros
+70 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  1.678e+07  ratio =  1.678e+07
+GM: min|aij| =  1.699e-01  max|aij| =  5.886e+00  ratio =  3.464e+01
+EQ: min|aij| =  2.887e-02  max|aij| =  1.000e+00  ratio =  3.464e+01
+2N: min|aij| =  1.953e-02  max|aij| =  1.000e+00  ratio =  5.120e+01
+Constructing initial basis...
+Size of triangular part is 386
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.57
+387 rows, 71 columns, 1501 non-zeros
+      0: obj =   0.000000000e+00 inf =   1.700e+02 (65)
+     35: obj =   4.770257741e+02 inf =   1.880e-15 (0)
+*   127: obj =   3.931845127e+02 inf =   1.138e-14 (0) 1
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++   127: mip =     not found yet >=              -inf        (1; 0)
++   292: >>>>>   7.780000000e+02 >=   4.340252526e+02  44.2% (17; 0)
++   304: mip =   7.780000000e+02 >=     tree is empty   0.0% (0; 33)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   0.0 secs
+Memory used: 0.8 Mb (878043 bytes)
+Writing MIP solution to '/tmp/ceb627c9ab894c599dcbc6d0e531dda2-pulp.sol'...

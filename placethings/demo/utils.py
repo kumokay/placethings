@@ -24,7 +24,7 @@ class ConfigDataHelper(object):
             config_name = self._DEFAULT_CONFIG
         self.config_name = config_name
         self.is_export = is_export
-        self.update_id = 0
+        self.update_id = -1
         # get device data and topo data
         dev_file = FileHelper.gen_config_filepath(config_name, 'device_data')
         nw_file = FileHelper.gen_config_filepath(config_name, 'nw_device_data')
@@ -50,6 +50,7 @@ class ConfigDataHelper(object):
         self.G_map = None
         self.result_mapping = None
         self.max_latency_log = []
+        self.max_latency_static_log = []
 
     def init_task_graph(self):
         log.info('init task graph')
@@ -59,12 +60,12 @@ class ConfigDataHelper(object):
         self.Gt = Gt
 
     def update_topo_device_graph(self):
+        self.update_id += 1
         log.info('round {}: update topo device graph'.format(self.update_id))
         topo, topo_device_graph, Gd = device_graph.create_topo_device_graph(
             self.dev_spec, self.dev_inventory, self.dev_links,
             self.nw_spec, self.nw_inventory, self.nw_links,
             is_export=self.is_export, export_suffix=self.update_id)
-        self.update_id += 1
         self.topo = topo
         self.topo_device_graph = topo_device_graph
         self.Gd = Gd
@@ -75,15 +76,23 @@ class ConfigDataHelper(object):
             is_export=self.is_export, export_suffix=self.update_id)
         self.G_map = G_map
         self.result_mapping = result_mapping
+        if self.update_id == 0:
+            # init update
+            self.init_result_mapping = result_mapping
 
     def update_max_latency_log(self):
         max_latency = ilp_solver.get_max_latency(
             self.Gt, self.Gd, self.result_mapping)
         self.max_latency_log.append(max_latency)
+        max_latency_static = ilp_solver.get_max_latency(
+            self.Gt, self.Gd, self.init_result_mapping)
+        self.max_latency_static_log.append(max_latency_static)
         log.info('max_latency_log: {}'.format(self.max_latency_log))
+        log.info('max_latency_static_log: {}'.format(
+            self.max_latency_static_log))
 
     def get_max_latency_log(self):
-        return self.max_latency_log
+        return self.max_latency_log, self.max_latency_static_log
 
     def get_graphs(self):
         return self.topo, self.topo_device_graph, self.Gd, self.G_map
