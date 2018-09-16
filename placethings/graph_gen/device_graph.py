@@ -129,6 +129,10 @@ def create_topo_device_graph(
         spec, inventory, links,
         nw_spec, nw_inventory, nw_links,
         is_export=False, export_suffix=''):
+    """
+    Returns:
+        topo, topo_device_graph, dev_graph
+    """
     # create topo graph
     topo = topo_graph.create_graph(
         nw_spec, nw_inventory, nw_links, is_export, export_suffix)

@@ -77,7 +77,7 @@ class Device(Enum):
     T3_LARGE = auto()
     P3_2XLARGE = auto()
     # sensor
-    THERMAL = auto()
+    SMOKE = auto()
     CAMERA = auto()
 
 

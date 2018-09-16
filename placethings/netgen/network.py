@@ -269,10 +269,11 @@ class DataPlane(object):
             delay_ms=0,
             pkt_loss_rate=0)
 
-    def start(self):
+    def start(self, is_validate=False):
         log.info('start data plane.')
         self.net.start()
-        self.net.validate()
+        if is_validate:
+            self.net.validate()
         log.info('run all workers')
         for name in self.worker_dict:
             self.run_worker(name)

@@ -4,6 +4,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import logging
+from mininet.clean import cleanup
 from mininet.net import Containernet
 from mininet.link import TCLink
 from mininet.node import Controller, OVSSwitch
@@ -108,6 +109,16 @@ class NetManager(object):
             del self._edge_dict[(dst, src)]
         log.debug('delete link {} <-> {}'.format(src, dst))
 
+    def modifyLink(
+            self, src, dst, new_dst=None, bw_bps=None, delay_ms=1,
+            max_queue_size=None, pkt_loss_rate=None):
+        if not new_dst:
+            new_dst = dst
+        self.delLink(src, dst)
+        self.addLink(
+            src, new_dst,
+            bw_bps, delay_ms, max_queue_size, pkt_loss_rate)
+
     def start(self):
         log.info('*** Starting network')
         self._net.start()
@@ -115,6 +126,8 @@ class NetManager(object):
     def stop(self):
         log.info('*** Stopping network')
         self._net.stop()
+        # TODO: this is a hotfix. should stop hosts properly
+        cleanup()
 
     def run_cmd(self, device_name, command, async=False):
         host = self._host_dict[device_name]

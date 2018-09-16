@@ -143,7 +143,7 @@ DEVICE_SPEC = {
         },
     },
     DeviceCategory.SENSOR: {
-        Device.THERMAL: {
+        Device.SMOKE: {
             GdInfo.COST: Unit.rph(0),
             GdInfo.HARDWARE: {},
             GdInfo.NIC: {

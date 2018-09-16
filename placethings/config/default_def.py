@@ -78,7 +78,7 @@ DEVICE_INVENTORY = {
         Device.P3_2XLARGE: 1,
     },
     DeviceCategory.SENSOR: {
-        Device.THERMAL: 2,
+        Device.SMOKE: 1,
         Device.CAMERA: 1,
     },
 }
@@ -86,10 +86,7 @@ DEVICE_INVENTORY = {
 
 # device naming rule: DeviceTypeName.ID
 DEVICE_LINKS = {
-    'THERMAL.0 -> HOME_IOTGW.0': {
-        GnInfo.LATENCY: Unit.ms(3),
-    },
-    'THERMAL.1 -> HOME_IOTGW.0': {
+    'SMOKE.0 -> HOME_IOTGW.0': {
         GnInfo.LATENCY: Unit.ms(3),
     },
     'CAMERA.0 -> HOME_IOTGW.0': {
@@ -136,11 +133,10 @@ DEVICE_LINKS = {
 
 # device naming rule: DeviceTypeName.ID
 TASK_MAPPING = {
-    'task_thermal_loc1': 'THERMAL.0',
-    'task_thermal_loc2': 'THERMAL.1',
+    'task_smoke': 'SMOKE.0',
     'task_camera': 'CAMERA.0',
     'task_broadcast': 'PHONE.0',
-    'task_getAvgTemperature': None,
+    'task_getAvgReading': None,
     'task_findObject': None,
     'task_checkAbnormalEvent': None,
     'task_sentNotificatoin': None,
@@ -148,13 +144,10 @@ TASK_MAPPING = {
 
 
 TASK_LINKS = {
-    'task_thermal_loc1 -> task_getAvgTemperature': {
+    'task_smoke -> task_getAvgReading': {
         GtInfo.TRAFFIC: Unit.kbyte(1),
     },
-    'task_thermal_loc2 -> task_getAvgTemperature': {
-        GtInfo.TRAFFIC: Unit.kbyte(1),
-    },
-    'task_getAvgTemperature -> task_checkAbnormalEvent': {
+    'task_getAvgReading -> task_checkAbnormalEvent': {
         GtInfo.TRAFFIC: Unit.byte(1),
     },
     'task_camera -> task_findObject': {
@@ -174,13 +167,9 @@ TASK_LINKS = {
 
 
 TASK_INFO = {
-    'task_thermal_loc1': {
+    'task_smoke': {
         GtInfo.LATENCY_INFO: {},
         GtInfo.RESRC_RQMT: {}
-    },
-    'task_thermal_loc2': {
-        GtInfo.LATENCY_INFO: {},
-        GtInfo.RESRC_RQMT: {},
     },
     'task_camera': {
         GtInfo.LATENCY_INFO: {},
@@ -190,7 +179,7 @@ TASK_INFO = {
         GtInfo.LATENCY_INFO: {},
         GtInfo.RESRC_RQMT: {},
     },
-    'task_getAvgTemperature': {
+    'task_getAvgReading': {
         GtInfo.LATENCY_INFO: {
             Device.T2_MICRO: {
                 # TODO: assume one flavor per device type for now.

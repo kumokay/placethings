@@ -21,7 +21,7 @@
                 }
             }
         },
-        "task_getAvgTemperature": {
+        "task_getAvgReading": {
             "GtInfoEnum.LATENCY_INFO": {
                 "Device.P3_2XLARGE": {
                     "Flavor.CPU": 5
@@ -42,11 +42,7 @@
                 }
             }
         },
-        "task_thermal_loc1": {
-            "GtInfoEnum.LATENCY_INFO": {},
-            "GtInfoEnum.RESRC_RQMT": {}
-        },
-        "task_thermal_loc2": {
+        "task_smoke": {
             "GtInfoEnum.LATENCY_INFO": {},
             "GtInfoEnum.RESRC_RQMT": {}
         },
@@ -109,16 +105,15 @@
     },
     "task_mapping": {
         "task_sentNotificatoin": null,
-        "task_getAvgTemperature": null,
-        "task_thermal_loc1": "THERMAL.0",
-        "task_thermal_loc2": "THERMAL.1",
+        "task_getAvgReading": null,
+        "task_smoke": "SMOKE.0",
         "task_camera": "CAMERA.0",
         "task_broadcast": "PHONE.0",
         "task_findObject": null,
         "task_checkAbnormalEvent": null
     },
     "task_links": {
-        "task_thermal_loc1 -> task_getAvgTemperature": {
+        "task_smoke -> task_getAvgReading": {
             "GtInfoEnum.TRAFFIC": 8192
         },
         "task_sentNotificatoin -> task_broadcast": {
@@ -127,11 +122,8 @@
         "task_checkAbnormalEvent -> task_sentNotificatoin": {
             "GtInfoEnum.TRAFFIC": 8
         },
-        "task_getAvgTemperature -> task_checkAbnormalEvent": {
+        "task_getAvgReading -> task_checkAbnormalEvent": {
             "GtInfoEnum.TRAFFIC": 8
-        },
-        "task_thermal_loc2 -> task_getAvgTemperature": {
-            "GtInfoEnum.TRAFFIC": 8192
         },
         "task_camera -> task_findObject": {
             "GtInfoEnum.TRAFFIC": 83886080

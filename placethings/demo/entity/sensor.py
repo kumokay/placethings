@@ -80,7 +80,7 @@ class SensorGen(object):
     def start_sensor(cls, name, device_type, receiver_list):
         t_start = cls._get_delay_start_time()
 
-        if device_type == Device.THERMAL:
+        if device_type == Device.SMOKE:
             # cls._gen_random_int_bytearry(40, 120, 100)
             datagen_func = cls._gen_random_int_list
             datagen_args = (40, 120, 100)

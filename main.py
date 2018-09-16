@@ -5,8 +5,8 @@ from __future__ import unicode_literals
 
 import argparse
 import logging
+import importlib
 
-from placethings.demo import demo_case
 from placethings.config import config_factory
 from placethings.graph_gen import graph_factory
 from placethings.utils.common_utils import update_rootlogger
@@ -25,7 +25,7 @@ class SubArgsManager(object):
             '--visualize',
             type=bool,
             dest='is_export',
-            default=False,
+            default=True,
             required=required,
             help='export graph and data')
 
@@ -42,12 +42,12 @@ class SubArgsManager(object):
                 'If not specified, use config_dafult')
         )
 
-    def case_name(self, required=False):
+    def testcase(self, required=False):
         self.subparser.add_argument(
             '-tc',
-            '--test_case',
+            '--testcase',
             type=str,
-            dest='case_name',
+            dest='testcase',
             default=None,
             required=required,
             help=('demo case name')
@@ -96,20 +96,19 @@ class FuncManager(object):
         graph_factory.gen_topo_graph(config_name, is_export=True)
 
     @staticmethod
-    def place_things(args):
-        config_name = args.config_name
-        is_export = args.is_export
-        demo_case.test_config(config_name, is_export)
-
-    @staticmethod
     def demo(args):
-        case_name = args.case_name
+        testcase = args.testcase
         config_name = args.config_name
         is_export = args.is_export
-        if not case_name:
+        if not testcase:
             log.error('must specify test case name')
             return
-        getattr(demo_case, case_name)(config_name, is_export)
+        module_name, case_name = testcase.split('.')
+        module_name = 'placethings.demo.{}'.format(module_name)
+        log.info('run test case: {} in {}'.format(case_name, module_name))
+        demo_case_module = importlib.import_module(module_name)
+        demo_case_class = getattr(demo_case_module, case_name)
+        demo_case_class.test(config_name, is_export)
 
     @staticmethod
     def export_default_config(args):
@@ -147,22 +146,16 @@ def main():
         help='export all config to json')
     subargs_manager.config(required=False)
 
-    name = 'place_things'
-    subargs_manager = args_manager.add_subparser(
-        name,
-        func=getattr(FuncManager, name),
-        help='compute placement')
-    subargs_manager.visualize(required=False)
-    subargs_manager.config(required=False)
-
     name = 'demo'
     subargs_manager = args_manager.add_subparser(
         name,
         func=getattr(FuncManager, name),
-        help='run demo cases')
+        help=(
+            'run demo cases. '
+            'e.g. -tc test_deploy.test_deploy_default'))
     subargs_manager.visualize(required=False)
     subargs_manager.config(required=False)
-    subargs_manager.case_name(required=False)
+    subargs_manager.testcase(required=False)
 
     name = 'export_default_config'
     subargs_manager = args_manager.add_subparser(

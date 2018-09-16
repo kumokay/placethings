@@ -1,2 +1,0 @@
-{'GtInfoEnum.RESRC_RQMT': {}, 'GtInfoEnum.LATENCY_INFO': {}, 'GtInfoEnum.DEVICE': u'THERMAL.0'}
-{'GtInfoEnum.RESRC_RQMT': {<Flavor.CPU: 1>: {<Hardware.GPU: 1>: 0, <Hardware.RAM: 5>: 8388608, <Hardware.CPU: 4>: 5, <Hardware.HD: 6>: 24576}}, 'GtInfoEnum.LATENCY_INFO': {<Device.P3_2XLARGE: 1>: {<Flavor.CPU: 1>: 5}, <Device.T3_LARGE: 4>: {<Flavor.CPU: 1>: 10}, <Device.T2_MICRO: 5>: {<Flavor.CPU: 1>: 15}}, 'GtInfoEnum.DEVICE': None}
