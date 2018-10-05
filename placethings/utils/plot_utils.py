@@ -22,10 +22,11 @@ def save_plot(filepath):
 
 
 def plot(
-        graph,
+        graph, pos=None,
         with_edge=True, which_edge_label=None, edge_label_dict=None,
         node_label_dict=None, filepath=None):
-    pos = nx.spring_layout(graph)
+    if not pos:
+        pos = nx.spring_layout(graph)
     nx.draw_networkx_nodes(
         graph,
         pos=pos,

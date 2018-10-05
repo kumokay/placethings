@@ -50,6 +50,7 @@ class LinkType(Enum):
     LAN = auto()
     WAN = auto()
     ANY = auto()
+    P2P = auto()
 
 
 class NwDevice(Enum):
@@ -61,12 +62,20 @@ class NwDevice(Enum):
     BB_AP = auto()
     # third_party
     CLOUD_SWITCH = auto()
+    # TODO: clean this
+    # ddflow
+    FIELD_SWITCH = auto()
+    CENTER_SWITCH = auto()
 
 
 class NwDeviceCategory(Enum):
     HOME = auto()
     BACKBONE = auto()
     CLOUD = auto()
+    # TODO: clean this
+    # ddflow
+    FIELD = auto()
+    CENTER = auto()
 
 
 class Device(Enum):
@@ -79,6 +88,9 @@ class Device(Enum):
     # sensor
     SMOKE = auto()
     CAMERA = auto()
+    # TODO: clean this
+    # ddflow
+    CONTROLLER = auto()
 
 
 class DeviceCategory(Enum):
