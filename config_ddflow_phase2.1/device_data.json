@@ -87,34 +87,34 @@
     },
     "links": {
         "CONTROLLER.0 -> CENTER_SWITCH.0": {
-            "GnInfoEnum.LATENCY": 1
+            "GnInfoEnum.LATENCY": 2
         },
         "CENTER_SWITCH.0 -> CONTROLLER.0": {
-            "GnInfoEnum.LATENCY": 1
+            "GnInfoEnum.LATENCY": 2
         },
         "CAMERA.0 -> BB_AP.0": {
-            "GnInfoEnum.LATENCY": 1
+            "GnInfoEnum.LATENCY": 30
         },
         "BB_AP.0 -> CAMERA.0": {
-            "GnInfoEnum.LATENCY": 1
+            "GnInfoEnum.LATENCY": 30
         },
         "T2_MICRO.0 -> FIELD_SWITCH.0": {
-            "GnInfoEnum.LATENCY": 1
+            "GnInfoEnum.LATENCY": 2
         },
         "FIELD_SWITCH.0 -> T2_MICRO.0": {
-            "GnInfoEnum.LATENCY": 1
+            "GnInfoEnum.LATENCY": 2
         },
         "P3_2XLARGE.0 -> CENTER_SWITCH.0": {
-            "GnInfoEnum.LATENCY": 1
+            "GnInfoEnum.LATENCY": 2
         },
         "CENTER_SWITCH.0 -> P3_2XLARGE.0": {
-            "GnInfoEnum.LATENCY": 1
+            "GnInfoEnum.LATENCY": 2
         },
         "T3_LARGE.0 -> FIELD_SWITCH.1": {
-            "GnInfoEnum.LATENCY": 1
+            "GnInfoEnum.LATENCY": 2
         },
         "FIELD_SWITCH.1 -> T3_LARGE.0": {
-            "GnInfoEnum.LATENCY": 1
+            "GnInfoEnum.LATENCY": 2
         }
     }
 }

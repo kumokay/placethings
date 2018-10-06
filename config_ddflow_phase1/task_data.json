@@ -11,13 +11,13 @@
         "task_findObject": {
             "GtInfoEnum.LATENCY_INFO": {
                 "Device.P3_2XLARGE": {
-                    "Flavor.GPU": 800
+                    "Flavor.GPU": 100
                 },
                 "Device.T3_LARGE": {
-                    "Flavor.CPU": 1300
+                    "Flavor.CPU": 1600
                 },
                 "Device.T2_MICRO": {
-                    "Flavor.CPU": 4200
+                    "Flavor.CPU": 3200
                 }
             },
             "GtInfoEnum.RESRC_RQMT": {

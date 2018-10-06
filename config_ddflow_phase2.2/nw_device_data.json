@@ -41,8 +41,8 @@
                 "LinkType.P2P": {
                     "LinkInfo.ULINK_BW": 157286400,
                     "LinkInfo.PROTOCOL": "NwLink.WIFI",
-                    "LinkInfo.N_LINKS": 1,
-                    "LinkInfo.DLINK_BW": 157286400
+                    "LinkInfo.N_LINKS": 2147483647,
+                    "LinkInfo.DLINK_BW": 52428800
                 }
             }
         },
@@ -79,102 +79,102 @@
         "CENTER_SWITCH.0 -> BB_SWITCH.0": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.WAN",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.ANY",
-            "GnInfoEnum.LATENCY": 10
+            "GnInfoEnum.LATENCY": 2
         },
         "BB_SWITCH.0 -> CENTER_SWITCH.0": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.ANY",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.WAN",
-            "GnInfoEnum.LATENCY": 10
+            "GnInfoEnum.LATENCY": 2
         },
         "BB_SWITCH.0 -> BB_SWITCH.1": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.ANY",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.ANY",
-            "GnInfoEnum.LATENCY": 10
+            "GnInfoEnum.LATENCY": 2
         },
         "BB_SWITCH.1 -> BB_SWITCH.0": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.ANY",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.ANY",
-            "GnInfoEnum.LATENCY": 10
+            "GnInfoEnum.LATENCY": 2
         },
         "BB_SWITCH.1 -> BB_SWITCH.2": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.ANY",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.ANY",
-            "GnInfoEnum.LATENCY": 10
+            "GnInfoEnum.LATENCY": 2
         },
         "BB_SWITCH.2 -> BB_SWITCH.1": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.ANY",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.ANY",
-            "GnInfoEnum.LATENCY": 10
+            "GnInfoEnum.LATENCY": 2
         },
         "BB_SWITCH.2 -> FIELD_SWITCH.0": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.ANY",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.WAN",
-            "GnInfoEnum.LATENCY": 10
+            "GnInfoEnum.LATENCY": 2
         },
         "FIELD_SWITCH.0 -> BB_SWITCH.2": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.WAN",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.ANY",
-            "GnInfoEnum.LATENCY": 10
+            "GnInfoEnum.LATENCY": 2
         },
         "BB_SWITCH.1 -> FIELD_SWITCH.1": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.ANY",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.WAN",
-            "GnInfoEnum.LATENCY": 5
+            "GnInfoEnum.LATENCY": 2
         },
         "FIELD_SWITCH.1 -> BB_SWITCH.1": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.WAN",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.ANY",
-            "GnInfoEnum.LATENCY": 5
+            "GnInfoEnum.LATENCY": 2
         },
         "BB_SWITCH.0 -> BB_AP.0": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.ANY",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.WAN",
-            "GnInfoEnum.LATENCY": 15
+            "GnInfoEnum.LATENCY": 10
         },
         "BB_AP.0 -> BB_SWITCH.0": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.WAN",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.ANY",
-            "GnInfoEnum.LATENCY": 15
+            "GnInfoEnum.LATENCY": 10
         },
         "BB_SWITCH.1 -> BB_AP.1": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.ANY",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.WAN",
-            "GnInfoEnum.LATENCY": 15
+            "GnInfoEnum.LATENCY": 10
         },
         "BB_AP.1 -> BB_SWITCH.1": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.WAN",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.ANY",
-            "GnInfoEnum.LATENCY": 15
+            "GnInfoEnum.LATENCY": 10
         },
         "BB_SWITCH.2 -> BB_AP.2": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.ANY",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.WAN",
-            "GnInfoEnum.LATENCY": 15
+            "GnInfoEnum.LATENCY": 10
         },
         "BB_AP.2 -> BB_SWITCH.2": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.WAN",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.ANY",
-            "GnInfoEnum.LATENCY": 15
+            "GnInfoEnum.LATENCY": 10
         },
         "BB_AP.0 -> BB_AP.1": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.P2P",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.P2P",
-            "GnInfoEnum.LATENCY": 25
+            "GnInfoEnum.LATENCY": 30
         },
         "BB_AP.1 -> BB_AP.0": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.P2P",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.P2P",
-            "GnInfoEnum.LATENCY": 15
+            "GnInfoEnum.LATENCY": 30
         },
         "BB_AP.1 -> BB_AP.2": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.P2P",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.P2P",
-            "GnInfoEnum.LATENCY": 25
+            "GnInfoEnum.LATENCY": 30
         },
         "BB_AP.2 -> BB_AP.1": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.P2P",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.P2P",
-            "GnInfoEnum.LATENCY": 15
+            "GnInfoEnum.LATENCY": 30
         }
     }
 }
