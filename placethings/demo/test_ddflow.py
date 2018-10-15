@@ -52,11 +52,11 @@ class TestPhase1(BaseTestCase):
             cfgHelper.update_dev_link_latency(dev, nw_dev, latency)
             dev = 'CONTROLLER.0'
             nw_dev = 'CENTER_SWITCH.0'
-            latency = Unit.ms(random.randint(2, 100))
+            latency = Unit.ms(random.randint(2, 200))
             cfgHelper.update_dev_link_latency(dev, nw_dev, latency)
             dev = 'T3_LARGE.0'
             nw_dev = 'FIELD_SWITCH.1'
-            latency = Unit.ms(random.randint(2, 100))
+            latency = Unit.ms(random.randint(2, 200))
             cfgHelper.update_dev_link_latency(dev, nw_dev, latency)
             # update graph and map
             cfgHelper.update_topo_device_graph()
@@ -67,9 +67,9 @@ class TestPhase1(BaseTestCase):
             if is_simulate:
                 cls._simulate(topo_device_graph, Gd, G_map)
         latency_dynamic, latency_static = cfgHelper.get_max_latency_log()
-        log.info('static\tdynamic\tdiff')
+        print('static\tdynamic\tdiff')
         for t1, t2 in zip(latency_static, latency_dynamic):
-            log.info('{}\t{}\t{}'.format(t1, t2, t2 - t1))
+            print('{}\t{}\t{}'.format(t1, t2, t2 - t1))
 
 
 class TestPhase2(BaseTestCase):
@@ -117,15 +117,15 @@ class TestPhase2(BaseTestCase):
             cfgHelper2.update_dev_link(dev, nw_dev, new_nw_dev, new_latency)
             log.info('=== update {}: ap-bb link ==='.format(update_id))
             ap_bb_links = [
-                ('BB_AP.0', 'BB_SWITCH.0'),
+                # ('BB_AP.0', 'BB_SWITCH.0'),
                 ('BB_AP.1', 'BB_SWITCH.1'),
                 ('BB_AP.2', 'BB_SWITCH.2')]
             [which_link] = random.sample(ap_bb_links, 1)
             which_rand = random.randint(0, 9)
-            if which_rand < 2:
-                latency = Unit.ms(random.randint(5000, 50000))
+            if which_rand < 5:
+                latency = Unit.ms(random.randint(5000, 6000))
             else:
-                latency = Unit.ms(random.randint(10, 40))
+                latency = Unit.ms(random.randint(30, 50))
             nw_dev1, nw_dev2 = which_link
             cfgHelper.update_nw_link_latency(nw_dev1, nw_dev2, latency)
             cfgHelper2.update_nw_link_latency(nw_dev1, nw_dev2, latency)
@@ -149,6 +149,6 @@ class TestPhase2(BaseTestCase):
             cfgHelper2.update_max_latency_log()
         _, latency_static = cfgHelper.get_max_latency_log()
         _, latency_static2 = cfgHelper2.get_max_latency_log()
-        log.info('static\tdynamic\tdiff')
+        print('static\tdynamic\tdiff')
         for t1, t2 in zip(latency_static, latency_static2):
-            log.info('{}\t{}\t{}'.format(t1, t2, t2 - t1))
+            print('{}\t{}\t{}'.format(t1, t2, t2 - t1))
