@@ -48,15 +48,15 @@ class TestPhase1(BaseTestCase):
             log.info('=== update {}: dev-nw_dev link ==='.format(update_id))
             dev = 'P3_2XLARGE.0'
             nw_dev = 'CENTER_SWITCH.0'
-            latency = Unit.ms(random.randint(2, 5000))
+            latency = Unit.ms(random.randint(2, 2000))
             cfgHelper.update_dev_link_latency(dev, nw_dev, latency)
             dev = 'CONTROLLER.0'
             nw_dev = 'CENTER_SWITCH.0'
-            latency = Unit.ms(random.randint(2, 500))
+            latency = Unit.ms(random.randint(2, 100))
             cfgHelper.update_dev_link_latency(dev, nw_dev, latency)
             dev = 'T3_LARGE.0'
             nw_dev = 'FIELD_SWITCH.1'
-            latency = Unit.ms(random.randint(2, 5000))
+            latency = Unit.ms(random.randint(2, 100))
             cfgHelper.update_dev_link_latency(dev, nw_dev, latency)
             # update graph and map
             cfgHelper.update_topo_device_graph()

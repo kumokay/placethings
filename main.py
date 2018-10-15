@@ -25,7 +25,7 @@ class SubArgsManager(object):
             '--visualize',
             type=bool,
             dest='is_export',
-            default=True,
+            default=False,
             required=required,
             help='export graph and data')
 

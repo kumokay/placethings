@@ -87,9 +87,6 @@ class ConfigDataHelper(object):
         max_latency_static = ilp_solver.get_max_latency(
             self.Gt, self.Gd, self.init_result_mapping)
         self.max_latency_static_log.append(max_latency_static)
-        log.info('max_latency_log: {}'.format(self.max_latency_log))
-        log.info('max_latency_static_log: {}'.format(
-            self.max_latency_static_log))
 
     def get_max_latency_log(self):
         return self.max_latency_log, self.max_latency_static_log

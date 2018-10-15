@@ -14,7 +14,7 @@
                     "Flavor.GPU": 100
                 },
                 "Device.T3_LARGE": {
-                    "Flavor.CPU": 1600
+                    "Flavor.CPU": 884
                 },
                 "Device.T2_MICRO": {
                     "Flavor.CPU": 3200
