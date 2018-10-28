@@ -1,0 +1,228 @@
+2018-10-27 22:18:37,096 client1|[INFO] call: (TIME) send: t1=1540703917.1
+2018-10-27 22:18:37,097 client1|[INFO] call: (SEND) call: ('testcall',)
+2018-10-27 22:19:05,736 client1|[INFO] call: (TIME) send: t1=1540703945.74
+2018-10-27 22:19:05,736 client1|[INFO] call: (SEND) push: ('testcall',)
+2018-10-27 22:24:56,535 client1|[INFO] call: (TIME) send: t1=1540704296.54
+2018-10-27 22:24:56,535 client1|[INFO] call: (SEND) push: ('testcall',)
+2018-10-27 22:30:14,377 client1|[INFO] call: (TIME) pkt sent time: 1540704614.38
+2018-10-27 22:30:14,377 client1|[INFO] call: (SEND) push: ('testcall',)
+2018-10-27 22:31:33,515 client1|[INFO] call: (TIME) pkt sent time: 1540704693.52
+2018-10-27 22:31:33,515 client1|[INFO] call: (SEND) push: ('testcall',)
+2018-10-27 23:01:51,032 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:01:51,032 client1|[INFO] call: (TIME) pkt sent time: 1540706511.03
+2018-10-27 23:01:51,033 client1|[INFO] call: (SEND) get_prog_list: ()
+2018-10-27 23:04:29,516 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:04:29,517 client1|[INFO] call: (TIME) pkt sent time: 1540706669.52
+2018-10-27 23:04:29,517 client1|[INFO] call: (SEND) get_prog_list: ()
+2018-10-27 23:04:29,529 client1|[INFO] run_client: result: {}
+2018-10-27 23:05:35,602 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:05:35,602 client1|[INFO] call: (TIME) pkt sent time: 1540706735.6
+2018-10-27 23:05:35,602 client1|[INFO] call: (SEND) start_prog: ('recv1', 'python main_entity.py run_actuator -n recv1 -a localh
+2018-10-27 23:05:35,606 client1|[INFO] run_client: result: prog started successfully: recv1
+2018-10-27 23:05:52,950 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:05:52,950 client1|[INFO] call: (TIME) pkt sent time: 1540706752.95
+2018-10-27 23:05:52,950 client1|[INFO] call: (SEND) get_prog_list: ()
+2018-10-27 23:05:52,962 client1|[INFO] run_client: result: {'recv1': [1, 0, "'Popen' object has no attribute 'to_msgpack'", None]}
+2018-10-27 23:06:43,845 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:06:43,845 client1|[INFO] call: (TIME) pkt sent time: 1540706803.85
+2018-10-27 23:06:43,846 client1|[INFO] call: (SEND) get_prog_list: ()
+2018-10-27 23:06:43,857 client1|[INFO] run_client: result: {'recv1': [1, 0, "'Popen' object has no attribute 'to_msgpack'", None]}
+2018-10-27 23:07:20,438 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:07:20,439 client1|[INFO] call: (TIME) pkt sent time: 1540706840.44
+2018-10-27 23:07:20,439 client1|[INFO] call: (SEND) stop_prog: ('recv1',)
+2018-10-27 23:07:20,441 client1|[INFO] run_client: result: prog stopped successfully: recv1
+2018-10-27 23:08:16,116 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:08:16,117 client1|[INFO] call: (TIME) pkt sent time: 1540706896.12
+2018-10-27 23:08:16,117 client1|[INFO] call: (SEND) start_prog: ('task1', 'python main_entity.py run_task -n task1 -a localhost:
+2018-10-27 23:08:16,120 client1|[INFO] run_client: result: prog started successfully: task1
+2018-10-27 23:08:41,875 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:08:41,875 client1|[INFO] call: (TIME) pkt sent time: 1540706921.88
+2018-10-27 23:08:41,875 client1|[INFO] call: (SEND) call: ('testcall',)
+2018-10-27 23:08:50,086 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:08:50,086 client1|[INFO] call: (TIME) pkt sent time: 1540706930.09
+2018-10-27 23:08:50,086 client1|[INFO] call: (SEND) push: ('testcall',)
+2018-10-27 23:08:53,099 client1|[INFO] run_client: result: compute data and send result
+2018-10-27 23:08:56,279 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:08:56,279 client1|[INFO] call: (TIME) pkt sent time: 1540706936.28
+2018-10-27 23:08:56,279 client1|[INFO] call: (SEND) push: ('testcall',)
+2018-10-27 23:08:59,289 client1|[INFO] run_client: result: compute data and send result
+2018-10-27 23:10:03,015 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:10:03,015 client1|[INFO] call: (TIME) pkt sent time: 1540707003.02
+2018-10-27 23:10:03,015 client1|[INFO] call: (SEND) push: ('testcall',)
+2018-10-27 23:10:06,030 client1|[INFO] run_client: result: compute data and send result
+2018-10-27 23:10:26,869 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:10:26,869 client1|[INFO] call: (TIME) pkt sent time: 1540707026.87
+2018-10-27 23:10:26,869 client1|[INFO] call: (SEND) get_prog_list: ()
+2018-10-27 23:10:56,471 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:10:56,471 client1|[INFO] call: (TIME) pkt sent time: 1540707056.47
+2018-10-27 23:10:56,471 client1|[INFO] call: (SEND) get_prog_list: ()
+2018-10-27 23:11:30,751 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:11:30,751 client1|[INFO] call: (TIME) pkt sent time: 1540707090.75
+2018-10-27 23:11:30,752 client1|[INFO] call: (SEND) stop_prog: ('task1',)
+2018-10-27 23:11:30,753 client1|[INFO] run_client: result: prog stopped successfully: task1
+2018-10-27 23:11:39,782 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:11:39,782 client1|[INFO] call: (TIME) pkt sent time: 1540707099.78
+2018-10-27 23:11:39,782 client1|[INFO] call: (SEND) get_prog_list: ()
+2018-10-27 23:12:56,220 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:12:56,220 client1|[INFO] call: (TIME) pkt sent time: 1540707176.22
+2018-10-27 23:12:56,220 client1|[INFO] call: (SEND) stop_prog: ('task1',)
+2018-10-27 23:12:56,222 client1|[INFO] run_client: result: prog stopped successfully: task1
+2018-10-27 23:13:01,766 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:13:01,767 client1|[INFO] call: (TIME) pkt sent time: 1540707181.77
+2018-10-27 23:13:01,767 client1|[INFO] call: (SEND) stop_prog: ('task1',)
+2018-10-27 23:13:01,768 client1|[INFO] run_client: result: prog stopped successfully: task1
+2018-10-27 23:13:45,118 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:13:45,118 client1|[INFO] call: (TIME) pkt sent time: 1540707225.12
+2018-10-27 23:13:45,118 client1|[INFO] call: (SEND) stop_prog: ('task1',)
+2018-10-27 23:14:07,224 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:14:07,224 client1|[INFO] call: (TIME) pkt sent time: 1540707247.22
+2018-10-27 23:14:07,224 client1|[INFO] call: (SEND) stop_prog: ('task1',)
+2018-10-27 23:14:15,183 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:14:15,183 client1|[INFO] call: (TIME) pkt sent time: 1540707255.18
+2018-10-27 23:14:15,183 client1|[INFO] call: (SEND) stop_prog: ('task1',)
+2018-10-27 23:14:15,185 client1|[INFO] run_client: result: prog is not running: task1
+2018-10-27 23:14:18,908 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:14:18,908 client1|[INFO] call: (TIME) pkt sent time: 1540707258.91
+2018-10-27 23:14:18,908 client1|[INFO] call: (SEND) get_prog_list: ()
+2018-10-27 23:14:18,920 client1|[INFO] run_client: result: []
+2018-10-27 23:14:28,987 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:14:28,987 client1|[INFO] call: (TIME) pkt sent time: 1540707268.99
+2018-10-27 23:14:28,987 client1|[INFO] call: (SEND) start_prog: ('task1', 'python main_entity.py run_task -n task1 -a localhost:
+2018-10-27 23:14:28,991 client1|[INFO] run_client: result: prog started successfully: task1
+2018-10-27 23:14:39,277 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:14:39,277 client1|[INFO] call: (TIME) pkt sent time: 1540707279.28
+2018-10-27 23:14:39,277 client1|[INFO] call: (SEND) stop_prog: ('task1',)
+2018-10-27 23:14:39,279 client1|[INFO] run_client: result: prog stopped successfully: task1
+2018-10-27 23:14:41,278 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:14:41,278 client1|[INFO] call: (TIME) pkt sent time: 1540707281.28
+2018-10-27 23:14:41,278 client1|[INFO] call: (SEND) stop_prog: ('task1',)
+2018-10-27 23:14:41,279 client1|[INFO] run_client: result: prog is not running: task1
+2018-10-27 23:14:43,222 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:14:43,222 client1|[INFO] call: (TIME) pkt sent time: 1540707283.22
+2018-10-27 23:14:43,223 client1|[INFO] call: (SEND) stop_prog: ('task1',)
+2018-10-27 23:14:43,224 client1|[INFO] run_client: result: prog is not running: task1
+2018-10-27 23:16:51,160 client1|[INFO] call: ====== send pkt ======
+2018-10-27 23:16:51,160 client1|[INFO] call: (TIME) pkt sent time: 1540707411.16
+2018-10-27 23:16:51,160 client1|[INFO] call: (SEND) get_prog_list: ()
+2018-10-27 23:16:51,172 client1|[INFO] run_client: result: []
+2018-10-28 00:38:48,268 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:38:48,269 client1|[INFO] call: (TIME) pkt sent time: 1540712328.27
+2018-10-28 00:38:48,273 client1|[INFO] call: (SEND) compute: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:39:08,789 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:39:08,789 client1|[INFO] call: (TIME) pkt sent time: 1540712348.79
+2018-10-28 00:39:08,794 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:41:31,272 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:41:31,273 client1|[INFO] call: (TIME) pkt sent time: 1540712491.27
+2018-10-28 00:41:31,278 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:44:05,857 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:44:05,857 client1|[INFO] call: (TIME) pkt sent time: 1540712645.86
+2018-10-28 00:44:05,862 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:46:24,364 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:46:24,365 client1|[INFO] call: (TIME) pkt sent time: 1540712784.36
+2018-10-28 00:46:24,369 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:48:17,572 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:48:17,572 client1|[INFO] call: (TIME) pkt sent time: 1540712897.57
+2018-10-28 00:48:17,579 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:48:35,031 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:48:35,031 client1|[INFO] call: (TIME) pkt sent time: 1540712915.03
+2018-10-28 00:48:35,036 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:48:40,482 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:48:40,483 client1|[INFO] call: (TIME) pkt sent time: 1540712920.48
+2018-10-28 00:48:40,487 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:49:03,389 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:49:03,390 client1|[INFO] call: (TIME) pkt sent time: 1540712943.39
+2018-10-28 00:49:03,394 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:50:13,507 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:50:13,508 client1|[INFO] call: (TIME) pkt sent time: 1540713013.51
+2018-10-28 00:50:13,512 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:50:57,660 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:50:57,660 client1|[INFO] call: (TIME) pkt sent time: 1540713057.66
+2018-10-28 00:50:57,664 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:50:57,665 client1|[WARNING] _handle_connect: Connect error on fd 7: ECONNREFUSED
+2018-10-28 00:50:57,666 client1|[WARNING] _handle_connect: Connect error on fd 7: ECONNREFUSED
+2018-10-28 00:50:57,666 client1|[WARNING] _handle_connect: Connect error on fd 7: ECONNREFUSED
+2018-10-28 00:50:57,666 client1|[WARNING] _handle_connect: Connect error on fd 7: ECONNREFUSED
+2018-10-28 00:50:57,667 client1|[WARNING] _handle_connect: Connect error on fd 7: ECONNREFUSED
+2018-10-28 00:51:07,548 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:51:07,549 client1|[INFO] call: (TIME) pkt sent time: 1540713067.55
+2018-10-28 00:51:07,553 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:51:55,805 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:51:55,805 client1|[INFO] call: (TIME) pkt sent time: 1540713115.81
+2018-10-28 00:51:55,809 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:53:06,270 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:53:06,270 client1|[INFO] call: (TIME) pkt sent time: 1540713186.27
+2018-10-28 00:53:06,276 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:53:58,022 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:53:58,022 client1|[INFO] call: (TIME) pkt sent time: 1540713238.02
+2018-10-28 00:53:58,026 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:55:20,371 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:55:20,371 client1|[INFO] call: (TIME) pkt sent time: 1540713320.37
+2018-10-28 00:55:20,375 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:57:09,963 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:57:09,963 client1|[INFO] call: (TIME) pkt sent time: 1540713429.96
+2018-10-28 00:57:09,967 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:58:29,529 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:58:29,529 client1|[INFO] call: (TIME) pkt sent time: 1540713509.53
+2018-10-28 00:58:29,533 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:59:16,515 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:59:16,516 client1|[INFO] call: (TIME) pkt sent time: 1540713556.52
+2018-10-28 00:59:16,519 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 00:59:46,054 client1|[INFO] call: ====== send pkt ======
+2018-10-28 00:59:46,054 client1|[INFO] call: (TIME) pkt sent time: 1540713586.05
+2018-10-28 00:59:46,058 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 01:00:28,220 client1|[INFO] call: ====== send pkt ======
+2018-10-28 01:00:28,220 client1|[INFO] call: (TIME) pkt sent time: 1540713628.22
+2018-10-28 01:00:28,224 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 01:01:31,883 client1|[INFO] call: ====== send pkt ======
+2018-10-28 01:01:31,883 client1|[INFO] call: (TIME) pkt sent time: 1540713691.88
+2018-10-28 01:01:31,887 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 01:01:46,668 client1|[INFO] call: ====== send pkt ======
+2018-10-28 01:01:46,668 client1|[INFO] call: (TIME) pkt sent time: 1540713706.67
+2018-10-28 01:01:46,672 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 01:02:17,015 client1|[INFO] call: ====== send pkt ======
+2018-10-28 01:02:17,015 client1|[INFO] call: (TIME) pkt sent time: 1540713737.02
+2018-10-28 01:02:17,020 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 01:02:39,077 client1|[INFO] call: ====== send pkt ======
+2018-10-28 01:02:39,077 client1|[INFO] call: (TIME) pkt sent time: 1540713759.08
+2018-10-28 01:02:39,082 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 01:06:26,319 client1|[INFO] call: ====== send pkt ======
+2018-10-28 01:06:26,319 client1|[INFO] call: (TIME) pkt sent time: 1540713986.32
+2018-10-28 01:06:26,328 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 01:06:33,426 client1|[INFO] call: ====== send pkt ======
+2018-10-28 01:06:33,426 client1|[INFO] call: (TIME) pkt sent time: 1540713993.43
+2018-10-28 01:06:33,430 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 01:09:11,282 client1|[INFO] call: ====== send pkt ======
+2018-10-28 01:09:11,282 client1|[INFO] call: (TIME) pkt sent time: 1540714151.28
+2018-10-28 01:09:11,287 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 01:11:47,933 client1|[INFO] call: ====== send pkt ======
+2018-10-28 01:11:47,933 client1|[INFO] call: (TIME) pkt sent time: 1540714307.93
+2018-10-28 01:11:47,938 client1|[INFO] call: (SEND) push: ('\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00\x00\x00\x0
+2018-10-28 01:23:52,361 client1|[INFO] call: ====== send pkt ======
+2018-10-28 01:23:52,362 client1|[INFO] call: (TIME) pkt sent time: 1540715032.36
+2018-10-28 01:23:52,364 client1|[INFO] call: (SEND) push: ('iVBORw0KGgoAAAANSUhEUgAAAQAAAACQCAYAAADnY7WRAAAgAElEQVR4Acy9CZ
+2018-10-28 01:24:13,891 client1|[INFO] call: ====== send pkt ======
+2018-10-28 01:24:13,891 client1|[INFO] call: (TIME) pkt sent time: 1540715053.89
+2018-10-28 01:24:13,893 client1|[INFO] call: (SEND) push: ('iVBORw0KGgoAAAANSUhEUgAAAQAAAACQCAYAAADnY7WRAAAgAElEQVR4Acy9CZ
+2018-10-28 01:24:17,208 client1|[INFO] client_send_file: result: compute data and send result
+2018-10-28 01:24:54,577 client1|[INFO] call: ====== send pkt ======
+2018-10-28 01:24:54,578 client1|[INFO] call: (TIME) pkt sent time: 1540715094.58
+2018-10-28 01:24:54,578 client1|[INFO] call: (SEND) push: ('iVBORw0KGgoAAAANSUhEUgAAAQAAAACQCAYAAADnY7WRAAAgAElEQVR4AcydB5
+2018-10-28 01:24:57,810 client1|[INFO] client_send_file: result: compute data and send result
+2018-10-28 01:25:05,767 client1|[INFO] call: ====== send pkt ======
+2018-10-28 01:25:05,767 client1|[INFO] call: (TIME) pkt sent time: 1540715105.77
+2018-10-28 01:25:05,768 client1|[INFO] call: (SEND) push: ('iVBORw0KGgoAAAANSUhEUgAAAQAAAACQCAYAAADnY7WRAAAgAElEQVR4Acy9Cb
+2018-10-28 01:25:09,057 client1|[INFO] client_send_file: result: compute data and send result
+2018-10-28 01:30:16,394 client1|[INFO] call: ====== send pkt ======
+2018-10-28 01:30:16,395 client1|[INFO] call: (TIME) pkt sent time: 1540715416.39
+2018-10-28 01:30:16,395 client1|[INFO] call: (SEND) push: ('iVBORw0KGgoAAAANSUhEUgAAAQAAAACQCAYAAADnY7WRAAAgAElEQVR4Acy9Cb
+2018-10-28 01:39:04,041 client1|[INFO] call: ====== send pkt ======
+2018-10-28 01:39:04,041 client1|[INFO] call: (TIME) pkt sent time: 1540715944.04
+2018-10-28 01:39:04,042 client1|[INFO] call: (SEND) push: ('iVBORw0KGgoAAAANSUhEUgAAAQAAAACQCAYAAADnY7WRAAAgAElEQVR4Acy9Cb
+2018-10-28 01:40:31,698 client1|[INFO] call: ====== send pkt ======
+2018-10-28 01:40:31,698 client1|[INFO] call: (TIME) pkt sent time: 1540716031.7
+2018-10-28 01:40:31,698 client1|[INFO] call: (SEND) push: ('iVBORw0KGgoAAAANSUhEUgAAAQAAAACQCAYAAADnY7WRAAAgAElEQVR4Acy9Cb
+2018-10-28 01:40:34,862 client1|[INFO] client_send_file: result: compute data and send result
+2018-10-28 01:40:54,683 client1|[INFO] call: ====== send pkt ======
+2018-10-28 01:40:54,683 client1|[INFO] call: (TIME) pkt sent time: 1540716054.68
+2018-10-28 01:40:54,684 client1|[INFO] call: (SEND) push: ('iVBORw0KGgoAAAANSUhEUgAAAQAAAACQCAYAAADnY7WRAAAgAElEQVR4Acy9Cb
+2018-10-28 01:40:57,808 client1|[INFO] client_send_file: result: compute data and send result

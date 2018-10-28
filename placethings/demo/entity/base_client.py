@@ -25,8 +25,8 @@ class BaseClient(msgpackrpc.Client):
 
     def call(self, method, *args):
         t1 = time.time()
-        log.info(
-            '(TIME) send: t1={}'.format(t1))
+        log.info('====== send pkt ======')
+        log.info('(TIME) pkt sent time: {}'.format(t1))
         log.info('(SEND) {}: {}'.format(method, self._obj_to_str(args)))
         args = list(args)
         args.append(t1)
@@ -34,8 +34,8 @@ class BaseClient(msgpackrpc.Client):
 
     def call_async(self, method, *args):
         t1 = time.time()
-        log.info(
-            '(TIME) send: t1={}'.format(t1))
+        log.info('====== send pkt ======')
+        log.info('(TIME) pkt sent time: {}'.format(t1))
         log.info('(SEND) {}: {}'.format(method, self._obj_to_str(args)))
         args = list(args)
         args.append(t1)

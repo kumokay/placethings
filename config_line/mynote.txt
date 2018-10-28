@@ -1,0 +1,29 @@
+# test case 1
+
+python main_entity.py run_client -n client1 -a localhost:18900 -m push -al "this is a test"
+python main_entity.py run_actuator -n display1 -a localhost:18900
+
+
+# test case 2
+
+python main_entity.py client_send_file -n client1 -a localhost:18701 -m push -al config_line/3-0.png
+python main_entity.py run_task -n forwarder1 -en task_forward -a localhost:18701 -ra localhost:18800
+python main_entity.py run_task -n task1 -en task_findObj -a localhost:18800 -ra localhost:18702
+python main_entity.py run_task -n forwarder2 -en task_forward -a localhost:18702 -ra localhost:18900
+python main_entity.py run_actuator -n display1 -a localhost:18900
+
+
+# test case 3
+
+python main_entity.py client_send_file -n client1 -a localhost:18701 -m push -al config_line/3-0.png
+
+python main_entity.py run_agent -n agent1 -a localhost:18700
+python main_entity.py run_client -n client1 -a localhost:18700 -m get_prog_list
+python main_entity.py run_client -n client1 -a localhost:18700 -m start_prog -al forwarder1 "python main_entity.py run_task -n forwarder1 -en task_forward -a localhost:18701 -ra localhost:18800"
+python main_entity.py run_client -n client1 -a localhost:18700 -m stop_prog -al forwarder1
+python main_entity.py run_client -n client1 -a localhost:18700 -m start_prog -al task1 "python main_entity.py run_task -n task1 -en task_findObj -a localhost:18800 -ra localhost:18702"
+python main_entity.py run_client -n client1 -a localhost:18700 -m stop_prog -al task1
+python main_entity.py run_client -n client1 -a localhost:18700 -m start_prog -al forwarder2 "python main_entity.py run_task -n forwarder2 -en task_forward -a localhost:18702 -ra localhost:18900"
+python main_entity.py run_client -n client1 -a localhost:18700 -m stop_prog -al forwarder2
+
+python main_entity.py run_actuator -n display1 -a localhost:18900

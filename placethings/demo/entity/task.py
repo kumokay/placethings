@@ -22,12 +22,17 @@ class RPCServer(object):
             self.name, self.exec_time_sec, self.receiver_list))
 
     def _compute(self, data):
-        time.sleep(self.exec_time_sec)
-        return 'spent {} to compute result'.format(self.exec_time_sec)
+        t1 = time.time()
+        log.info('(TIME) start computation: {}'.format(t1))
+        if self.exec_time_sec > 0:
+            time.sleep(self.exec_time_sec)
+        t2 = time.time()
+        log.info('(TIME) stop computation: {}'.format(t2))
+        return 'spent {} to compute result'.format(t2-t1)
 
     def push(self, data):
         if not self.receiver_list:
-            log.info('got data: {}'.format(data))
+            log.info('got data, size={}'.format(len(data)))
             return 'receive data'
         else:
             result = self._compute(data)
@@ -37,4 +42,4 @@ class RPCServer(object):
             # logging
             log.info('got data: {}'.format(data))
             log.info('compute result: {}'.format(result))
-        return 'compute data and send result'
+            return 'compute data and send result'

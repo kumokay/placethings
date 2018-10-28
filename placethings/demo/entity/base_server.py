@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import importlib
 import logging
 import msgpackrpc
 import time
@@ -14,13 +15,6 @@ from placethings.demo.entity.task import RPCServer as TaskRPCServer
 
 
 log = logging.getLogger()
-
-
-class Entity:
-    FILESERVER = 0
-    MANAGER = 1
-    AGENT = 2
-    TASK = 3
 
 
 class BaseServer(msgpackrpc.Server):
@@ -39,8 +33,10 @@ class BaseServer(msgpackrpc.Server):
         t2 = time.time()
         t1 = param.pop()
         # t1 = param.pop()
-        log.info(
-            '(TIME) recv: t1={}, t2={}, t_transmit={}'.format(t1, t2, t2-t1))
+        log.info('====== receive pkt ======')
+        log.info('(TIME) pkt sent time: {}'.format(t1))
+        log.info('(TIME) pkt rcev time: {}'.format(t2))
+        log.info('(TIME) transmit time: {}'.format(t2-t1))
         log.info('(RECV) {}: {}'.format(method, self._obj_to_str(param)))
         # dispatch
         method = msgpackrpc.compat.force_str(method)
@@ -60,18 +56,26 @@ class BaseServer(msgpackrpc.Server):
 class ServerGen(object):
 
     _RPC_CLS = {
-        Entity.FILESERVER: FileRPCServer,
-        Entity.AGENT: AgentRPCServer,
-        Entity.TASK: TaskRPCServer,
+        "fileserver": FileRPCServer,
+        "agent": AgentRPCServer,
+        "task": TaskRPCServer,
     }
 
     @classmethod
     def start_server(
-            cls, name, entity, ip, port, *args):
+            cls, name, entity_name, ip, port, *args):
         args = [name] + list(args)
-        log.info('start_server {} at {}:{}, args={}'.format(
-            name, ip, port, args))
-        rpcobj = cls._RPC_CLS[entity](*args)
+        log.info('start_server {} at {}:{}'.format(name, ip, port))
+        log.info('args={}'.format(args))
+        if entity_name in cls._RPC_CLS:
+            entity_class = cls._RPC_CLS[entity_name]
+            log.info('try to start base entity {}'.format(entity_name))
+        else:
+            module_name = 'placethings.demo.entity.{}'.format(entity_name)
+            log.info('run rpc_server from {}'.format(module_name))
+            entity_module = importlib.import_module(module_name)
+            entity_class = getattr(entity_module, 'RPCServer')
+        rpcobj = entity_class(*args)
         server = BaseServer(name, rpcobj)
         server.listen(msgpackrpc.Address(ip, port))
         server.start()

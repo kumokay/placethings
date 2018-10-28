@@ -4,10 +4,11 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import argparse
+import base64
 import logging
 
 from placethings.demo.entity import test_entity
-from placethings.demo.entity.base_server import ServerGen, Entity
+from placethings.demo.entity.base_server import ServerGen
 from placethings.demo.entity.sensor import SensorGen
 from placethings.demo.entity.base_client import ClientGen
 from placethings.utils.common_utils import update_rootlogger
@@ -71,7 +72,7 @@ class SubArgsManager(object):
             '--exectime',
             type=int,
             dest='exectime',
-            default=None,
+            default=0,
             required=required,
             help=('exectime (ms)')
         )
@@ -110,6 +111,17 @@ class SubArgsManager(object):
             help=('testcase name')
         )
 
+    def entity_name(self, required=False):
+        self.subparser.add_argument(
+            '-en',
+            '--entity',
+            type=str,
+            dest='entity_name',
+            default=None,
+            required=required,
+            help=('entity name, e.g. task_findObj')
+        )
+
 
 class ArgsManager(object):
 
@@ -140,7 +152,7 @@ class FuncManager(object):
         name = args.name
         ip, port = cls._split_addr(args.address)
         update_rootlogger(name, is_log_to_file=True)
-        ServerGen.start_server(name, Entity.AGENT, ip, port)
+        ServerGen.start_server(name, 'agent', ip, port)
 
     @classmethod
     def run_fileserver(cls, args):
@@ -148,7 +160,7 @@ class FuncManager(object):
         ip, port = cls._split_addr(args.address)
         port = int(port)
         update_rootlogger(name, is_log_to_file=True)
-        ServerGen.start_server(name, Entity.FILESERVER, ip, port)
+        ServerGen.start_server(name, 'fileserver', ip, port)
 
     @classmethod
     def run_task(cls, args):
@@ -158,9 +170,12 @@ class FuncManager(object):
         exec_time_ms = args.exectime
         next_ip, next_port = args.recv_address.split(':')
         next_port = int(next_port)
+        entity_name = args.entity_name
+        if entity_name is None:
+            entity_name = 'task'
         update_rootlogger(name, is_log_to_file=True)
         ServerGen.start_server(
-            name, Entity.TASK, ip, port,
+            name, entity_name, ip, port,
             exec_time_ms, [(next_ip, next_port)])
 
     @classmethod
@@ -169,7 +184,7 @@ class FuncManager(object):
         ip, port = cls._split_addr(args.address)
         update_rootlogger(name, is_log_to_file=True)
         ServerGen.start_server(
-            name, Entity.TASK, ip, port, 0, None)
+            name, 'task', ip, port, 0, None)
 
     @classmethod
     def run_sensor(cls, args):
@@ -189,7 +204,24 @@ class FuncManager(object):
         method = args.method
         args_list = args.args_list
         update_rootlogger(name, is_log_to_file=True)
-        ClientGen.call(ip, port, method, *args_list)
+        result = ClientGen.call(ip, port, method, *args_list)
+        log.info('result: {}'.format(result))
+
+    @classmethod
+    def client_send_file(cls, args):
+        name = args.name
+        ip, port = cls._split_addr(args.address)
+        method = args.method
+        args_list = args.args_list
+        update_rootlogger(name, is_log_to_file=True)
+        assert len(args_list) == 1
+        filepath = args_list[0]
+        with open(filepath, 'rb') as binary_file:
+            # Read the whole file at once
+            data = binary_file.read()
+        new_args_list = [base64.b64encode(data)]
+        result = ClientGen.call(ip, port, method, *new_args_list)
+        log.info('result: {}'.format(result))
 
     @staticmethod
     def run_test(args):
@@ -239,8 +271,9 @@ def main():
         help='run_task')
     subargs_manager.name(required=True)
     subargs_manager.address(required=True)
-    subargs_manager.exectime(required=True)
     subargs_manager.next_address(required=True)
+    subargs_manager.exectime(required=False)
+    subargs_manager.entity_name(required=False)
 
     name = 'run_actuator'
     subargs_manager = args_manager.add_subparser(
@@ -265,6 +298,16 @@ def main():
         name,
         func=getattr(FuncManager, name),
         help='run_client')
+    subargs_manager.name(required=True)
+    subargs_manager.address(required=True)
+    subargs_manager.method(required=True)
+    subargs_manager.args_list(required=False)
+
+    name = 'client_send_file'
+    subargs_manager = args_manager.add_subparser(
+        name,
+        func=getattr(FuncManager, name),
+        help='client_send_file')
     subargs_manager.name(required=True)
     subargs_manager.address(required=True)
     subargs_manager.method(required=True)

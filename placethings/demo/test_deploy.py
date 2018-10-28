@@ -134,7 +134,12 @@ class TestRandom(BaseTestCase):
             cls._simulate(topo_device_graph, Gd, G_map)
         all_mobiles = ['CAMERA.0', 'CAMERA.1', 'PHONE.0']
         all_aps = ['BB_AP.0', 'BB_AP.1', 'BB_AP.2', 'BB_AP.3', 'BB_AP.4']
-        all_sws = ['BB_SWITCH.0', 'BB_SWITCH.1', 'BB_SWITCH.2', 'BB_SWITCH.3', 'BB_SWITCH.4']
+        all_sws = [
+            'BB_SWITCH.0',
+            'BB_SWITCH.1',
+            'BB_SWITCH.2',
+            'BB_SWITCH.3',
+            'BB_SWITCH.4']
         update_id = -1
         for i in range(1, 50):
             update_id += 1
