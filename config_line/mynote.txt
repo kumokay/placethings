@@ -31,25 +31,41 @@ python main_entity.py run_actuator -n display1 -a localhost:18900
 
 # test case 4
 
+## device ips
+nuc_mininet = 172.17.20.12  # DONT_CARE
+desktop = 172.17.51.1
+laptop_airsim = 172.17.51.2  # DONT_CARE
+
+## mininet hosts ips
+h_forwarder1 = 10.11.12.11
+h_forwarder2 = 10.11.12.12
+h_forwarder3 = 10.11.12.13
+h_forwarder1_dockerip = 172.17.0.2
+h_forwarder2_dockerip = 172.17.0.3
+h_forwarder3_dockerip = 172.17.0.4
+h_agent1 = 10.11.12.101
+h_agent2 = 10.11.12.102
+h_agent3 = 10.11.12.103
+
 ## tasks running in mininet
-sensor_drone1_addr = localhost:18700
-sensor_drone2_addr = localhost:18701
-task_findObj_addr = localhost:18702
-actuator_notify_addr = localhost:18703
+sensor_drone1_addr = {h_forwarder1_dockerip}:18700  # outside -> inside
+sensor_drone2_addr = {h_forwarder2_dockerip}:18700  # outside -> inside
+actuator_notify_addr = {h_forwarder3}:18700  # inside -> outside
+task_findObj_addr = {h_agent1}:18700
 
 ## real sensors/actuators
 airsimControl_addr = DONT_CARE
-display1_addr = localhost:18900
+display1_addr = {desktop}:18900
 
-## sensors/actuators in mininet
-forward1_addr = localhost:18500  # => sensor_drone1
-forward2_addr = localhost:18501  # => sensor_drone2
-forward3_addr = localhost:18502  # => actuator_notify
+## sensors/actuators proxy to mininet
+forward1_addr = {h_forwarder1_dockerip}:18500  # => sensor_drone1
+forward2_addr = {h_forwarder2_dockerip}:18501  # => sensor_drone2
+forward3_addr = {h_forwarder3}:18502  # => actuator_notify
 
-## computers in mininet
-agent1_addr = localhost:18600
-agent2_addr = localhost:18600
-agent3_addr = localhost:18600
+## computers inside mininet
+agent1_addr = {h_agent1}:18600
+agent2_addr = {h_agent2}:18600
+agent3_addr = {h_agent3}:18600
 
 ## init
 python main_entity.py client_send_file -n client1 -a {sensor_drone1_addr} -m push -al config_line/3-0.png
