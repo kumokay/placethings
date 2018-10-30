@@ -66,7 +66,7 @@ class NetManager(object):
         # auto generate name bc name cannot be too long =.=
         name = self._new_host_name()
         ip = self._new_ip()
-        host = self._net.addHost(name, ip=ip)
+        host = self._net.addDocker(name, ip=ip, dimage="ubuntu:trusty")
         self._host_dict[device_name] = host
         self._host_ip_dict[device_name] = ip
         self._host_next_free_port[device_name] = self._PORT_START

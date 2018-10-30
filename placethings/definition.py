@@ -130,6 +130,8 @@ class GtInfo(object):
         # assign on the fly
         CUR_DEVICE = auto()
         CUR_LATENCY = auto()
+        # command to run the task
+        EXEC_CMD = auto()
 
     class helper(type):
         # used as keys for **kwargs for networkx.Digraph.add_node

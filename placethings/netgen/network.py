@@ -153,6 +153,7 @@ class DataPlane(object):
 
     def __init__(self, Gn):
         self.worker_dict = {}  # worker_name: start_cmd
+        self.task_cmd = {}
         self.net = NetManager.create()
         for node in Gn.nodes():
             self.net.addSwitch(node)
@@ -198,37 +199,19 @@ class DataPlane(object):
             ip, port = self.get_worker_address(task_name)
             device_name = G_map.node[task_name][GtInfo.CUR_DEVICE]
             device_cat = Gd.node[device_name][GdInfo.DEVICE_CAT]
-            device_type = Gd.node[device_name][GdInfo.DEVICE_TYPE]
-            exectime = G_map.node[task_name][GtInfo.CUR_LATENCY]
+            # device_type = Gd.node[device_name][GdInfo.DEVICE_TYPE]
+            # exectime = G_map.node[task_name][GtInfo.CUR_LATENCY]
             next_task = self._get_next_task(G_map, task_name)
+            cmd_template = G_map.node[task_name][GtInfo.EXEC_CMD]
             if not next_task:
                 assert device_cat == DeviceCategory.ACTUATOR
+                next_ip, next_port = None, None
             else:
                 next_ip, next_port = self.get_worker_address(next_task)
-            if device_cat == DeviceCategory.ACTUATOR:
-                cmd = self._cmd_actuator_template.format(
-                    progdir=self._PROG_DIR,
-                    name=task_name,
-                    ip=ip,
-                    port=port)
-            elif device_cat == DeviceCategory.SENSOR:
-                cmd = self._cmd_sensor_template.format(
-                    progdir=progdir,
-                    name=task_name,
-                    ip=ip,
-                    port=port,
-                    sensor_type=device_type,
-                    next_ip=next_ip,
-                    next_port=next_port)
-            elif device_cat == DeviceCategory.PROCESSOR:
-                cmd = self._cmd_task_template.format(
-                    progdir=progdir,
-                    name=task_name,
-                    ip=ip,
-                    port=port,
-                    exectime=exectime,
-                    next_ip=next_ip,
-                    next_port=next_port)
+            cmd = cmd_template.format(
+                progdir=progdir,
+                self_addr='{}:{}'.format(ip, port),
+                next_addr='{}:{}'.format(next_ip, next_port))
             self.worker_dict[task_name] = cmd
 
     def add_worker(self, name, device_name):
@@ -279,7 +262,7 @@ class DataPlane(object):
             self.run_worker(name)
 
     def stop(self):
-        log.info('stop data plane. stop all agents')
+        log.info('stop data plane. stop all workers')
         for name in self.worker_dict:
             # TODO: fix this
             if 'run_sensor' in self.worker_dict[name]:
