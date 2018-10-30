@@ -25,9 +25,12 @@ display_text = r"""
 
 
 class FileServer(object):
-    def upload_text(self, text_str):
-        print(display_text)
-        return 'received {} bytes'.format(len(text_str))
+    def push(self, result, ts):
+        if 'car' in result:
+            print(display_text)
+        else:
+            print('recv result: {}'.format(result))
+        return 'received {} bytes'.format(len(result))
 
 
 # print(display_text)

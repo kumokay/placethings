@@ -156,6 +156,9 @@ class DataPlane(object):
                 delay_ms=edge_info[GnInfo.LATENCY],
                 pkt_loss_rate=_PKT_LOSS[edge_info[GnInfo.PROTOCOL]])
 
+    def modify_link(self, src, dst, delay_ms=1):
+        self.net.modifyLinkDelay(src, dst, delay_ms)
+
     def add_manager(self, device_name):
         self.net.addHost(self._MANAGER_NAME)
         self.net.addLink(
@@ -182,11 +185,12 @@ class DataPlane(object):
         next_task = next_task_list[0]
         return next_task
 
-    def deploy_task(self, G_map, Gd):
-        # add all host
-        for task_name in G_map.nodes():
-            device_name = G_map.node[task_name][GtInfo.CUR_DEVICE]
-            self.add_worker(task_name, device_name)
+    def deploy_task(self, G_map, Gd, is_init_deploy=False):
+        if is_init_deploy:
+            # add all host
+            for task_name in G_map.nodes():
+                device_name = G_map.node[task_name][GtInfo.CUR_DEVICE]
+                self.add_worker(task_name, device_name)
         # gen info
         progdir = self._PROG_DIR
         for task_name in G_map.nodes():
@@ -249,21 +253,23 @@ class DataPlane(object):
             pkt_loss_rate=0)
 
     def start(self, is_validate=False):
-        log.info('start data plane.')
+        log.info('start mininet.')
         self.net.start()
         if is_validate:
             self.net.validate()
+
+    def start_workers(self):
         log.info('run all workers')
         for name in self.worker_dict:
             self.run_worker(name)
 
-    def stop(self):
-        log.info('stop data plane. stop all workers')
+    def stop_workers(self):
+        log.info('stop all workers')
         for name in self.worker_dict:
-            # TODO: fix this
-            if 'run_sensor' in self.worker_dict[name]:
-                continue
             self.stop_worker(name)
+
+    def stop(self):
+        log.info('stop mininet.')
         self.net.stop()
 
 

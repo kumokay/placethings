@@ -79,6 +79,7 @@ class ConfigDataHelper(object):
         if self.update_id == 0:
             # init update
             self.init_result_mapping = result_mapping
+        log.info('mapping result: {}'.format(result_mapping))
 
     def update_max_latency_log(self):
         max_latency = ilp_solver.get_max_latency(

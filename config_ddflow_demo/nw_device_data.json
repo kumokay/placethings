@@ -66,7 +66,7 @@
             "NwDevice.BB_AP": 3
         },
         "NwDeviceCategory.CENTER": {
-            "NwDevice.CENTER_SWITCH": 1
+            "NwDevice.CENTER_SWITCH": 2
         }
     },
     "links": {
@@ -76,6 +76,16 @@
             "GnInfoEnum.LATENCY": 2
         },
         "BB_SWITCH.0 -> CENTER_SWITCH.0": {
+            "GnInfoEnum.SRC_LINK_TYPE": "LinkType.ANY",
+            "GnInfoEnum.DST_LINK_TYPE": "LinkType.WAN",
+            "GnInfoEnum.LATENCY": 2
+        },
+        "CENTER_SWITCH.1 -> BB_SWITCH.0": {
+            "GnInfoEnum.SRC_LINK_TYPE": "LinkType.WAN",
+            "GnInfoEnum.DST_LINK_TYPE": "LinkType.ANY",
+            "GnInfoEnum.LATENCY": 2
+        },
+        "BB_SWITCH.0 -> CENTER_SWITCH.1": {
             "GnInfoEnum.SRC_LINK_TYPE": "LinkType.ANY",
             "GnInfoEnum.DST_LINK_TYPE": "LinkType.WAN",
             "GnInfoEnum.LATENCY": 2

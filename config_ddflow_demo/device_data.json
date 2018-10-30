@@ -104,10 +104,10 @@
         "FIELD_SWITCH.0 -> T2_MICRO.0": {
             "GnInfoEnum.LATENCY": 2
         },
-        "P3_2XLARGE.0 -> CENTER_SWITCH.0": {
+        "P3_2XLARGE.0 -> CENTER_SWITCH.1": {
             "GnInfoEnum.LATENCY": 2
         },
-        "CENTER_SWITCH.0 -> P3_2XLARGE.0": {
+        "CENTER_SWITCH.1 -> P3_2XLARGE.0": {
             "GnInfoEnum.LATENCY": 2
         },
         "T3_LARGE.0 -> FIELD_SWITCH.1": {

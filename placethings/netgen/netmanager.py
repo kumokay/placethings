@@ -110,12 +110,25 @@ class NetManager(object):
     def delLink(self, src, dst):
         if (src, dst) in self._edge_dict:
             assert (dst, src) not in self._edge_dict
-            self._net.delLink(src, dst)
+            self._net.removeLink(
+                node1=self._devNameToNodeName[src],
+                node2=self._devNameToNodeName[dst])
             del self._edge_dict[(src, dst)]
         elif (dst, src) in self._edge_dict:
-            self._net.delLink(dst, src)
+            self._net.removeLink(
+                node1=self._devNameToNodeName[dst],
+                node2=self._devNameToNodeName[src])
             del self._edge_dict[(dst, src)]
         log.debug('delete link {} <-> {}'.format(src, dst))
+
+    def modifyLinkDelay(self, src, dst, delay_ms):
+        delay = '{}ms'.format(delay_ms)
+        edge = (src, dst)
+        if edge not in self._edge_dict:
+            edge = (dst, src)
+        link = self._edge_dict[edge]
+        link.intf1.config(delay=delay)
+        log.debug('modify link {} <-> {}'.format(src, dst))
 
     def modifyLink(
             self, src, dst, new_dst=None, bw_bps=None, delay_ms=1,
