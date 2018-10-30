@@ -26,18 +26,22 @@ class RPCServer(BaseTask.RPCServer):
         log.info('start task_findObj RPCServer: {}'.format(self.name))
         log.info('exec_delay_time_ms={}s, receivers={}'.format(
             self.exec_delay_time_sec, self.receiver_list))
+        self._imgid = 1
 
     def _compute(self, data):
         t1 = time.time()
         log.info('(TIME) start computation: {}'.format(t1))
         log.info('finding object')
-        yolo_folder = '/home/kumokay/github/darknet'
+        yolo_folder = '/Users/kumokay/github/yolov3'
         image_data = base64.b64decode(data)
         image = Image.open(io.BytesIO(image_data))
-        image.save('{}/img.png'.format(yolo_folder), 'PNG')
+        img_name = 'img_{}.png'.format(self._imgid)
+        self._imgid += 1
+        image.save('{}/{}'.format(yolo_folder, img_name), 'PNG')
+
         proc = subprocess.Popen(
-            './darknet detect cfg/yolov3-tiny.cfg yolov3-tiny.weights img.png',
-            stdout=subprocess.PIPE, shell=True, cwd=yolo_folder, )
+            './darknet detect cfg/yolov3-tiny.cfg yolov3-tiny.weights {}'.format(img_name),
+            stdout=subprocess.PIPE, shell=True, cwd=yolo_folder,)
         result = proc.communicate()[0]
         if self.exec_delay_time_sec > 0:
             time.sleep(self.exec_delay_time_sec)

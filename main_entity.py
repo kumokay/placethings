@@ -44,11 +44,12 @@ class SubArgsManager(object):
             help=('address (ip:port). e.g. 10.11.12.13:1234')
         )
 
-    def next_address(self, required=False):
+    def next_address(self, required=False, nargs=1):
         self.subparser.add_argument(
             '-ra',
             '--recv_address',
             type=str,
+            nargs=nargs,
             dest='recv_address',
             default=None,
             required=required,
@@ -168,15 +169,18 @@ class FuncManager(object):
         ip, port = cls._split_addr(args.address)
         port = int(port)
         exec_time_ms = args.exectime
-        next_ip, next_port = args.recv_address.split(':')
-        next_port = int(next_port)
+        addr_list = []
+        for addr in args.recv_address:
+            next_ip, next_port = addr.split(':')
+            next_port = int(next_port)
+            addr_list.append((next_ip, next_port))
         entity_name = args.entity_name
         if entity_name is None:
             entity_name = 'task'
         update_rootlogger(name, is_log_to_file=True)
         ServerGen.start_server(
             name, entity_name, ip, port,
-            exec_time_ms, [(next_ip, next_port)])
+            exec_time_ms, addr_list)
 
     @classmethod
     def run_actuator(cls, args):
@@ -271,7 +275,7 @@ def main():
         help='run_task')
     subargs_manager.name(required=True)
     subargs_manager.address(required=True)
-    subargs_manager.next_address(required=True)
+    subargs_manager.next_address(required=True, nargs='+')
     subargs_manager.exectime(required=False)
     subargs_manager.entity_name(required=False)
 
