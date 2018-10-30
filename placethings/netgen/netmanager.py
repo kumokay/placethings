@@ -17,6 +17,7 @@ log = logging.getLogger()
 
 class NetManager(object):
     _NEXT_IP_NUM = 100
+    _NEXT_DOCKER_IP_NUM = 2
     _NEXT_HOST_ID = 0
     _NEXT_SWITCH_ID = 0
     _HOST_PREFIX = 'h'
@@ -27,6 +28,7 @@ class NetManager(object):
         self._net = net
         self._host_dict = {}
         self._host_ip_dict = {}  # assigned host ip
+        self._host_docker_ip_dict = {}
         self._host_next_free_port = {}
         self._switch_dict = {}
         self._edge_dict = {}
@@ -46,9 +48,12 @@ class NetManager(object):
     @classmethod
     def _new_ip(cls):
         ip = '10.0.0.{}'.format(cls._NEXT_IP_NUM)
+        docker_ip = '172.18.0.{}'.format(cls._NEXT_DOCKER_IP_NUM)
         cls._NEXT_IP_NUM += 1
+        cls._NEXT_DOCKER_IP_NUM += 1
         assert cls._NEXT_IP_NUM < 256
-        return ip
+        assert cls._NEXT_DOCKER_IP_NUM < 256
+        return ip, docker_ip
 
     @classmethod
     def _new_host_name(cls):
@@ -65,10 +70,13 @@ class NetManager(object):
     def addHost(self, device_name):
         # auto generate name bc name cannot be too long =.=
         name = self._new_host_name()
-        ip = self._new_ip()
-        host = self._net.addDocker(name, ip=ip, dimage="ubuntu:trusty")
+        # TODO: use cmd to get correct docker ip
+        ip, docker_ip = self._new_ip()
+        host = self._net.addDocker(
+            name, ip=ip, dimage="kumokay/ubuntu_wifi:v6")
         self._host_dict[device_name] = host
         self._host_ip_dict[device_name] = ip
+        self._host_docker_ip_dict[device_name] = docker_ip
         self._host_next_free_port[device_name] = self._PORT_START
         self._devNameToNodeName[device_name] = name
         log.debug('add host {}'.format(device_name))
@@ -145,6 +153,12 @@ class NetManager(object):
         ip = self._host_ip_dict[device_name]
         # ip = self._host_dict[device_name].IP()
         assert ip is not None, 'host={}, ip={}'.format(device_name, ip)
+        return ip
+
+    def get_device_docker_ip(self, device_name):
+        ip = self._host_docker_ip_dict[device_name]
+        # ip = self._host_dict[device_name].IP()
+        assert ip is not None, 'host={}, docker_ip={}'.format(device_name, ip)
         return ip
 
     def get_device_free_port(self, device_name):

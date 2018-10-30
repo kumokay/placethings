@@ -134,22 +134,13 @@ class ControlPlane(object):
 
 
 class DataPlane(object):
-
-    _cmd_actuator_template = (
-        'cd {progdir} && python main_entity.py run_actuator '
-        '-n {name} -a {ip}:{port}')
-    _cmd_sensor_template = (
-        'cd {progdir} && python main_entity.py run_sensor '
-        '-n {name} -a {ip}:{port} -st {sensor_type} -ra {next_ip}:{next_port}')
-    _cmd_task_template = (
-        'cd {progdir} && python main_entity.py run_task '
-        '-n {name} -a {ip}:{port} -t {exectime} -ra {next_ip}:{next_port}')
-    _cmd_stop_template = (
-        'cd {progdir} && python main_entity.py run_client '
-        '-n {name} -a {ip}:{port} -m STOP')
-    _PROG_DIR = '/home/kumokay/github/placethings'
+    _cmd_get_ip = (
+        "ip -4 -o addr show dev eth0| awk '{split($4,a,\"/\");print a[1]}'")
+    _PROG_DIR = '/opt/github/placethings'
     _TASK_PORT = 18800
     _MANAGER_NAME = 'Manager'
+    _cmd_stop_template = (
+        'cd {progdir} && python main_entity.py stop_server -a {ip}:{port}')
 
     def __init__(self, Gn):
         self.worker_dict = {}  # worker_name: start_cmd
@@ -179,6 +170,9 @@ class DataPlane(object):
     def get_worker_address(self, name):
         return self.net.get_device_ip(name), self._TASK_PORT
 
+    def get_worker_public_address(self, name):
+        return self.net.get_device_docker_ip(name), self._TASK_PORT
+
     @staticmethod
     def _get_next_task(G_map, task_name):
         next_task_list = list(G_map.successors(task_name))
@@ -197,6 +191,7 @@ class DataPlane(object):
         progdir = self._PROG_DIR
         for task_name in G_map.nodes():
             ip, port = self.get_worker_address(task_name)
+            docker_ip, docker_port = self.get_worker_public_address(task_name)
             device_name = G_map.node[task_name][GtInfo.CUR_DEVICE]
             device_cat = Gd.node[device_name][GdInfo.DEVICE_CAT]
             # device_type = Gd.node[device_name][GdInfo.DEVICE_TYPE]
@@ -211,6 +206,7 @@ class DataPlane(object):
             cmd = cmd_template.format(
                 progdir=progdir,
                 self_addr='{}:{}'.format(ip, port),
+                docker_addr='{}:{}'.format(docker_ip, docker_port),
                 next_addr='{}:{}'.format(next_ip, next_port))
             self.worker_dict[task_name] = cmd
 

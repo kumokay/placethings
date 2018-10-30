@@ -88,7 +88,7 @@ class TestDynamic(BaseTestCase):
     @classmethod
     def test(
             cls, config_name=None, is_export=True,
-            is_update_map=False, is_simulate=False):
+            is_update_map=False, is_simulate=True):
         _check_support_config(config_name)
         cfgHelper = ConfigDataHelper(config_name, is_export)
         cfgHelper.init_task_graph()
@@ -100,14 +100,14 @@ class TestDynamic(BaseTestCase):
         # (2) P3.X2LARGE.0 poor connection
         # (3) T3.XLARGE.0 poor connection
         # (4) P3.X2LARGE.0 back online
-        input('press any key to start scenario 1')
+        raw_input('press any key to start scenario 1')
         log.info('=== running scenario 1: initial deployment ===')
         _topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
         if is_simulate:
             _control_plane, data_plane = _init_netsim(
                 topo_device_graph, Gd, G_map)
             data_plane.start(is_validate=True)
-        input('press any key to start scenario 2')
+        raw_input('press any key to start scenario 2')
         log.info('=== running scenario 2: P3_2XLARGE.0 poor connection ===')
         dev = 'P3_2XLARGE.0'
         nw_dev = 'CENTER_SWITCH.0'
@@ -123,7 +123,7 @@ class TestDynamic(BaseTestCase):
             _control_plane, data_plane = _init_netsim(
                 topo_device_graph, Gd, G_map)
             data_plane.start(is_validate=False)
-        input('press any key to start scenario 3')
+        raw_input('press any key to start scenario 3')
         log.info('=== running scenario 3: T3_LARGE.0 poor connection ===')
         dev = 'T3_LARGE.0'
         nw_dev = 'FIELD_SWITCH.1'
@@ -139,10 +139,10 @@ class TestDynamic(BaseTestCase):
             _control_plane, data_plane = _init_netsim(
                 topo_device_graph, Gd, G_map)
             data_plane.start(is_validate=False)
-        input('press any key to start scenario 4')
+        raw_input('press any key to start scenario 4')
         log.info('=== running scenario 4: P3_2XLARGE.0 back online ===')
         dev = 'P3_2XLARGE.0'
-        nw_dev = 'CENTER_SWITCH.1'
+        nw_dev = 'CENTER_SWITCH.0'
         new_latency = Unit.ms(2)
         cfgHelper.update_dev_link_latency(dev, nw_dev, new_latency)
         cfgHelper.update_topo_device_graph()
@@ -155,7 +155,7 @@ class TestDynamic(BaseTestCase):
             _control_plane, data_plane = _init_netsim(
                 topo_device_graph, Gd, G_map)
             data_plane.start(is_validate=False)
-        input('press any key to end test')
+        raw_input('press any key to end test')
         if is_simulate:
             data_plane.stop()
         log.info('latency trend: {}'.format(cfgHelper.get_max_latency_log()))
