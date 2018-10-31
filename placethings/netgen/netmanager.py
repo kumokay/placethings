@@ -127,11 +127,11 @@ class NetManager(object):
             del self._edge_dict[(dst, src)]
         log.debug('delete link {} <-> {}'.format(src, dst))
 
-    def modifyLinkDelay(self, d1, d2, delay_ms=0):
-        delay = '{}ms'.format(delay_ms)
-        link.intf1.config(delay=delay)
-        link.intf2.config(delay=delay)
-        log.debug('modify link {} <-> {}'.format(src, dst))
+    def modifyLinkDelay(self, device_name, delay_ms):
+        node_name = self._devNameToNodeName[device_name]
+        command = 'tc qdisc change dev {}-eth0 root netem delay {}ms'.format(
+            node_name, delay_ms)
+        self.run_cmd(device_name, command, async=False)
 
     def modifyLink(
             self, src, dst, new_dst=None, bw_bps=None, delay_ms=1,

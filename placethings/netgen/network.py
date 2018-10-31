@@ -170,8 +170,8 @@ class DataPlane(object):
     def run_mininet_cli(self):
         self.net.run_cli()
 
-    def modify_link(self, d1, d2, delay_ms=0):
-        self.net.modifyLink(d1, d2, delay_ms=delay_ms)
+    def modify_link(self, device_name, delay_ms):
+        self.net.modifyLinkDelay(device_name, delay_ms)
 
     def add_manager(self, device_name):
         self.net.addHost(self._MANAGER_NAME)
