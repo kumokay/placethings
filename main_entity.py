@@ -170,6 +170,7 @@ class FuncManager(object):
         port = int(port)
         exec_time_ms = args.exectime
         addr_list = []
+        extra_param_list = args.args_list
         for addr in args.recv_address:
             next_ip, next_port = addr.split(':')
             next_port = int(next_port)
@@ -180,7 +181,7 @@ class FuncManager(object):
         update_rootlogger(name, is_log_to_file=True)
         ServerGen.start_server(
             name, entity_name, ip, port,
-            exec_time_ms, addr_list)
+            exec_time_ms, addr_list, extra_param_list)
 
     @classmethod
     def run_actuator(cls, args):
@@ -278,6 +279,7 @@ def main():
     subargs_manager.next_address(required=True, nargs='+')
     subargs_manager.exectime(required=False)
     subargs_manager.entity_name(required=False)
+    subargs_manager.args_list(required=False)
 
     name = 'run_actuator'
     subargs_manager = args_manager.add_subparser(

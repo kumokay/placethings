@@ -237,7 +237,7 @@ class DataPlane(object):
     def run_worker(self, device_name):
         log.info('run worker on {}'.format(device_name))
         run_worker_cmd = self.worker_dict[device_name]
-        self.net.run_cmd(device_name, run_worker_cmd, async=True)
+        self.net.run_cmd(device_name, run_worker_cmd, async=False)
 
     def stop_worker(self, device_name, is_force=False):
         if not is_force:
@@ -256,7 +256,7 @@ class DataPlane(object):
                 return
         log.debug('kill task on {}'.format(device_name))
         # TODO: this is workaround
-        self.net.run_cmd(device_name, 'kill %python', async=True)
+        self.net.run_cmd(device_name, 'kill %python', async=False)
 
     def start(self, is_validate=False):
         log.info('start mininet.')

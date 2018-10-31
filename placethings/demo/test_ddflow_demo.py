@@ -91,20 +91,20 @@ class TestDynamic(BaseTestCase):
             is_simulate):
         if is_simulate:
             # TODO: this is workaround to make docker works
-            # data_plane.stop_workers(is_force=False)
-
+            data_plane.stop_workers(is_force=True)
             data_plane.modify_link(nw_dev1, nw_dev2, new_latency)
             data_plane.start_workers()
+            # raw_input('press any key to run cli')
             # data_plane.run_mininet_cli()
         cfgHelper.update_nw_link_latency(nw_dev1, nw_dev2, new_latency)
         cfgHelper.update_topo_device_graph()
 
     @classmethod
     def update_placement(cls, cfgHelper, data_plane, is_simulate):
+        raw_input('press any key to find new placement')
         cfgHelper.update_task_map()
         cfgHelper.update_max_latency_log()
         if is_simulate:
-            raw_input('press any key to find new placement')
             _topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
             data_plane.deploy_task(G_map, Gd)
             raw_input('press any key to re-deploy')
@@ -144,7 +144,7 @@ class TestDynamic(BaseTestCase):
         log.info('=== running scenario 2: P3_2XLARGE.0 poor connection ===')
         nw_dev1 = 'BB_SWITCH.0'
         nw_dev2 = 'CENTER_SWITCH.1'
-        new_latency = Unit.ms(5000)
+        new_latency = Unit.ms(1000)
         cls.update_nw_latency(
             cfgHelper, data_plane, nw_dev1, nw_dev2, new_latency, is_simulate)
         if is_update_map:
@@ -155,7 +155,7 @@ class TestDynamic(BaseTestCase):
         log.info('=== running scenario 3: T3_LARGE.0 poor connection ===')
         nw_dev1 = 'BB_SWITCH.1'
         nw_dev2 = 'FIELD_SWITCH.1'
-        new_latency = Unit.ms(5000)
+        new_latency = Unit.ms(3000)
         cls.update_nw_latency(
             cfgHelper, data_plane, nw_dev1, nw_dev2, new_latency, is_simulate)
         if is_update_map:

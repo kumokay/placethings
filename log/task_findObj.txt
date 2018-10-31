@@ -1,0 +1,45 @@
+2018-10-31 10:25:02,739 task_findObj|[INFO] start_server: start_server task_findObj at localhost:18800
+2018-10-31 10:25:02,740 task_findObj|[INFO] start_server: args=['task_findObj', 200, [(u'localhost', 18900)], ['local']]
+2018-10-31 10:25:02,740 task_findObj|[INFO] start_server: run rpc_server from placethings.demo.entity.task_findObj
+2018-10-31 10:26:42,221 task_findObj|[INFO] start_server: start_server task_findObj at localhost:18800
+2018-10-31 10:26:42,221 task_findObj|[INFO] start_server: args=['task_findObj', 200, [(u'localhost', 18900)], 'local']
+2018-10-31 10:26:42,221 task_findObj|[INFO] start_server: run rpc_server from placethings.demo.entity.task_findObj
+2018-10-31 10:31:32,001 task_findObj|[INFO] start_server: start_server task_findObj at localhost:18800
+2018-10-31 10:31:32,001 task_findObj|[INFO] start_server: args=['task_findObj', 200, [(u'localhost', 18900)], ['local']]
+2018-10-31 10:31:32,001 task_findObj|[INFO] start_server: run rpc_server from placethings.demo.entity.task_findObj
+2018-10-31 10:32:02,357 task_findObj|[INFO] start_server: start_server task_findObj at localhost:18800
+2018-10-31 10:32:02,357 task_findObj|[INFO] start_server: args=['task_findObj', 200, [(u'localhost', 18900)], ['local']]
+2018-10-31 10:32:02,357 task_findObj|[INFO] start_server: run rpc_server from placethings.demo.entity.task_findObj
+2018-10-31 10:32:02,374 task_findObj|[INFO] __init__: start Task RPCServer: task_findObj, delay_exectime=0.2ms, receivers=[(u'localhost', 18900)], extra_params=['local']
+2018-10-31 10:32:02,374 task_findObj|[INFO] __init__: Class Flavor: task_findObj
+2018-10-31 10:32:34,690 task_findObj|[INFO] dispatch: ====== receive pkt ======
+2018-10-31 10:32:34,691 task_findObj|[INFO] dispatch: (TIME) pkt sent time: 1541007154.69
+2018-10-31 10:32:34,691 task_findObj|[INFO] dispatch: (TIME) pkt rcev time: 1541007154.69
+2018-10-31 10:32:34,691 task_findObj|[INFO] dispatch: (TIME) transmit time: 0.00180912017822
+2018-10-31 10:32:34,691 task_findObj|[INFO] dispatch: (RECV) push: ['iVBORw0KGgoAAAANSUhEUgAAAQAAAACQCAYAAADnY7WRAAAgAElEQVR4Acy9Cb
+2018-10-31 10:32:34,691 task_findObj|[INFO] _compute: (TIME) start computation: 1541007154.69
+2018-10-31 10:32:34,691 task_findObj|[INFO] _compute: finding object
+2018-10-31 10:33:14,956 task_findObj|[INFO] start_server: start_server task_findObj at localhost:18800
+2018-10-31 10:33:14,956 task_findObj|[INFO] start_server: args=['task_findObj', 200, [(u'localhost', 18900)], ['local']]
+2018-10-31 10:33:14,957 task_findObj|[INFO] start_server: run rpc_server from placethings.demo.entity.task_findObj
+2018-10-31 10:33:14,968 task_findObj|[INFO] __init__: start Task RPCServer: task_findObj, delay_exectime=0.2ms, receivers=[(u'localhost', 18900)], extra_params=['local']
+2018-10-31 10:33:14,969 task_findObj|[INFO] __init__: Class Flavor: task_findObj
+2018-10-31 10:33:17,296 task_findObj|[INFO] dispatch: ====== receive pkt ======
+2018-10-31 10:33:17,296 task_findObj|[INFO] dispatch: (TIME) pkt sent time: 1541007197.29
+2018-10-31 10:33:17,296 task_findObj|[INFO] dispatch: (TIME) pkt rcev time: 1541007197.3
+2018-10-31 10:33:17,296 task_findObj|[INFO] dispatch: (TIME) transmit time: 0.00179004669189
+2018-10-31 10:33:17,297 task_findObj|[INFO] dispatch: (RECV) push: ['iVBORw0KGgoAAAANSUhEUgAAAQAAAACQCAYAAADnY7WRAAAgAElEQVR4Acy9Cb
+2018-10-31 10:33:17,297 task_findObj|[INFO] _compute: (TIME) start computation: 1541007197.3
+2018-10-31 10:33:17,297 task_findObj|[INFO] _compute: finding object
+2018-10-31 10:34:23,598 task_findObj|[INFO] start_server: start_server task_findObj at localhost:18800
+2018-10-31 10:34:23,598 task_findObj|[INFO] start_server: args=['task_findObj', 200, [(u'localhost', 18900)], ['local']]
+2018-10-31 10:34:23,598 task_findObj|[INFO] start_server: run rpc_server from placethings.demo.entity.task_findObj
+2018-10-31 10:34:23,612 task_findObj|[INFO] __init__: start Task RPCServer: task_findObj, delay_exectime=0.2ms, receivers=[(u'localhost', 18900)], extra_params=['local']
+2018-10-31 10:34:23,612 task_findObj|[INFO] __init__: Class Flavor: task_findObj
+2018-10-31 10:34:25,117 task_findObj|[INFO] dispatch: ====== receive pkt ======
+2018-10-31 10:34:25,117 task_findObj|[INFO] dispatch: (TIME) pkt sent time: 1541007265.12
+2018-10-31 10:34:25,117 task_findObj|[INFO] dispatch: (TIME) pkt rcev time: 1541007265.12
+2018-10-31 10:34:25,117 task_findObj|[INFO] dispatch: (TIME) transmit time: 0.00186109542847
+2018-10-31 10:34:25,117 task_findObj|[INFO] dispatch: (RECV) push: ['iVBORw0KGgoAAAANSUhEUgAAAQAAAACQCAYAAADnY7WRAAAgAElEQVR4Acy9Cb
+2018-10-31 10:34:25,117 task_findObj|[INFO] _compute: (TIME) start computation: 1541007265.12
+2018-10-31 10:34:25,118 task_findObj|[INFO] _compute: finding object
