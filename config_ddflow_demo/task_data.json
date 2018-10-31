@@ -11,7 +11,7 @@
             "GtInfoEnum.RESRC_RQMT": {}
         },
         "task_findObject": {
-            "GtInfoEnum.EXEC_CMD": "cd {progdir} && python main_entity.py run_task -n task_findObj -en task_findObj -a {self_addr} -ra {next_addr}",
+            "GtInfoEnum.EXEC_CMD": "cd {progdir} && python main_entity.py run_task -n task_findObj -en task_forward -a {self_addr} -ra 172.17.49.51:18800",
             "GtInfoEnum.LATENCY_INFO": {
                 "Device.P3_2XLARGE": {
                     "Flavor.GPU": 100
