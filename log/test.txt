@@ -1,8 +1,0 @@
-2018-10-30 15:11:30,651 test|[INFO] call: ====== send pkt ======
-2018-10-30 15:11:30,651 test|[INFO] call: (TIME) pkt sent time: 1540937490.65
-2018-10-30 15:11:30,652 test|[INFO] call: (SEND) push: ('iVBORw0KGgoAAAANSUhEUgAAAQAAAACQCAYAAADnY7WRAAAgAElEQVR4Acy9Cb
-2018-10-30 15:11:30,653 test|[WARNING] _handle_connect: Connect error on fd 7: ECONNREFUSED
-2018-10-30 15:11:30,653 test|[WARNING] _handle_connect: Connect error on fd 7: ECONNREFUSED
-2018-10-30 15:11:30,653 test|[WARNING] _handle_connect: Connect error on fd 7: ECONNREFUSED
-2018-10-30 15:11:30,654 test|[WARNING] _handle_connect: Connect error on fd 7: ECONNREFUSED
-2018-10-30 15:11:30,654 test|[WARNING] _handle_connect: Connect error on fd 7: ECONNREFUSED

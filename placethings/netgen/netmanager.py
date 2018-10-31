@@ -4,10 +4,11 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import logging
+
 from mininet.clean import cleanup
 from mininet.net import Containernet
 from mininet.link import TCLink
-from mininet.node import Controller, OVSSwitch
+from mininet.node import Controller
 from mininet.log import setLogLevel as mininet_SetLogLevel
 from mininet.cli import CLI
 
@@ -32,14 +33,20 @@ class NetManager(object):
         self._host_next_free_port = {}
         self._switch_dict = {}
         self._edge_dict = {}
+        self._edge_info_dict = {}
         self._devNameToNodeName = {}
 
     def print_net_info(self):
-        log.info(self._devNameToNodeName)
-        log.info(self._host_dict)
-        log.info(self._host_ip_dict)
-        log.info(self._host_docker_ip_dict)
-
+        for dev in self._host_dict:
+            log.info('dev={}, v_dev={}, v_ip={}, docker_ip={}'.format(
+                dev, self._devNameToNodeName[dev],
+                self._host_ip_dict[dev], self._host_docker_ip_dict[dev]))
+        for dev in self._switch_dict:
+            log.info('dev={}, v_dev={}'.format(
+                dev, self._devNameToNodeName[dev]))
+        for edge in self._edge_dict:
+            log.info('link={}, config={}'.format(
+                edge, self._edge_info_dict[edge]))
 
     def get_host_list(self):
         return list(self._host_dict)
@@ -89,13 +96,13 @@ class NetManager(object):
 
     def addSwitch(self, device_name):
         name = self._new_switch_name()
-        switch = self._net.addSwitch(name, cls=OVSSwitch)
+        switch = self._net.addSwitch(name)
         self._switch_dict[device_name] = switch
         self._devNameToNodeName[device_name] = name
         log.debug('add switch {}'.format(device_name))
 
     def addLink(
-            self, src, dst, bw_bps=None, delay_ms=1,
+            self, src, dst, bw_bps=None, delay_ms=1, jitter_ms=0,
             max_queue_size=None, pkt_loss_rate=None):
         if (dst, src) in self._edge_dict:
             # mininet is not DiGraph! everything is bidirectional
@@ -106,11 +113,18 @@ class NetManager(object):
         else:
             bw_mbps = None if bw_bps > 1000000 else int(bw_bps / 1000000)
         delay = '{}ms'.format(delay_ms)
+        jitter = '{}ms'.format(jitter_ms)
         loss = int(pkt_loss_rate*100) if pkt_loss_rate else None
+        # TODO: fix this
+        # if (('AP' in src or 'AP' in dst) and ('CAM' in src or 'CAM' in dst)):
+        #    jitter = '5ms'
         link = self._net.addLink(
             self._devNameToNodeName[src], self._devNameToNodeName[dst],
-            bw=bw_mbps, delay=delay, max_queue_size=max_queue_size, loss=loss)
+            bw=bw_mbps, delay=delay, jitter=jitter,
+            max_queue_size=max_queue_size, loss=loss)
         self._edge_dict[(src, dst)] = link
+        self._edge_info_dict[(src, dst)] = 'delay {}, jitter {}'.format(
+            delay_ms, jitter_ms)
         log.debug('link {} <-> {}: delay={}'.format(src, dst, delay))
 
     def delLink(self, src, dst):
@@ -120,28 +134,30 @@ class NetManager(object):
                 node1=self._devNameToNodeName[src],
                 node2=self._devNameToNodeName[dst])
             del self._edge_dict[(src, dst)]
+            del self._edge_info_dict[(src, dst)]
         elif (dst, src) in self._edge_dict:
             self._net.removeLink(
                 node1=self._devNameToNodeName[dst],
                 node2=self._devNameToNodeName[src])
             del self._edge_dict[(dst, src)]
+            del self._edge_info_dict[(src, dst)]
         log.debug('delete link {} <-> {}'.format(src, dst))
 
-    def modifyLinkDelay(self, device_name, delay_ms):
-        node_name = self._devNameToNodeName[device_name]
-        command = 'tc qdisc change dev {}-eth0 root netem delay {}ms'.format(
-            node_name, delay_ms)
-        self.run_cmd(device_name, command, async=False)
+    def modifyLinkDelay(self, src, dst, delay_ms):
+        edge = (src, dst)
+        if edge not in self._edge_dict:
+            edge = (dst, src)
+            assert edge in self._edge_dict
+        link = self._edge_dict[edge]
+        delay = '{}ms'.format(delay_ms // 2)
+        link.intf1.config(delay=delay)
+        link.intf2.config(delay=delay)
+        self._edge_info_dict[edge] = delay_ms
 
     def modifyLink(
             self, src, dst, new_dst=None, bw_bps=None, delay_ms=1,
             max_queue_size=None, pkt_loss_rate=None):
-        if not new_dst:
-            new_dst = dst
-        self.delLink(src, dst)
-        self.addLink(
-            src, new_dst,
-            bw_bps, delay_ms, max_queue_size, pkt_loss_rate)
+        assert False, 'not implemented'
 
     def start(self):
         log.info('*** Starting network')

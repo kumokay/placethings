@@ -106,7 +106,7 @@ class ControlPlane(object):
             pkt_loss_rate=0)
 
     def run_manager_cmd(self, command):
-        self.net.run_cmd(self._MANAGER_NAME, command, async=False)
+        return self.net.run_cmd(self._MANAGER_NAME, command, async=False)
 
     def run_agent(self, name):
         log.info('run agent: {}'.format(name))
@@ -152,10 +152,10 @@ class DataPlane(object):
             node_info = topo_device_graph.node[node]
             node_type = node_info[GInfo.NODE_TYPE]
             if node_type == NodeType.DEVICE:
-                log.info('add device: {}, node_info={}'.format(node, node_info))
+                log.info('add device: {}, info={}'.format(node, node_info))
                 self.net.addHost(node)
             elif node_type == NodeType.NW_DEVICE:
-                log.info('add nw_device: {}, node_info={}'.format(node, node_info))
+                log.info('add nw_device: {}, info={}'.format(node, node_info))
                 self.net.addSwitch(node)
         for d1, d2 in topo_device_graph.edges():
             print('edge: {},{}'.format(d1, d2))
@@ -167,11 +167,14 @@ class DataPlane(object):
                 pkt_loss_rate=_PKT_LOSS[edge_info[GnInfo.PROTOCOL]])
         self.net.print_net_info()
 
+    def print_net_info(self):
+        self.net.print_net_info()
+
     def run_mininet_cli(self):
         self.net.run_cli()
 
-    def modify_link(self, device_name, delay_ms):
-        self.net.modifyLinkDelay(device_name, delay_ms)
+    def modify_link(self, src, dst, delay_ms):
+        self.net.modifyLinkDelay(src, dst, delay_ms)
 
     def add_manager(self, device_name):
         self.net.addHost(self._MANAGER_NAME)
@@ -182,12 +185,12 @@ class DataPlane(object):
             pkt_loss_rate=0)
 
     def run_manager_cmd(self, command, async=False):
-        self.net.run_cmd(self._MANAGER_NAME, command, async=async)
+        return self.net.run_cmd(self._MANAGER_NAME, command, async=async)
 
     def get_worker_address(self, device_name):
         return self.net.get_device_ip(device_name), self._TASK_PORT
 
-    def get_worker_public_address(self, device_name):
+    def get_worker_public_addr(self, device_name):
         return self.net.get_device_docker_ip(device_name), self._TASK_PORT
 
     @staticmethod
@@ -206,7 +209,7 @@ class DataPlane(object):
             device_name = G_map.node[task_name][GtInfo.CUR_DEVICE]
             log.info('deploy {} to {}'.format(task_name, device_name))
             ip, port = self.get_worker_address(device_name)
-            docker_ip, docker_port = self.get_worker_public_address(device_name)
+            docker_ip, docker_port = self.get_worker_public_addr(device_name)
             device_cat = Gd.node[device_name][GdInfo.DEVICE_CAT]
             # device_type = Gd.node[device_name][GdInfo.DEVICE_TYPE]
             # exectime = G_map.node[task_name][GtInfo.CUR_LATENCY]
@@ -230,18 +233,24 @@ class DataPlane(object):
         run_worker_cmd = self.worker_dict[device_name]
         self.net.run_cmd(device_name, run_worker_cmd, async=True)
 
-    def stop_worker(self, device_name):
-        log.info('stop {}'.format(device_name))
-        ip, port = self.get_worker_address(device_name)
-        command = self._cmd_stop_template.format(
-            progdir=self._PROG_DIR,
-            name=self._MANAGER_NAME,
-            ip=ip,
-            port=port)
-        # check connectivity
-        self.run_manager_cmd('ping {} -c 1'.format(ip))
-        # stop server
-        self.run_manager_cmd(command)
+    def stop_worker(self, device_name, is_force=False):
+        if not is_force:
+            log.info('stop {}'.format(device_name))
+            ip, port = self.get_worker_address(device_name)
+            command = self._cmd_stop_template.format(
+                progdir=self._PROG_DIR,
+                name=self._MANAGER_NAME,
+                ip=ip,
+                port=port)
+            # check connectivity
+            ret = self.run_manager_cmd('ping {} -c 1'.format(ip))
+            if '0% packet loss' in ret:
+                # stop server
+                self.run_manager_cmd(command)
+                return
+        log.debug('kill task on {}'.format(device_name))
+        # TODO: this is workaround
+        self.net.run_cmd(device_name, 'kill %python', async=True)
 
     def start(self, is_validate=False):
         log.info('start mininet.')
@@ -254,10 +263,10 @@ class DataPlane(object):
         for device_name in self.worker_dict:
             self.run_worker(device_name)
 
-    def stop_workers(self):
+    def stop_workers(self, is_force=False):
         log.info('stop all workers')
         for device_name in self.worker_dict:
-            self.stop_worker(device_name)
+            self.stop_worker(device_name, is_force=is_force)
 
     def stop(self):
         log.info('stop mininet.')

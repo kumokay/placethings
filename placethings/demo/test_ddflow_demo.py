@@ -4,10 +4,8 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import logging
-import time
-import random
 
-from placethings.netgen.network import ControlPlane, DataPlane
+from placethings.netgen.network import DataPlane
 from placethings.definition import Unit
 from placethings.demo.utils import ConfigDataHelper
 from placethings.demo.base_test import BaseTestCase
@@ -88,6 +86,32 @@ class TestBasic(BaseTestCase):
 class TestDynamic(BaseTestCase):
 
     @classmethod
+    def update_nw_latency(
+            cls, cfgHelper, data_plane, nw_dev1, nw_dev2, new_latency,
+            is_simulate):
+        if is_simulate:
+            # TODO: this is workaround to make docker works
+            data_plane.stop_workers(is_force=False)
+
+            data_plane.modify_link(nw_dev1, nw_dev2, new_latency)
+            data_plane.start_workers()
+            data_plane.run_mininet_cli()
+        cfgHelper.update_nw_link_latency(nw_dev1, nw_dev2, new_latency)
+        cfgHelper.update_topo_device_graph()
+
+    @classmethod
+    def update_placement(cls, cfgHelper, data_plane, is_simulate):
+        cfgHelper.update_task_map()
+        cfgHelper.update_max_latency_log()
+        if is_simulate:
+            raw_input('press any key to find new placement')
+            _topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
+            data_plane.deploy_task(G_map, Gd)
+            raw_input('press any key to re-deploy')
+            data_plane.stop_workers()
+            data_plane.start_workers()
+
+    @classmethod
     def test(
             cls, config_name=None, is_export=True,
             is_update_map=True, is_simulate=True):
@@ -109,66 +133,47 @@ class TestDynamic(BaseTestCase):
                 topo_device_graph, Gd, G_map)
             raw_input('press any key to start the network')
             data_plane.start(is_validate=True)
+
+        data_plane.print_net_info()
         raw_input('press any key to start scenario 1')
         log.info('=== running scenario 1: initial deployment ===')
         data_plane.start_workers()
+
+        data_plane.print_net_info()
         raw_input('press any key to start scenario 2')
         log.info('=== running scenario 2: P3_2XLARGE.0 poor connection ===')
-        dev = 'P3_2XLARGE.0'
-        nw_dev = 'CENTER_SWITCH.1'
-        new_latency = Unit.ms(500)
-        if is_simulate:
-            data_plane.modify_link(dev, new_latency)
-            data_plane.run_mininet_cli()
-        cfgHelper.update_dev_link_latency(dev, nw_dev, new_latency)
-        cfgHelper.update_topo_device_graph()
+        nw_dev1 = 'BB_SWITCH.0'
+        nw_dev2 = 'CENTER_SWITCH.1'
+        new_latency = Unit.ms(5000)
+        cls.update_nw_latency(
+            cfgHelper, data_plane, nw_dev1, nw_dev2, new_latency, is_simulate)
         if is_update_map:
-            cfgHelper.update_task_map()
-            cfgHelper.update_max_latency_log()
-            if is_update_map:
-                raw_input('press any key to re-deploy')
-                _topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
-                data_plane.stop_workers()
-                data_plane.deploy_task(G_map, Gd)
-                data_plane.start_workers()
+            cls.update_placement(cfgHelper, data_plane, is_simulate)
+
+        data_plane.print_net_info()
         raw_input('press any key to start scenario 3')
         log.info('=== running scenario 3: T3_LARGE.0 poor connection ===')
-        dev = 'T3_LARGE.0'
-        nw_dev = 'FIELD_SWITCH.1'
-        new_latency = Unit.ms(3000)
-        if is_simulate:
-            data_plane.modify_link(dev, new_latency)
-        cfgHelper.update_dev_link_latency(dev, nw_dev, new_latency)
-        cfgHelper.update_topo_device_graph()
+        nw_dev1 = 'BB_SWITCH.1'
+        nw_dev2 = 'FIELD_SWITCH.1'
+        new_latency = Unit.ms(5000)
+        cls.update_nw_latency(
+            cfgHelper, data_plane, nw_dev1, nw_dev2, new_latency, is_simulate)
         if is_update_map:
-            cfgHelper.update_task_map()
-            cfgHelper.update_max_latency_log()
-            if is_simulate:
-                raw_input('press any key to find new placement')
-                _topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
-                data_plane.deploy_task(G_map, Gd)
-                raw_input('press any key to re-deploy')
-                data_plane.stop_workers()
-                data_plane.start_workers()
+            cls.update_placement(cfgHelper, data_plane, is_simulate)
+
+        data_plane.print_net_info()
         raw_input('press any key to start scenario 4')
         log.info('=== running scenario 4: P3_2XLARGE.0 back online ===')
-        dev = 'P3_2XLARGE.0'
-        nw_dev = 'CENTER_SWITCH.1'
+        nw_dev1 = 'BB_SWITCH.0'
+        nw_dev2 = 'CENTER_SWITCH.1'
         new_latency = Unit.ms(2)
-        cfgHelper.update_dev_link_latency(dev, nw_dev, new_latency)
-        cfgHelper.update_topo_device_graph()
+        cls.update_nw_latency(
+            cfgHelper, data_plane, nw_dev1, nw_dev2, new_latency, is_simulate)
         if is_update_map:
-            cfgHelper.update_task_map()
-        cfgHelper.update_max_latency_log()
-        if is_simulate:
-            data_plane.modify_link(dev, new_latency)
-            if is_update_map:
-                raw_input('press any key to re-deploy')
-                _topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
-                data_plane.stop_workers()
-                data_plane.deploy_task(G_map, Gd)
-                data_plane.start_workers()
+            cls.update_placement(cfgHelper, data_plane, is_simulate)
+
         raw_input('press any key to end test')
         if is_simulate:
+            data_plane.stop_workers()
             data_plane.stop()
         log.info('latency trend: {}'.format(cfgHelper.get_max_latency_log()))

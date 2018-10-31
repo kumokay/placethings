@@ -1,8 +1,0 @@
-2018-10-30 16:51:08,926 stop|[INFO] call: ====== send pkt ======
-2018-10-30 16:51:08,926 stop|[INFO] call: (TIME) pkt sent time: 1540943468.93
-2018-10-30 16:51:08,927 stop|[INFO] call: (SEND) STOP: ()
-2018-10-30 16:51:08,929 stop|[WARNING] _handle_connect: Connect error on fd 7: ENETUNREACH
-2018-10-30 16:51:08,932 stop|[WARNING] _handle_connect: Connect error on fd 7: ENETUNREACH
-2018-10-30 16:53:05,978 stop|[INFO] call: ====== send pkt ======
-2018-10-30 16:53:05,979 stop|[INFO] call: (TIME) pkt sent time: 1540943585.98
-2018-10-30 16:53:05,979 stop|[INFO] call: (SEND) STOP: ()

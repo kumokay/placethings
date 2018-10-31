@@ -225,7 +225,7 @@ class FuncManager(object):
             data = binary_file.read()
         new_args_list = [base64.b64encode(data)]
         result = ClientGen.call(ip, port, method, *new_args_list)
-        log.info('result: {}'.format(result))
+        log.info('file sent: size={}'.format(len(result)))
 
     @staticmethod
     def run_test(args):
