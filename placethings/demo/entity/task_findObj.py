@@ -12,6 +12,7 @@ import time
 from PIL import Image
 
 from placethings.demo.entity import task as BaseTask
+from placethings.demo.entity.base_client import ClientGen
 
 
 log = logging.getLogger()
@@ -57,7 +58,7 @@ class RPCServer(BaseTask.RPCServer):
         t2 = time.time()
         # logging
         log.info('compute result: {}'.format(result))
-        
+
         log.info('(TIME) stop computation: {}'.format(t2))
         log.info('computation result:\n{}'.format(result))
         return 'exec_time: {}, result:\n{}'.format(t2-t1, result)
