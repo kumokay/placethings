@@ -6,7 +6,7 @@
             "GtInfoEnum.RESRC_RQMT": {}
         },
         "task_alert": {
-            "GtInfoEnum.EXEC_CMD": "cd {progdir} && python main_entity.py run_task -n task_alert -en task_forward -a {self_addr} -ra 172.17.20.12:18800",
+            "GtInfoEnum.EXEC_CMD": "cd {progdir} && python main_entity.py run_task -n task_alert -en task_forward -a {self_addr} -ra 172.17.51.5:18900",
             "GtInfoEnum.LATENCY_INFO": {},
             "GtInfoEnum.RESRC_RQMT": {}
         },

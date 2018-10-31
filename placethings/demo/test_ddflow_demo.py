@@ -61,7 +61,7 @@ def _init_netsim(topo_device_graph, Gd, G_map):
     # control_plane.runAgent()
     data_plane = DataPlane(topo_device_graph)
     data_plane.add_manager('BB_SWITCH.2')
-    data_plane.deploy_task(G_map, Gd, is_init_deploy=True)
+    data_plane.deploy_task(G_map, Gd)
     return control_plane, data_plane
 
 
@@ -107,6 +107,7 @@ class TestDynamic(BaseTestCase):
             _topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
             _control_plane, data_plane = _init_netsim(
                 topo_device_graph, Gd, G_map)
+            raw_input('press any key to start the network')
             data_plane.start(is_validate=True)
         raw_input('press any key to start scenario 1')
         log.info('=== running scenario 1: initial deployment ===')
@@ -115,7 +116,7 @@ class TestDynamic(BaseTestCase):
         log.info('=== running scenario 2: P3_2XLARGE.0 poor connection ===')
         nw_dev1 = 'CENTER_SWITCH.1'  # 'P3_2XLARGE.0'
         nw_dev2 = 'BB_SWITCH.0'
-        new_latency = Unit.ms(10000)
+        new_latency = Unit.ms(3000)
         cfgHelper.update_nw_link_latency(nw_dev1, nw_dev2, new_latency)
         cfgHelper.update_topo_device_graph()
         if is_update_map:
@@ -123,17 +124,18 @@ class TestDynamic(BaseTestCase):
         cfgHelper.update_max_latency_log()
         if is_simulate:
             data_plane.modify_link(nw_dev1, nw_dev2, delay_ms=new_latency)
+            data_plane.run_mininet_cli()
             if is_update_map:
                 raw_input('press any key to re-deploy')
                 _topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
                 data_plane.stop_workers()
-                data_plane.deploy_task(G_map, Gd, is_init_deploy=False)
+                data_plane.deploy_task(G_map, Gd)
                 data_plane.start_workers()
         raw_input('press any key to start scenario 3')
         log.info('=== running scenario 3: T3_LARGE.0 poor connection ===')
         nw_dev1 = 'FIELD_SWITCH.1'
         nw_dev2 = 'BB_SWITCH.1'
-        new_latency = Unit.ms(10000)
+        new_latency = Unit.ms(5000)
         cfgHelper.update_nw_link_latency(nw_dev1, nw_dev2, new_latency)
         cfgHelper.update_topo_device_graph()
         if is_update_map:
@@ -145,7 +147,7 @@ class TestDynamic(BaseTestCase):
                 raw_input('press any key to re-deploy')
                 _topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
                 data_plane.stop_workers()
-                data_plane.deploy_task(G_map, Gd, is_init_deploy=False)
+                data_plane.deploy_task(G_map, Gd)
                 data_plane.start_workers()
         raw_input('press any key to start scenario 4')
         log.info('=== running scenario 4: P3_2XLARGE.0 back online ===')
@@ -163,7 +165,7 @@ class TestDynamic(BaseTestCase):
                 raw_input('press any key to re-deploy')
                 _topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
                 data_plane.stop_workers()
-                data_plane.deploy_task(G_map, Gd, is_init_deploy=False)
+                data_plane.deploy_task(G_map, Gd)
                 data_plane.start_workers()
         raw_input('press any key to end test')
         if is_simulate:

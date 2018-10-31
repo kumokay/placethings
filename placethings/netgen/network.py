@@ -44,7 +44,7 @@ class ControlPlane(object):
         'cd {progdir} && python main_entity.py run_agent '
         '-n {name} -a {ip}:{port}')
     _cmd_stop_template = (
-        'cd {progdir} && python main_entity.py stop_server -a {ip}:{port}')
+        'cd {progdir} && python main_entity.py stop_server -n stopper -a {ip}:{port}')
     _PROG_DIR = '/home/kumokay/github/placethings'
     _AGENT_PORT = 18800
     _MANAGER_NAME = 'Manager'
@@ -140,24 +140,38 @@ class DataPlane(object):
     _TASK_PORT = 18800
     _MANAGER_NAME = 'Manager'
     _cmd_stop_template = (
-        'cd {progdir} && python main_entity.py stop_server -a {ip}:{port}')
+        'cd {progdir} && python main_entity.py stop_server '
+        '-n stopper -a {ip}:{port}')
 
-    def __init__(self, Gn):
+    def __init__(self, topo_device_graph):
         self.worker_dict = {}  # worker_name: start_cmd
         self.task_cmd = {}
         self.net = NetManager.create()
-        for node in Gn.nodes():
-            self.net.addSwitch(node)
-        for d1, d2 in Gn.edges():
-            edge_info = Gn[d1][d2]
+        # add nw devices
+        for node in topo_device_graph.nodes():
+            node_info = topo_device_graph.node[node]
+            node_type = node_info[GInfo.NODE_TYPE]
+            if node_type == NodeType.DEVICE:
+                log.info('add device: {}, node_info={}'.format(node, node_info))
+                self.net.addHost(node)
+            elif node_type == NodeType.NW_DEVICE:
+                log.info('add nw_device: {}, node_info={}'.format(node, node_info))
+                self.net.addSwitch(node)
+        for d1, d2 in topo_device_graph.edges():
+            print('edge: {},{}'.format(d1, d2))
+            edge_info = topo_device_graph[d1][d2]
             self.net.addLink(
                 d1, d2,
                 bw_bps=edge_info[GnInfo.BANDWIDTH],
                 delay_ms=edge_info[GnInfo.LATENCY],
                 pkt_loss_rate=_PKT_LOSS[edge_info[GnInfo.PROTOCOL]])
+        self.net.print_net_info()
 
-    def modify_link(self, src, dst, delay_ms=1):
-        self.net.modifyLinkDelay(src, dst, delay_ms)
+    def run_mininet_cli(self):
+        self.net.run_cli()
+
+    def modify_link(self, d1, d2, delay_ms=0):
+        self.net.modifyLink(d1, d2, delay_ms=delay_ms)
 
     def add_manager(self, device_name):
         self.net.addHost(self._MANAGER_NAME)
@@ -170,11 +184,11 @@ class DataPlane(object):
     def run_manager_cmd(self, command, async=False):
         self.net.run_cmd(self._MANAGER_NAME, command, async=async)
 
-    def get_worker_address(self, name):
-        return self.net.get_device_ip(name), self._TASK_PORT
+    def get_worker_address(self, device_name):
+        return self.net.get_device_ip(device_name), self._TASK_PORT
 
-    def get_worker_public_address(self, name):
-        return self.net.get_device_docker_ip(name), self._TASK_PORT
+    def get_worker_public_address(self, device_name):
+        return self.net.get_device_docker_ip(device_name), self._TASK_PORT
 
     @staticmethod
     def _get_next_task(G_map, task_name):
@@ -185,18 +199,14 @@ class DataPlane(object):
         next_task = next_task_list[0]
         return next_task
 
-    def deploy_task(self, G_map, Gd, is_init_deploy=False):
-        if is_init_deploy:
-            # add all host
-            for task_name in G_map.nodes():
-                device_name = G_map.node[task_name][GtInfo.CUR_DEVICE]
-                self.add_worker(task_name, device_name)
+    def deploy_task(self, G_map, Gd):
         # gen info
         progdir = self._PROG_DIR
         for task_name in G_map.nodes():
-            ip, port = self.get_worker_address(task_name)
-            docker_ip, docker_port = self.get_worker_public_address(task_name)
             device_name = G_map.node[task_name][GtInfo.CUR_DEVICE]
+            log.info('deploy {} to {}'.format(task_name, device_name))
+            ip, port = self.get_worker_address(device_name)
+            docker_ip, docker_port = self.get_worker_public_address(device_name)
             device_cat = Gd.node[device_name][GdInfo.DEVICE_CAT]
             # device_type = Gd.node[device_name][GdInfo.DEVICE_TYPE]
             # exectime = G_map.node[task_name][GtInfo.CUR_LATENCY]
@@ -206,33 +216,23 @@ class DataPlane(object):
                 assert device_cat == DeviceCategory.ACTUATOR
                 next_ip, next_port = None, None
             else:
-                next_ip, next_port = self.get_worker_address(next_task)
+                next_device_name = G_map.node[next_task][GtInfo.CUR_DEVICE]
+                next_ip, next_port = self.get_worker_address(next_device_name)
             cmd = cmd_template.format(
                 progdir=progdir,
                 self_addr='{}:{}'.format(ip, port),
                 docker_addr='{}:{}'.format(docker_ip, docker_port),
                 next_addr='{}:{}'.format(next_ip, next_port))
-            self.worker_dict[task_name] = cmd
+            self.worker_dict[device_name] = cmd
 
-    def add_worker(self, name, device_name):
-        self.net.addHost(name)
-        self.net.addLink(
-            name, device_name,
-            bw_bps=None,
-            delay_ms=0,
-            pkt_loss_rate=0)
-        worker_ip = self.net.get_device_ip(name)
-        worker_port = self._TASK_PORT
-        return worker_ip, worker_port
+    def run_worker(self, device_name):
+        log.info('run worker on {}'.format(device_name))
+        run_worker_cmd = self.worker_dict[device_name]
+        self.net.run_cmd(device_name, run_worker_cmd, async=True)
 
-    def run_worker(self, name):
-        log.info('run {}'.format(name))
-        run_worker_cmd = self.worker_dict[name]
-        self.net.run_cmd(name, run_worker_cmd, async=True)
-
-    def stop_worker(self, name):
-        log.info('stop {}'.format(name))
-        ip, port = self.get_worker_address(name)
+    def stop_worker(self, device_name):
+        log.info('stop {}'.format(device_name))
+        ip, port = self.get_worker_address(device_name)
         command = self._cmd_stop_template.format(
             progdir=self._PROG_DIR,
             name=self._MANAGER_NAME,
@@ -243,15 +243,6 @@ class DataPlane(object):
         # stop server
         self.run_manager_cmd(command)
 
-    def move_worker(self, name, from_device, to_device):
-        assert name in self.worker_dict
-        self.net.delLink(name, from_device)
-        self.net.addLink(
-            name, to_device,
-            bw_bps=None,
-            delay_ms=0,
-            pkt_loss_rate=0)
-
     def start(self, is_validate=False):
         log.info('start mininet.')
         self.net.start()
@@ -260,13 +251,13 @@ class DataPlane(object):
 
     def start_workers(self):
         log.info('run all workers')
-        for name in self.worker_dict:
-            self.run_worker(name)
+        for device_name in self.worker_dict:
+            self.run_worker(device_name)
 
     def stop_workers(self):
         log.info('stop all workers')
-        for name in self.worker_dict:
-            self.stop_worker(name)
+        for device_name in self.worker_dict:
+            self.stop_worker(device_name)
 
     def stop(self):
         log.info('stop mininet.')

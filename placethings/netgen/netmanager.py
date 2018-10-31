@@ -9,7 +9,7 @@ from mininet.net import Containernet
 from mininet.link import TCLink
 from mininet.node import Controller, OVSSwitch
 from mininet.log import setLogLevel as mininet_SetLogLevel
-
+from mininet.cli import CLI
 
 mininet_SetLogLevel('info')
 log = logging.getLogger()
@@ -33,7 +33,13 @@ class NetManager(object):
         self._switch_dict = {}
         self._edge_dict = {}
         self._devNameToNodeName = {}
-        self._device_ips = {}
+
+    def print_net_info(self):
+        log.info(self._devNameToNodeName)
+        log.info(self._host_dict)
+        log.info(self._host_ip_dict)
+        log.info(self._host_docker_ip_dict)
+
 
     def get_host_list(self):
         return list(self._host_dict)
@@ -121,13 +127,10 @@ class NetManager(object):
             del self._edge_dict[(dst, src)]
         log.debug('delete link {} <-> {}'.format(src, dst))
 
-    def modifyLinkDelay(self, src, dst, delay_ms):
+    def modifyLinkDelay(self, d1, d2, delay_ms=0):
         delay = '{}ms'.format(delay_ms)
-        edge = (src, dst)
-        if edge not in self._edge_dict:
-            edge = (dst, src)
-        link = self._edge_dict[edge]
         link.intf1.config(delay=delay)
+        link.intf2.config(delay=delay)
         log.debug('modify link {} <-> {}'.format(src, dst))
 
     def modifyLink(
@@ -144,6 +147,9 @@ class NetManager(object):
         log.info('*** Starting network')
         self._net.start()
 
+    def run_cli(self):
+        CLI(self._net)
+
     def stop(self):
         log.info('*** Stopping network')
         self._net.stop()
@@ -152,7 +158,8 @@ class NetManager(object):
 
     def run_cmd(self, device_name, command, async=False):
         host = self._host_dict[device_name]
-        log.info('send command: {}'.format(command))
+        log.info('send command to {}({}): {}'.format(
+            device_name, host, command))
         if async:
             # no waiting
             host.sendCmd(command)

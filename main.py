@@ -23,9 +23,9 @@ class SubArgsManager(object):
         self.subparser.add_argument(
             '-v',
             '--visualize',
-            type=bool,
             dest='is_export',
             default=False,
+            action='store_true',
             required=required,
             help='export graph and data')
 
