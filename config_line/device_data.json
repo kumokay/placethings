@@ -48,14 +48,14 @@
             }
         },
         "DeviceCategory.ACTUATOR": {
-            "Device.PHONE": {
+            "Device.CONTROLLER": {
                 "GdInfoEnum.COST": 0,
                 "GdInfoEnum.HARDWARE": {},
                 "GdInfoEnum.NIC": {
-                    "LinkInfo.ULINK_BW": 52428800,
-                    "LinkInfo.PROTOCOL": "NwLink.WIFI",
+                    "LinkInfo.ULINK_BW": 104857600,
+                    "LinkInfo.PROTOCOL": "NwLink.ETHERNET",
                     "LinkInfo.N_LINKS": 1,
-                    "LinkInfo.DLINK_BW": 157286400
+                    "LinkInfo.DLINK_BW": 104857600
                 }
             }
         },
@@ -64,10 +64,10 @@
                 "GdInfoEnum.COST": 0,
                 "GdInfoEnum.HARDWARE": {},
                 "GdInfoEnum.NIC": {
-                    "LinkInfo.ULINK_BW": 62914560,
+                    "LinkInfo.ULINK_BW": 104857600,
                     "LinkInfo.PROTOCOL": "NwLink.WIFI",
                     "LinkInfo.N_LINKS": 1,
-                    "LinkInfo.DLINK_BW": 62914560
+                    "LinkInfo.DLINK_BW": 104857600
                 }
             }
         }
@@ -75,64 +75,46 @@
     "device_inventory": {
         "DeviceCategory.PROCESSOR": {
             "Device.P3_2XLARGE": 1,
-            "Device.T3_LARGE": 2,
-            "Device.T2_MICRO": 2
+            "Device.T3_LARGE": 1,
+            "Device.T2_MICRO": 1
         },
         "DeviceCategory.ACTUATOR": {
-            "Device.PHONE": 1
+            "Device.CONTROLLER": 1
         },
         "DeviceCategory.SENSOR": {
-            "Device.CAMERA": 2
+            "Device.CAMERA": 1
         }
     },
     "links": {
-        "T2_MICRO.0 -> CLOUD_SWITCH.0": {
-            "GnInfoEnum.LATENCY": 1
+        "CONTROLLER.0 -> CENTER_SWITCH.0": {
+            "GnInfoEnum.LATENCY": 2
         },
-        "CLOUD_SWITCH.0 -> T2_MICRO.0": {
-            "GnInfoEnum.LATENCY": 1
-        },
-        "T3_LARGE.0 -> CLOUD_SWITCH.1": {
-            "GnInfoEnum.LATENCY": 1
-        },
-        "CLOUD_SWITCH.1 -> T3_LARGE.0": {
-            "GnInfoEnum.LATENCY": 1
-        },
-        "T2_MICRO.1 -> CLOUD_SWITCH.2": {
-            "GnInfoEnum.LATENCY": 1
-        },
-        "CLOUD_SWITCH.2 -> T2_MICRO.1": {
-            "GnInfoEnum.LATENCY": 1
-        },
-        "T3_LARGE.1 -> CLOUD_SWITCH.3": {
-            "GnInfoEnum.LATENCY": 1
-        },
-        "CLOUD_SWITCH.3 -> T3_LARGE.1": {
-            "GnInfoEnum.LATENCY": 1
-        },
-        "P3_2XLARGE.0 -> CLOUD_SWITCH.4": {
-            "GnInfoEnum.LATENCY": 1
-        },
-        "CLOUD_SWITCH.4 -> P3_2XLARGE.0": {
-            "GnInfoEnum.LATENCY": 1
-        },
-        "BB_AP.0 -> PHONE.0": {
-            "GnInfoEnum.LATENCY": 10
-        },
-        "PHONE.0 -> BB_AP.0": {
-            "GnInfoEnum.LATENCY": 10
+        "CENTER_SWITCH.0 -> CONTROLLER.0": {
+            "GnInfoEnum.LATENCY": 2
         },
         "CAMERA.0 -> BB_AP.0": {
-            "GnInfoEnum.LATENCY": 10
+            "GnInfoEnum.LATENCY": 30
         },
         "BB_AP.0 -> CAMERA.0": {
-            "GnInfoEnum.LATENCY": 10
+            "GnInfoEnum.LATENCY": 30
         },
-        "CAMERA.1 -> BB_AP.1": {
-            "GnInfoEnum.LATENCY": 10
+        "T2_MICRO.0 -> FIELD_SWITCH.0": {
+            "GnInfoEnum.LATENCY": 2
         },
-        "BB_AP.1 -> CAMERA.1": {
-            "GnInfoEnum.LATENCY": 10
+        "FIELD_SWITCH.0 -> T2_MICRO.0": {
+            "GnInfoEnum.LATENCY": 2
+        },
+        "P3_2XLARGE.0 -> CENTER_SWITCH.1": {
+            "GnInfoEnum.LATENCY": 2
+        },
+        "CENTER_SWITCH.1 -> P3_2XLARGE.0": {
+            "GnInfoEnum.LATENCY": 2
+        },
+        "T3_LARGE.0 -> FIELD_SWITCH.1": {
+            "GnInfoEnum.LATENCY": 2
+        },
+        "FIELD_SWITCH.1 -> T3_LARGE.0": {
+            "GnInfoEnum.LATENCY": 2
         }
     }
 }
