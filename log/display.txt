@@ -1,0 +1,70 @@
+2018-10-31 08:52:04,416 display|[INFO] start_server: start_server display at 172.17.20.12:18900
+2018-10-31 08:52:04,416 display|[INFO] start_server: args=['display', 0, None]
+2018-10-31 08:52:04,416 display|[INFO] start_server: try to start base entity task
+2018-10-31 08:52:04,416 display|[INFO] __init__: start Task RPCServer: display, exectime=0.0s, receivers=None
+2018-10-31 08:52:13,324 display|[INFO] dispatch: ====== receive pkt ======
+2018-10-31 08:52:13,324 display|[INFO] dispatch: (TIME) pkt sent time: 1541001133.32
+2018-10-31 08:52:13,324 display|[INFO] dispatch: (TIME) pkt rcev time: 1541001133.32
+2018-10-31 08:52:13,324 display|[INFO] dispatch: (TIME) transmit time: 0.000922203063965
+2018-10-31 08:52:13,324 display|[INFO] dispatch: (RECV) push: ['exec_time: 2.04648995399, result:\nimg_1.png: Predicted in 1.2
+2018-10-31 08:52:13,325 display|[INFO] push: got data, size=94
+2018-10-31 08:52:48,653 display|[INFO] dispatch: ====== receive pkt ======
+2018-10-31 08:52:48,653 display|[INFO] dispatch: (TIME) pkt sent time: 1541001168.65
+2018-10-31 08:52:48,654 display|[INFO] dispatch: (TIME) pkt rcev time: 1541001168.65
+2018-10-31 08:52:48,654 display|[INFO] dispatch: (TIME) transmit time: 0.000894069671631
+2018-10-31 08:52:48,654 display|[INFO] dispatch: (RECV) push: ['exec_time: 2.07745695114, result:\nimg_1.png: Predicted in 1.2
+2018-10-31 08:52:48,654 display|[INFO] push: got data, size=94
+2018-10-31 08:53:52,192 display|[INFO] dispatch: ====== receive pkt ======
+2018-10-31 08:53:52,192 display|[INFO] dispatch: (TIME) pkt sent time: 1541001232.19
+2018-10-31 08:53:52,192 display|[INFO] dispatch: (TIME) pkt rcev time: 1541001232.19
+2018-10-31 08:53:52,192 display|[INFO] dispatch: (TIME) transmit time: 0.00118589401245
+2018-10-31 08:53:52,192 display|[INFO] dispatch: (RECV) push: ['exec_time: 2.16725707054, result:\nimg_1.png: Predicted in 1.3
+2018-10-31 08:53:52,192 display|[INFO] push: got data, size=94
+2018-10-31 08:55:25,117 display|[INFO] dispatch: ====== receive pkt ======
+2018-10-31 08:55:25,117 display|[INFO] dispatch: (TIME) pkt sent time: 1541001325.12
+2018-10-31 08:55:25,117 display|[INFO] dispatch: (TIME) pkt rcev time: 1541001325.12
+2018-10-31 08:55:25,117 display|[INFO] dispatch: (TIME) transmit time: 0.000886917114258
+2018-10-31 08:55:25,117 display|[INFO] dispatch: (RECV) push: ['exec_time: 2.04214096069, result:\nimg_1.png: Predicted in 1.2
+2018-10-31 08:55:25,117 display|[INFO] push: got data, size=94
+2018-10-31 09:00:07,283 display|[INFO] dispatch: ====== receive pkt ======
+2018-10-31 09:00:07,283 display|[INFO] dispatch: (TIME) pkt sent time: 1541001607.28
+2018-10-31 09:00:07,283 display|[INFO] dispatch: (TIME) pkt rcev time: 1541001607.28
+2018-10-31 09:00:07,284 display|[INFO] dispatch: (TIME) transmit time: 0.000810146331787
+2018-10-31 09:00:07,284 display|[INFO] dispatch: (RECV) push: ['exec_time: 2.02510380745, result:\nimg_1.png: Predicted in 1.2
+2018-10-31 09:00:07,284 display|[INFO] push: got data, size=94
+2018-10-31 09:00:12,082 display|[INFO] dispatch: ====== receive pkt ======
+2018-10-31 09:00:12,082 display|[INFO] dispatch: (TIME) pkt sent time: 1541001612.08
+2018-10-31 09:00:12,082 display|[INFO] dispatch: (TIME) pkt rcev time: 1541001612.08
+2018-10-31 09:00:12,083 display|[INFO] dispatch: (TIME) transmit time: 0.000884056091309
+2018-10-31 09:00:12,083 display|[INFO] dispatch: (RECV) push: ['exec_time: 2.02659010887, result:\nimg_2.png: Predicted in 1.2
+2018-10-31 09:00:12,083 display|[INFO] push: got data, size=94
+2018-10-31 09:24:22,387 display|[INFO] dispatch: ====== receive pkt ======
+2018-10-31 09:24:22,387 display|[INFO] dispatch: (TIME) pkt sent time: 1541003062.39
+2018-10-31 09:24:22,388 display|[INFO] dispatch: (TIME) pkt rcev time: 1541003062.39
+2018-10-31 09:24:22,388 display|[INFO] dispatch: (TIME) transmit time: 0.000865936279297
+2018-10-31 09:24:22,388 display|[INFO] dispatch: (RECV) push: ['exec_time: 2.00179195404, result:\nimg_1.png: Predicted in 1.2
+2018-10-31 09:24:22,388 display|[INFO] push: got data, size=94
+2018-10-31 09:24:57,649 display|[INFO] dispatch: ====== receive pkt ======
+2018-10-31 09:24:57,649 display|[INFO] dispatch: (TIME) pkt sent time: 1541003097.65
+2018-10-31 09:24:57,650 display|[INFO] dispatch: (TIME) pkt rcev time: 1541003097.65
+2018-10-31 09:24:57,650 display|[INFO] dispatch: (TIME) transmit time: 0.00271916389465
+2018-10-31 09:24:57,650 display|[INFO] dispatch: (RECV) push: ['exec_time: 2.01377892494, result:\nimg_2.png: Predicted in 1.2
+2018-10-31 09:24:57,650 display|[INFO] push: got data, size=94
+2018-10-31 09:25:22,457 display|[INFO] dispatch: ====== receive pkt ======
+2018-10-31 09:25:22,457 display|[INFO] dispatch: (TIME) pkt sent time: 1541003122.45
+2018-10-31 09:25:22,458 display|[INFO] dispatch: (TIME) pkt rcev time: 1541003122.46
+2018-10-31 09:25:22,458 display|[INFO] dispatch: (TIME) transmit time: 0.00235509872437
+2018-10-31 09:25:22,458 display|[INFO] dispatch: (RECV) push: ['exec_time: 2.07571291924, result:\nimg_1.png: Predicted in 1.2
+2018-10-31 09:25:22,458 display|[INFO] push: got data, size=94
+2018-10-31 09:25:58,913 display|[INFO] dispatch: ====== receive pkt ======
+2018-10-31 09:25:58,914 display|[INFO] dispatch: (TIME) pkt sent time: 1541003158.91
+2018-10-31 09:25:58,914 display|[INFO] dispatch: (TIME) pkt rcev time: 1541003158.91
+2018-10-31 09:25:58,914 display|[INFO] dispatch: (TIME) transmit time: 0.00107502937317
+2018-10-31 09:25:58,914 display|[INFO] dispatch: (RECV) push: ['exec_time: 2.10347104073, result:\nimg_1.png: Predicted in 1.3
+2018-10-31 09:25:58,914 display|[INFO] push: got data, size=94
+2018-10-31 09:27:02,639 display|[INFO] dispatch: ====== receive pkt ======
+2018-10-31 09:27:02,639 display|[INFO] dispatch: (TIME) pkt sent time: 1541003222.64
+2018-10-31 09:27:02,639 display|[INFO] dispatch: (TIME) pkt rcev time: 1541003222.64
+2018-10-31 09:27:02,639 display|[INFO] dispatch: (TIME) transmit time: 0.000832080841064
+2018-10-31 09:27:02,639 display|[INFO] dispatch: (RECV) push: ['exec_time: 2.00427412987, result:\nimg_1.png: Predicted in 1.2
+2018-10-31 09:27:02,640 display|[INFO] push: got data, size=94

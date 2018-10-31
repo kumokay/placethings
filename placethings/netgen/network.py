@@ -214,13 +214,19 @@ class DataPlane(object):
             # device_type = Gd.node[device_name][GdInfo.DEVICE_TYPE]
             # exectime = G_map.node[task_name][GtInfo.CUR_LATENCY]
             next_task = self._get_next_task(G_map, task_name)
-            cmd_template = G_map.node[task_name][GtInfo.EXEC_CMD]
             if not next_task:
                 assert device_cat == DeviceCategory.ACTUATOR
                 next_ip, next_port = None, None
             else:
                 next_device_name = G_map.node[next_task][GtInfo.CUR_DEVICE]
                 next_ip, next_port = self.get_worker_address(next_device_name)
+
+            cmd_template_dict = G_map.node[task_name][GtInfo.EXEC_CMD]
+            if device_name in cmd_template_dict:
+                cmd_template = cmd_template_dict[device_name]
+            else:
+                cmd_template = cmd_template_dict['default']
+
             cmd = cmd_template.format(
                 progdir=progdir,
                 self_addr='{}:{}'.format(ip, port),

@@ -16,7 +16,7 @@ class BaseClient(msgpackrpc.Client):
     def __init__(self, name, ip, port):
         self.name = name
         super(BaseClient, self).__init__(
-            msgpackrpc.Address(ip, port), timeout=20)
+            msgpackrpc.Address(ip, port), timeout=30)
 
     @staticmethod
     def _obj_to_str(obj):
@@ -45,7 +45,7 @@ class BaseClient(msgpackrpc.Client):
 
 class ClientGen(object):
     @staticmethod
-    def create_client(name, ip, port, timeout=10):
+    def create_client(name, ip, port):
         return BaseClient(name, ip, port)
 
     @classmethod

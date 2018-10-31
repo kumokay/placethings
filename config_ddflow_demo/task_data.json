@@ -1,17 +1,25 @@
 {
     "task_info": {
         "task_camera": {
-            "GtInfoEnum.EXEC_CMD": "cd {progdir} && python main_entity.py run_task -n task_camera -en task_forward -a {docker_addr} -ra {next_addr}",
+            "GtInfoEnum.EXEC_CMD": {
+                "default": "cd {progdir} && python main_entity.py run_task -n task_camera -en task_forward -a {docker_addr} -ra {next_addr}"
+            },
             "GtInfoEnum.LATENCY_INFO": {},
             "GtInfoEnum.RESRC_RQMT": {}
         },
         "task_alert": {
-            "GtInfoEnum.EXEC_CMD": "cd {progdir} && python main_entity.py run_task -n task_alert -en task_forward -a {self_addr} -ra 172.17.20.12:18900",
+            "GtInfoEnum.EXEC_CMD": {
+                "default": "cd {progdir} && python main_entity.py run_task -n task_alert -en task_forward -a {self_addr} -ra 172.17.20.12:18900"
+            },
             "GtInfoEnum.LATENCY_INFO": {},
             "GtInfoEnum.RESRC_RQMT": {}
         },
         "task_findObject": {
-            "GtInfoEnum.EXEC_CMD": "cd {progdir} && python main_entity.py run_task -n task_findObj -en task_findObj -a {self_addr} -ra {next_addr}",
+            "GtInfoEnum.EXEC_CMD": {
+                "default": "cd {progdir} && python main_entity.py run_task -n task_findObj -en task_findObj -a {self_addr} -ra {next_addr} -t 200",
+                "Device.P3_2XLARGE": "cd {progdir} && python main_entity.py run_task -n task_findObj -en task_findObj -a {self_addr} -ra {next_addr} -t 100",
+                "Device.T3_LARGE": "cd {progdir} && python main_entity.py run_task -n task_findObj -en task_findObj -a {self_addr} -ra {next_addr}"
+            },
             "GtInfoEnum.LATENCY_INFO": {
                 "Device.P3_2XLARGE": {
                     "Flavor.GPU": 100

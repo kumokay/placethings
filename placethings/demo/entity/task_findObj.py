@@ -29,11 +29,11 @@ class RPCServer(BaseTask.RPCServer):
             self.exec_delay_time_sec, self.receiver_list))
         self._imgid = 1
 
-    def _compute(self, data):
+    def _compute(self, data, local_mode=True):
         t1 = time.time()
         log.info('(TIME) start computation: {}'.format(t1))
         log.info('finding object')
-        if False:
+        if local_mode:
             yolo_folder = '/opt/github/darknet'
             image_data = base64.b64decode(data)
             image = Image.open(io.BytesIO(image_data))

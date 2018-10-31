@@ -22,7 +22,7 @@ def _derive_node_info(task_mapping, task_info):
         node_info[task_name] = {
             GtInfo.LATENCY_INFO: deepcopy(data[GtInfo.LATENCY_INFO]),
             GtInfo.RESRC_RQMT: deepcopy(data[GtInfo.RESRC_RQMT]),
-            GtInfo.EXEC_CMD: data[GtInfo.EXEC_CMD],
+            GtInfo.EXEC_CMD: deepcopy(data[GtInfo.EXEC_CMD]),
             GtInfo.DEVICE: task_mapping[task_name],
         }
     return node_info
@@ -66,7 +66,7 @@ def _gen_update_info(result_mapping, Gt, Gd):
             assert device == Gt.node[task][GtInfo.DEVICE]
         device_type = Gd.node[device][GdInfo.DEVICE_TYPE]
         latency_info = Gt.node[task][GtInfo.LATENCY_INFO]
-        exec_cmd = Gt.node[task][GtInfo.EXEC_CMD]
+        exec_cmd = deepcopy(Gt.node[task][GtInfo.EXEC_CMD])
         compute_latency = 0 if not latency_info else (
             listvalues(latency_info[device_type])[0])
         node_info[task] = {

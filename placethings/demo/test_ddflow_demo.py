@@ -91,11 +91,11 @@ class TestDynamic(BaseTestCase):
             is_simulate):
         if is_simulate:
             # TODO: this is workaround to make docker works
-            data_plane.stop_workers(is_force=False)
+            # data_plane.stop_workers(is_force=False)
 
             data_plane.modify_link(nw_dev1, nw_dev2, new_latency)
             data_plane.start_workers()
-            data_plane.run_mininet_cli()
+            # data_plane.run_mininet_cli()
         cfgHelper.update_nw_link_latency(nw_dev1, nw_dev2, new_latency)
         cfgHelper.update_topo_device_graph()
 
