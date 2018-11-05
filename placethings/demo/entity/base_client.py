@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 import logging
 import msgpackrpc
 import time
+from msgpackrpc.error import RPCError
 
 
 log = logging.getLogger()
@@ -51,7 +52,14 @@ class ClientGen(object):
     @classmethod
     def call(cls, ip, port, method, *args):
         client = cls.create_client('ClientGen', ip, port)
-        return client.call(method, *args)
+        # silence error / exceptions
+        try:
+            ret = client.call(method, *args)
+        except RPCError as err:
+            ret = 'RPCError: {}'.format(err)
+        except Exception as exp:
+            ret = 'Exception: {}'.format(exp)
+        return ret
 
     @classmethod
     def call_async(cls, ip, port, method, *args):

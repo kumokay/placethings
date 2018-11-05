@@ -222,6 +222,8 @@ class DataPlane(object):
                 next_ip, next_port = self.get_worker_address(next_device_name)
 
             cmd_template_dict = G_map.node[task_name][GtInfo.EXEC_CMD]
+            print(cmd_template_dict)
+            print(device_name)
             if device_name in cmd_template_dict:
                 cmd_template = cmd_template_dict[device_name]
             else:
