@@ -51,7 +51,7 @@ class SubArgsManager(object):
             type=str,
             nargs=nargs,
             dest='recv_address',
-            default=None,
+            default=[],
             required=required,
             help=('receiver address (ip:port). e.g. 10.11.12.13:1234')
         )
@@ -276,7 +276,7 @@ def main():
         help='run_task')
     subargs_manager.name(required=True)
     subargs_manager.address(required=True)
-    subargs_manager.next_address(required=True, nargs='+')
+    subargs_manager.next_address(required=False, nargs='+')
     subargs_manager.exectime(required=False)
     subargs_manager.entity_name(required=False)
     subargs_manager.args_list(required=False)

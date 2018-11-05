@@ -23,17 +23,22 @@ display_text = r"""
           `""""'                                         `""""'
 """
 
+g_cnt = 0
+
 
 class FileServer(object):
     def push(self, result, ts):
+        print('notification {}'.format(g_cnt))
+        g_cnt += 1
         if 'car' in result:
             print(display_text)
         else:
-            print('recv result: {}'.format(result))
+            print('nothing found!')
+            # print('recv result: {}'.format(result))
         return 'received {} bytes'.format(len(result))
 
 
 # print(display_text)
 server = msgpackrpc.Server(FileServer())
-server.listen(msgpackrpc.Address('172.17.20.12', 18800))
+server.listen(msgpackrpc.Address('172.17.51.1', 18900))
 server.start()
