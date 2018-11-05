@@ -48,6 +48,16 @@ class C_NW_DEVICE_INVENTORY:
     def get_data(self):
         return self.data
 
+    def get_device_list(self):
+        device_list = []
+        for cat, cat_data in iteritems(self.data):
+            for dev_type, dev_cnt in iteritems(cat_data):
+                for i in range(dev_cnt):
+                    _classname, dev_type_short = str(dev_type).split('.')
+                    dev_name = '{}.{}'.format(dev_type_short, i)
+                    device_list.append[dev_name]
+        return device_list
+
     def add_item(self, nw_device_category, nw_device, num):
         """
         args:
@@ -89,15 +99,9 @@ class C_NW_LINKS:
             }
         }
     """
-    def __init__(self, nw_devic_inventory):
+    def __init__(self, nw_devic_list):
         self.data = {}
-        self.nw_device_list = []
-        for cat, cat_data in iteritems(nw_devic_inventory):
-            for dev_type, dev_cnt in iteritems(cat_data):
-                for i in range(dev_cnt):
-                    _classname, dev_type_short = str(dev_type).split('.')
-                    dev_name = '{}.{}'.format(dev_type_short, i)
-                    self.nw_device_list.append[dev_name]
+        self.nw_device_list = nw_devic_list
 
     def get_data(self):
         return self.data
@@ -156,6 +160,16 @@ class C_DEVICE_INVENTORY:
     def get_data(self):
         return self.data
 
+    def get_device_list(self):
+        device_list = []
+        for cat, cat_data in iteritems(self.data):
+            for dev_type, dev_cnt in iteritems(cat_data):
+                for i in range(dev_cnt):
+                    _classname, dev_type_short = str(dev_type).split('.')
+                    dev_name = '{}.{}'.format(dev_type_short, i)
+                    device_list.append[dev_name]
+        return device_list
+
     def add_item(self, device_category, device, num):
         """
         args:
@@ -171,136 +185,126 @@ class C_DEVICE_INVENTORY:
         self.data[device_category][device] = num
 
 
-# device naming rule: DeviceTypeName.ID
-DEVICE_LINKS = {
-    'SMOKE.0 -> HOME_IOTGW.0': {
-        GnInfo.LATENCY: Unit.ms(3),
-    },
-    'CAMERA.0 -> HOME_IOTGW.0': {
-        GnInfo.LATENCY: Unit.ms(3),
-    },
-    'T2_MICRO.0 -> HOME_ROUTER.0': {
-        GnInfo.LATENCY: Unit.ms(1),
-    },
-    'HOME_ROUTER.0 -> T2_MICRO.0': {
-        GnInfo.LATENCY: Unit.ms(1),
-    },
-    'T3_LARGE.0 -> HOME_ROUTER.0': {
-        GnInfo.LATENCY: Unit.ms(1),
-    },
-    'HOME_ROUTER.0 -> T3_LARGE.0': {
-        GnInfo.LATENCY: Unit.ms(1),
-    },
-    'T2_MICRO.1 -> CLOUD_SWITCH.0': {
-        GnInfo.LATENCY: Unit.ms(1),
-    },
-    'CLOUD_SWITCH.0 -> T2_MICRO.1': {
-        GnInfo.LATENCY: Unit.ms(1),
-    },
-    'T3_LARGE.1 -> CLOUD_SWITCH.0': {
-        GnInfo.LATENCY: Unit.ms(1),
-    },
-    'CLOUD_SWITCH.0 -> T3_LARGE.1': {
-        GnInfo.LATENCY: Unit.ms(1),
-    },
-    'P3_2XLARGE.0 -> CLOUD_SWITCH.0': {
-        GnInfo.LATENCY: Unit.ms(1),
-    },
-    'CLOUD_SWITCH.0 -> P3_2XLARGE.0': {
-        GnInfo.LATENCY: Unit.ms(1),
-    },
-    'PHONE.0 -> BB_AP.0': {
-        GnInfo.LATENCY: Unit.ms(10),
-    },
-    'BB_AP.0 -> PHONE.0': {
-        GnInfo.LATENCY: Unit.ms(10),
-    },
-}
-
-
-# device naming rule: DeviceTypeName.ID
-TASK_MAPPING = {
-    'task_smoke': 'SMOKE.0',
-    'task_camera': 'CAMERA.0',
-    'task_broadcast': 'PHONE.0',
-    'task_getAvgReading': None,
-    'task_findObject': None,
-    'task_checkAbnormalEvent': None,
-    'task_sentNotificatoin': None,
-}
-
-
-TASK_LINKS = {
-    'task_smoke -> task_getAvgReading': {
-        GtInfo.TRAFFIC: Unit.kbyte(1),
-    },
-    'task_getAvgReading -> task_checkAbnormalEvent': {
-        GtInfo.TRAFFIC: Unit.byte(1),
-    },
-    'task_camera -> task_findObject': {
-        GtInfo.TRAFFIC: Unit.mbyte(10),
-    },
-    'task_findObject -> task_checkAbnormalEvent': {
-        GtInfo.TRAFFIC: Unit.byte(10),
-    },
-    'task_checkAbnormalEvent -> task_sentNotificatoin': {
-        GtInfo.TRAFFIC: Unit.byte(1),
-    },
-    'task_sentNotificatoin -> task_broadcast': {
-        GtInfo.TRAFFIC: Unit.byte(1),
-    },
-
-}
-
-
-TASK_INFO = {
-    'task_smoke': {
-        GtInfo.LATENCY_INFO: {},
-        GtInfo.RESRC_RQMT: {}
-    },
-    'task_camera': {
-        GtInfo.LATENCY_INFO: {},
-        GtInfo.RESRC_RQMT: {},
-    },
-    'task_broadcast': {
-        GtInfo.LATENCY_INFO: {},
-        GtInfo.RESRC_RQMT: {},
-    },
-    'task_getAvgReading': {
-        GtInfo.LATENCY_INFO: {
-            Device.T2_MICRO: {
-                # TODO: assume one flavor per device type for now.
-                # may extend to multiple flavor later
-                Flavor.CPU: Unit.ms(15),
+class C_DEVICE_LINKS:
+    """ a wrapper for
+        DEVICE_LINKS = {
+            'SMOKE.0 -> HOME_IOTGW.0': {
+                GnInfo.LATENCY: Unit.ms(3),
             },
-            Device.T3_LARGE: {
-                Flavor.CPU: Unit.ms(10),
+            'CAMERA.0 -> HOME_IOTGW.0': {
+                GnInfo.LATENCY: Unit.ms(3),
             },
-            Device.P3_2XLARGE: {
-                Flavor.CPU: Unit.ms(5),
+            ...
+            'PHONE.0 -> BB_AP.0': {
+                GnInfo.LATENCY: Unit.ms(10),
             },
-        },
-        GtInfo.RESRC_RQMT: {
-            Flavor.CPU: {
-                Hardware.RAM: Unit.mbyte(1),
-                Hardware.HD: Unit.kbyte(3),
-                Hardware.GPU: Unit.percentage(0),
-                Hardware.CPU: Unit.percentage(5),
-            }
-        },
-    },
-    'task_findObject': {
-        GtInfo.LATENCY_INFO: {
-            Device.T2_MICRO: {
-                Flavor.CPU: Unit.sec(6),
+            'BB_AP.0 -> PHONE.0': {
+                GnInfo.LATENCY: Unit.ms(10),
             },
-            Device.T3_LARGE: {
-                Flavor.CPU: Unit.sec(2),
+        }
+        """
+    def __init__(self, device_list):
+        self.data = {}
+        self.device_list = device_list
+
+    def get_data(self):
+        return self.data
+
+    def add_item(self, src, dst, latency):
+        """
+        only support balanced link.
+        args:
+            src, dst (str)
+            src_link_type, dst_link_type (LinkType)
+            latency(link)
+        """
+        assert src in self.nw_device_list
+        assert dst in self.nw_device_list
+        assert type(latency) is int
+
+        link_name = '{} -> {}'.format(src, dst)
+        assert link_name not in self.data
+        self.data[link_name] = {
+            GnInfo.LATENCY: latency,
+        }
+
+        link_name = '{} -> {}'.format(dst, src)
+        assert link_name not in self.data
+        self.data[link_name] = {
+            GnInfo.LATENCY: latency,
+        }
+
+
+class C_TASK_MAPPING:
+    """
+    Wrapper for
+        TASK_MAPPING = {
+            'task_smoke': 'SMOKE.0',
+            'task_camera': 'CAMERA.0',
+            'task_broadcast': 'PHONE.0',
+            'task_getAvgReading': None,
+            'task_findObject': None,
+            'task_checkAbnormalEvent': None,
+            'task_sentNotificatoin': None,
+        }
+    """
+    def __init__(self, task_info, device_list):
+        self.data = {}
+        self.task_info = task_info
+        self.device_list = device_list
+
+    def get_data(self):
+        return self.data
+
+    def add_item(self, task, device):
+        assert task in self.task_info
+        assert device is None or device in self.device_list
+        assert task not in self.data
+        self.data[task] = device
+
+
+class C_TASK_LINKS:
+    """
+    Wrapper for
+        TASK_LINKS = {
+            'task_smoke -> task_getAvgReading': {
+                GtInfo.TRAFFIC: Unit.kbyte(1),
             },
-            Device.P3_2XLARGE: {
-                Flavor.GPU: Unit.ms(600),
+            ...
+            'task_sentNotificatoin -> task_broadcast': {
+                GtInfo.TRAFFIC: Unit.byte(1),
             },
-        },
+        }
+    """
+    def __init__(self, task_info):
+        self.data = {}
+        self.task_info = task_info
+
+    def get_data(self):
+        return self.data
+
+    def add_item(self, src, dst, traffic):
+        """
+        only support single direction link.
+        args:
+            src, dst (str): task name
+            traffic (int): e.g. Unit.byte(1)
+        """
+        assert src in self.task_info
+        assert dst in self.task_info
+        assert type(traffic) is int
+
+        link_name = '{} -> {}'.format(src, dst)
+        assert link_name not in self.data
+        self.data[link_name] = {
+            GtInfo.TRAFFIC: traffic,
+        }
+
+
+# TODO: write this
+class C_TASK_RESRC_RQMT:
+    """
+    wrapper for
         GtInfo.RESRC_RQMT: {
             Flavor.GPU: {
                 Hardware.RAM: Unit.gbyte(4),
@@ -315,47 +319,60 @@ TASK_INFO = {
                 Hardware.CPU: Unit.percentage(60),
             },
         },
-    },
-    'task_checkAbnormalEvent': {
+    """
+
+class C_TASK_LATENCY_INFO:
+    """
+    wrapper for
         GtInfo.LATENCY_INFO: {
             Device.T2_MICRO: {
-                Flavor.CPU: Unit.ms(5),
+                Flavor.CPU: Unit.sec(6),
             },
             Device.T3_LARGE: {
-                Flavor.CPU: Unit.ms(5),
+                Flavor.CPU: Unit.sec(2),
             },
             Device.P3_2XLARGE: {
-                Flavor.CPU: Unit.ms(5),
+                Flavor.GPU: Unit.ms(600),
             },
-        },
-        GtInfo.RESRC_RQMT: {
-            Flavor.CPU: {
-                Hardware.RAM: Unit.mbyte(1),
-                Hardware.HD: Unit.kbyte(3),
-                Hardware.GPU: Unit.percentage(0),
-                Hardware.CPU: Unit.percentage(5),
+        }
+    """
+
+class C_TASK_INFO:
+    """
+    wrapper for
+        TASK_INFO = {
+            'task_camera': {
+                GtInfo.LATENCY_INFO: {},
+                GtInfo.RESRC_RQMT: {},
             },
-        },
-    },
-    'task_sentNotificatoin': {
-        GtInfo.LATENCY_INFO: {
-            Device.T2_MICRO: {
-                Flavor.CPU: Unit.ms(5),
+            ...
+            'task_findObject': {
+                GtInfo.LATENCY_INFO: {
+                    Device.T2_MICRO: {
+                        Flavor.CPU: Unit.sec(6),
+                    },
+                    Device.T3_LARGE: {
+                        Flavor.CPU: Unit.sec(2),
+                    },
+                    Device.P3_2XLARGE: {
+                        Flavor.GPU: Unit.ms(600),
+                    },
+                },
+                GtInfo.RESRC_RQMT: {
+                    Flavor.GPU: {
+                        Hardware.RAM: Unit.gbyte(4),
+                        Hardware.HD: Unit.mbyte(30),
+                        Hardware.GPU: Unit.percentage(60),
+                        Hardware.CPU: Unit.percentage(5),
+                    },
+                    Flavor.CPU: {
+                        Hardware.RAM: Unit.gbyte(1),
+                        Hardware.HD: Unit.mbyte(30),
+                        Hardware.GPU: Unit.percentage(0),
+                        Hardware.CPU: Unit.percentage(60),
+                    },
+                },
             },
-            Device.T3_LARGE: {
-                Flavor.CPU: Unit.ms(5),
-            },
-            Device.P3_2XLARGE: {
-                Flavor.CPU: Unit.ms(5),
-            },
-        },
-        GtInfo.RESRC_RQMT: {
-            Flavor.CPU: {
-                Hardware.RAM: Unit.mbyte(1),
-                Hardware.HD: Unit.kbyte(3),
-                Hardware.GPU: Unit.percentage(0),
-                Hardware.CPU: Unit.percentage(5),
-            },
-        },
-    },
-}
+            ...
+        }
+    """
