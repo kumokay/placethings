@@ -49,4 +49,4 @@ class RPCServer(object):
             # logging
             log.info('got data: {}'.format(data))
             log.info('compute result: {}'.format(result))
-            return result
+            return 'recieve and forward data: {} bytes'.format(len(data))
