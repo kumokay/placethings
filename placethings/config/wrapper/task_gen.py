@@ -7,9 +7,7 @@ import copy
 
 from future.utils import iteritems
 
-from placethings.definition import (
-    Device, DeviceCategory, Flavor, Hardware, NwDevice, NwDeviceCategory,
-    GnInfo, GtInfo, LinkType, Unit)
+from placethings.definition import Device, Flavor, Hardware, GtInfo
 
 
 class TaskMapping:
@@ -59,15 +57,15 @@ class TaskLinks:
     def get_data(self):
         return self.data
 
-    def add_item(self, src, dst, traffic, task_info):
+    def add_item(self, src, dst, traffic, task_info_dict):
         """
         only support single direction link.
         args:
             src, dst (str): task name
             traffic (int): e.g. Unit.byte(1)
         """
-        assert src in task_info
-        assert dst in task_info
+        assert src in task_info_dict
+        assert dst in task_info_dict
         assert type(traffic) is int
 
         link_name = '{} -> {}'.format(src, dst)
@@ -150,7 +148,7 @@ class TaskInfo:
                 Device.P3_2XLARGE: Unit.ms(600),
             }
         """
-        assert type(task_name) in self.data
+        assert task_name in self.data
         assert type(flavor) is Flavor
         assert flavor not in self.data[task_name][GtInfo.LATENCY_INFO]
         assert flavor not in self.data[task_name][GtInfo.RESRC_RQMT]
@@ -161,15 +159,19 @@ class TaskInfo:
 
         for device_type, latency in iteritems(latency_dict):
             assert type(device_type) is Device
-            assert type(flavor_info) is int
+            assert type(latency) is int
 
         self.data[task_name][GtInfo.RESRC_RQMT][flavor] = (
-            copy.deepcopy(resrc_rqmt_dict)
+            copy.deepcopy(resrc_rqmt_dict))
 
         for device_type, latency in iteritems(latency_dict):
-            assert flavor not in (
-                self.data[task_name][GtInfo.LATENCY_INFO][device_type])
-            self.data[task_name][GtInfo.LATENCY_INFO][device_type] = latency
+            if device_type in self.data[task_name][GtInfo.LATENCY_INFO]:
+                assert flavor not in (
+                    self.data[task_name][GtInfo.LATENCY_INFO][device_type])
+            else:
+                self.data[task_name][GtInfo.LATENCY_INFO][device_type] = {}
+            self.data[task_name][GtInfo.LATENCY_INFO][device_type][flavor] = (
+                latency)
 
 
 class AllTaskData(object):
@@ -187,7 +189,7 @@ class AllTaskData(object):
             task_name, flavor, resrc_rqmt_dict, latency_dict)
 
     def add_link(self, src, dst, traffic):
-        self.task_links.add_item(src, dst, traffic, self.task_info)
+        self.task_links.add_item(src, dst, traffic, self.task_info.get_data())
 
     def add_mapping(self, task, device, device_list):
         self.task_mapping.add_item(task, device, device_list)

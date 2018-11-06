@@ -3,14 +3,29 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-
 from future.utils import iteritems
 
 from placethings.definition import (
-    Device, DeviceCategory, NwDevice, NwDeviceCategory, GnInfo, LinkType)
+    Device, NwDevice, NwDeviceCategory, GnInfo, GtInfo, LinkType)
 
 
-class NwDeviceInventory:
+""" generate config by code. this is just a wrapper
+"""
+
+
+def validate_device_name(name):
+    """
+    Args:
+        name (str): e.g. CLOUD_SWITCH.0, T2_MICRO.1
+    Return:
+        is_valid (bool)
+    """
+    # TODO: check seq_no
+    type, seq_no = name.split('.')
+    return hasattr(NwDevice, name) or hasattr(Device, name)
+
+
+class C_NW_DEVICE_INVENTORY:
     """ wrapper for
         NW_DEVICE_INVENTORY = {
             NwDeviceCategory.HOME: {
@@ -39,7 +54,7 @@ class NwDeviceInventory:
                 for i in range(dev_cnt):
                     _classname, dev_type_short = str(dev_type).split('.')
                     dev_name = '{}.{}'.format(dev_type_short, i)
-                    device_list.append(dev_name)
+                    device_list.append[dev_name]
         return device_list
 
     def add_item(self, nw_device_category, nw_device, num):
@@ -57,7 +72,7 @@ class NwDeviceInventory:
         self.data[nw_device_category][nw_device] = num
 
 
-class NwLinks:
+class C_NW_LINKS:
     """ wrapper for
         NW_LINKS = {
             'HOME_IOTGW.0 -> HOME_ROUTER.0': {
@@ -83,25 +98,23 @@ class NwLinks:
             }
         }
     """
-    def __init__(self):
+    def __init__(self, nw_devic_list):
         self.data = {}
+        self.nw_device_list = nw_devic_list
 
     def get_data(self):
         return self.data
 
-    def add_item(
-            self, src, dst, src_link_type, dst_link_type, latency,
-            nw_device_list):
+    def add_item(self, src, dst, src_link_type, dst_link_type, latency):
         """
         only support balanced link.
         args:
             src, dst (str)
             src_link_type, dst_link_type (LinkType)
-            latency (int)
-            nw_devic_list (list)
+            latency(link)
         """
-        assert src in nw_device_list
-        assert dst in nw_device_list
+        assert src in self.nw_device_list
+        assert dst in self.nw_device_list
         assert type(src_link_type) is LinkType
         assert type(dst_link_type) is LinkType
         assert type(latency) is int
@@ -123,7 +136,7 @@ class NwLinks:
         }
 
 
-class DeviceInventory:
+class C_DEVICE_INVENTORY:
     """ wrapper for
         DEVICE_INVENTORY = {
             DeviceCategory.ACTUATOR: {
@@ -153,7 +166,7 @@ class DeviceInventory:
                 for i in range(dev_cnt):
                     _classname, dev_type_short = str(dev_type).split('.')
                     dev_name = '{}.{}'.format(dev_type_short, i)
-                    device_list.append(dev_name)
+                    device_list.append[dev_name]
         return device_list
 
     def add_item(self, device_category, device, num):
@@ -163,15 +176,15 @@ class DeviceInventory:
             device (Device): e.g. Device.T2_MICRO
             num (int): how many devices
         """
-        assert type(device_category) is DeviceCategory
-        assert type(device) is Device
+        assert type(device_category) is NwDeviceCategory
+        assert type(device) is NwDevice
         if device_category not in self.data:
             self.data[device_category] = {}
         assert device not in self.data[device_category]
         self.data[device_category][device] = num
 
 
-class DeviceLinks:
+class C_DEVICE_LINKS:
     """ a wrapper for
         DEVICE_LINKS = {
             'SMOKE.0 -> HOME_IOTGW.0': {
@@ -189,57 +202,176 @@ class DeviceLinks:
             },
         }
         """
-    def __init__(self):
+    def __init__(self, device_list):
         self.data = {}
+        self.device_list = device_list
 
     def get_data(self):
         return self.data
 
-    def add_item(self, dev, nw_dev, latency, device_list, nw_device_list):
+    def add_item(self, src, dst, latency):
         """
         only support balanced link.
         args:
-            dev, nw_dev (str)
-            latency (int)
-            device_list, nw_device_list (list)
+            src, dst (str)
+            src_link_type, dst_link_type (LinkType)
+            latency(link)
         """
-        assert dev in device_list
-        assert nw_dev in nw_device_list
+        assert src in self.nw_device_list
+        assert dst in self.nw_device_list
         assert type(latency) is int
 
-        link_name = '{} -> {}'.format(dev, nw_dev)
+        link_name = '{} -> {}'.format(src, dst)
         assert link_name not in self.data
         self.data[link_name] = {
             GnInfo.LATENCY: latency,
         }
 
-        link_name = '{} -> {}'.format(nw_dev, dev)
+        link_name = '{} -> {}'.format(dst, src)
         assert link_name not in self.data
         self.data[link_name] = {
             GnInfo.LATENCY: latency,
         }
 
 
-class AllDeviceData(object):
-    def __init__(self):
-        self.device_inventory = DeviceInventory()
-        self.nw_device_inventory = NwDeviceInventory()
-        self.device_links = DeviceLinks()
-        self.nw_device_links = NwLinks()
+class C_TASK_MAPPING:
+    """
+    Wrapper for
+        TASK_MAPPING = {
+            'task_smoke': 'SMOKE.0',
+            'task_camera': 'CAMERA.0',
+            'task_broadcast': 'PHONE.0',
+            'task_getAvgReading': None,
+            'task_findObject': None,
+            'task_checkAbnormalEvent': None,
+            'task_sentNotificatoin': None,
+        }
+    """
+    def __init__(self, task_info, device_list):
+        self.data = {}
+        self.task_info = task_info
+        self.device_list = device_list
 
-    def add_device(self, device_category, device, num):
-        self.device_inventory.add_item(device_category, device, num)
+    def get_data(self):
+        return self.data
 
-    def add_nw_device(self, nw_device_category, nw_device, num):
-        self.nw_device_inventory.add_item(nw_device_category, nw_device, num)
+    def add_item(self, task, device):
+        assert task in self.task_info
+        assert device is None or device in self.device_list
+        assert task not in self.data
+        self.data[task] = device
 
-    def add_dev_link(self, dev, nw_dev, latency):
-        device_list = self.device_inventory.get_device_list()
-        nw_device_list = self.nw_device_inventory.get_device_list()
-        self.device_links.add_item(
-            dev, nw_dev, latency, device_list, nw_device_list)
 
-    def add_nw_dev_link(self, src, dst, src_link_type, dst_link_type, latency):
-        nw_device_list = self.nw_device_inventory.get_device_list()
-        self.nw_device_links.add_item(
-            src, dst, src_link_type, dst_link_type, latency, nw_device_list)
+class C_TASK_LINKS:
+    """
+    Wrapper for
+        TASK_LINKS = {
+            'task_smoke -> task_getAvgReading': {
+                GtInfo.TRAFFIC: Unit.kbyte(1),
+            },
+            ...
+            'task_sentNotificatoin -> task_broadcast': {
+                GtInfo.TRAFFIC: Unit.byte(1),
+            },
+        }
+    """
+    def __init__(self, task_info):
+        self.data = {}
+        self.task_info = task_info
+
+    def get_data(self):
+        return self.data
+
+    def add_item(self, src, dst, traffic):
+        """
+        only support single direction link.
+        args:
+            src, dst (str): task name
+            traffic (int): e.g. Unit.byte(1)
+        """
+        assert src in self.task_info
+        assert dst in self.task_info
+        assert type(traffic) is int
+
+        link_name = '{} -> {}'.format(src, dst)
+        assert link_name not in self.data
+        self.data[link_name] = {
+            GtInfo.TRAFFIC: traffic,
+        }
+
+
+# TODO: write this
+class C_TASK_RESRC_RQMT:
+    """
+    wrapper for
+        GtInfo.RESRC_RQMT: {
+            Flavor.GPU: {
+                Hardware.RAM: Unit.gbyte(4),
+                Hardware.HD: Unit.mbyte(30),
+                Hardware.GPU: Unit.percentage(60),
+                Hardware.CPU: Unit.percentage(5),
+            },
+            Flavor.CPU: {
+                Hardware.RAM: Unit.gbyte(1),
+                Hardware.HD: Unit.mbyte(30),
+                Hardware.GPU: Unit.percentage(0),
+                Hardware.CPU: Unit.percentage(60),
+            },
+        },
+    """
+
+class C_TASK_LATENCY_INFO:
+    """
+    wrapper for
+        GtInfo.LATENCY_INFO: {
+            Device.T2_MICRO: {
+                Flavor.CPU: Unit.sec(6),
+            },
+            Device.T3_LARGE: {
+                Flavor.CPU: Unit.sec(2),
+            },
+            Device.P3_2XLARGE: {
+                Flavor.GPU: Unit.ms(600),
+            },
+        }
+    """
+
+class C_TASK_INFO:
+    """
+    wrapper for
+        TASK_INFO = {
+            'task_camera': {
+                GtInfo.LATENCY_INFO: {},
+                GtInfo.RESRC_RQMT: {},
+            },
+            ...
+            'task_findObject': {
+                GtInfo.LATENCY_INFO: {
+                    Device.T2_MICRO: {
+                        Flavor.CPU: Unit.sec(6),
+                    },
+                    Device.T3_LARGE: {
+                        Flavor.CPU: Unit.sec(2),
+                    },
+                    Device.P3_2XLARGE: {
+                        Flavor.GPU: Unit.ms(600),
+                    },
+                },
+                GtInfo.RESRC_RQMT: {
+                    Flavor.GPU: {
+                        Hardware.RAM: Unit.gbyte(4),
+                        Hardware.HD: Unit.mbyte(30),
+                        Hardware.GPU: Unit.percentage(60),
+                        Hardware.CPU: Unit.percentage(5),
+                    },
+                    Flavor.CPU: {
+                        Hardware.RAM: Unit.gbyte(1),
+                        Hardware.HD: Unit.mbyte(30),
+                        Hardware.GPU: Unit.percentage(0),
+                        Hardware.CPU: Unit.percentage(60),
+                    },
+                },
+            },
+            ...
+        }
+    """

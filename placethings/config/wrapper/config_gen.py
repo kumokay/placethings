@@ -3,11 +3,11 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from future.utils import iteritems
 
 from placethings.config.wrapper.device_gen import AllDeviceData
 from placethings.config.wrapper.task_gen import AllTaskData
 from placethings.config import spec_def
+
 
 class Config(object):
     def __init__(self):
@@ -17,13 +17,13 @@ class Config(object):
         self.NW_DEVICE_SPEC = spec_def.NW_DEVICE_SPEC
 
     def add_device(self, device_category, device, num):
-        assert device_category in DEVICE_SPEC
-        assert device in DEVICE_SPEC[device_category]
+        assert device_category in self.DEVICE_SPEC
+        assert device in self.DEVICE_SPEC[device_category]
         self.all_device_data.add_device(device_category, device, num)
 
     def add_nw_device(self, nw_device_category, nw_device, num):
-        assert nw_device_category in NW_DEVICE_SPEC
-        assert nw_device in NW_DEVICE_SPEC[nw_device_category]
+        assert nw_device_category in self.NW_DEVICE_SPEC
+        assert nw_device in self.NW_DEVICE_SPEC[nw_device_category]
         self.all_device_data.add_nw_device(nw_device_category, nw_device, num)
 
     def add_dev_link(self, dev, nw_dev, latency):
@@ -36,7 +36,8 @@ class Config(object):
     def add_task(self, task_name):
         self.all_task_data.add_task(task_name)
 
-    def add_task_flavor(self, task_name, flavor, resrc_rqmt_dict, latency_dict):
+    def add_task_flavor(
+            self, task_name, flavor, resrc_rqmt_dict, latency_dict):
         """
         args:
             task_name (str)

@@ -79,6 +79,22 @@ NW_DEVICE_SPEC = {
             },
         },
     },
+    NwDeviceCategory.FIELD: {
+        NwDevice.FIELD_SWITCH: {
+            LinkType.WAN: {
+                LinkInfo.PROTOCOL: NwLink.ETHERNET,
+                LinkInfo.N_LINKS: 1,
+                LinkInfo.ULINK_BW: Const.INT_MAX,
+                LinkInfo.DLINK_BW: Const.INT_MAX,
+            },
+            LinkType.LAN: {
+                LinkInfo.PROTOCOL: NwLink.ETHERNET,
+                LinkInfo.N_LINKS: Const.INT_MAX,
+                LinkInfo.ULINK_BW: Unit.mbps(400),
+                LinkInfo.DLINK_BW: Unit.mbps(400),
+            },
+        },
+    },
 }
 
 
@@ -92,6 +108,16 @@ DEVICE_SPEC = {
                 LinkInfo.N_LINKS: 1,
                 LinkInfo.ULINK_BW: Unit.mbps(50),
                 LinkInfo.DLINK_BW: Unit.mbps(150),
+            },
+        },
+        Device.CONTROLLER: {
+            GdInfo.COST: Unit.rph(0),
+            GdInfo.HARDWARE: {},
+            GdInfo.NIC: {
+                LinkInfo.PROTOCOL: NwLink.ETHERNET,
+                LinkInfo.N_LINKS: 1,
+                LinkInfo.ULINK_BW: Unit.mbps(100),
+                LinkInfo.DLINK_BW: Unit.mbps(100),
             },
         },
     },
