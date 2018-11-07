@@ -3,7 +3,6 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import filecmp
 import logging
 
 from placethings.config.wrapper.config_gen import Config
