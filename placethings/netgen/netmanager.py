@@ -12,6 +12,18 @@ from mininet.node import Controller
 from mininet.log import setLogLevel as mininet_SetLogLevel
 from mininet.cli import CLI
 
+import sys
+sys.path.append('/home/kumokay/github/mininet-wifi')
+from mininet.node import Controller, Docker
+from mininet.link import TCLink
+from mininet.log import setLogLevel as mininet_SetLogLevel
+from mininet_wifi.wifi.node import OVSKernelAP, DockerStation
+from mininet_wifi.wifi.cli import CLI_wifi
+from mininet_wifi.wifi.net import Mininet_wifi
+
+
+
+
 mininet_SetLogLevel('info')
 log = logging.getLogger()
 

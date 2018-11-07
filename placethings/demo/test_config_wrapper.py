@@ -3,13 +3,15 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import filecmp
 import logging
 
 from placethings.config.wrapper.config_gen import Config
+from placethings.config.wrapper.task_gen import TaskFlavor
 from placethings.demo.base_test import BaseTestCase
 from placethings.definition import (
     Device, DeviceCategory, Flavor, Hardware, NwDevice, NwDeviceCategory,
-    GnInfo, GtInfo, LinkType, Unit)
+    LinkType, Unit)
 
 log = logging.getLogger()
 
@@ -28,7 +30,39 @@ CLOUD_SWITCH.1 CLOUD_SWITCH.0  FIELD_SWITCH.1   (manager)      T2_MICRO.0
 """
 
 
-class TestConfig(BaseTestCase):
+def compare_cfg(cfg, cfg2):
+    assert(
+        cfg.all_device_data.device_spec.data
+        == cfg2.all_device_data.device_spec.data)
+    assert(
+        cfg.all_device_data.device_inventory.data
+        == cfg2.all_device_data.device_inventory.data)
+    assert(
+        cfg.all_device_data.device_links.data
+        == cfg2.all_device_data.device_links.data)
+
+    assert(
+        cfg.all_nw_device_data.nw_device_spec.data
+        == cfg2.all_nw_device_data.nw_device_spec.data)
+    assert(
+        cfg.all_nw_device_data.nw_device_inventory.data
+        == cfg2.all_nw_device_data.nw_device_inventory.data)
+    assert(
+        cfg.all_nw_device_data.nw_device_links.data
+        == cfg2.all_nw_device_data.nw_device_links.data)
+
+    assert(
+        cfg.all_task_data.task_info.data
+        == cfg2.all_task_data.task_info.data)
+    assert(
+        cfg.all_task_data.task_links.data
+        == cfg2.all_task_data.task_links.data)
+    assert(
+        cfg.all_task_data.task_mapping.data
+        == cfg2.all_task_data.task_mapping.data)
+
+
+class TestDefineConfig(BaseTestCase):
     @staticmethod
     def test(config_name=None, is_export=False):
         assert config_name is None
@@ -85,30 +119,36 @@ class TestConfig(BaseTestCase):
         cfg.add_task_link('task_takePic', 'task_findObj', Unit.mbyte(12))
         cfg.add_task_link('task_findObj', 'task_notify', Unit.byte(10))
 
-        resrc_rqmt_dict = {
-            Hardware.RAM: Unit.gbyte(1),
-            Hardware.HD: Unit.mbyte(30),
-            Hardware.GPU: Unit.percentage(0),
-            Hardware.CPU: Unit.percentage(60),
-        }
-        latency_dict = {
-            Device.T2_MICRO: Unit.sec(6),
-            Device.T3_LARGE: Unit.sec(2),
-            Device.P3_2XLARGE: Unit.ms(600),
-        }
-        cfg.add_task_flavor(
-            'task_findObj', Flavor.CPU, resrc_rqmt_dict, latency_dict)
+        flavor = TaskFlavor(Flavor.CPU)
+        flavor.add_requirement(Hardware.RAM, Unit.gbyte(1))
+        flavor.add_requirement(Hardware.HD, Unit.mbyte(30))
+        flavor.add_requirement(Hardware.GPU, Unit.percentage(0))
+        flavor.add_requirement(Hardware.CPU, Unit.percentage(60))
+        flavor.add_latency_info(Device.T2_MICRO, Unit.sec(6))
+        flavor.add_latency_info(Device.T3_LARGE, Unit.sec(2))
+        flavor.add_latency_info(Device.P3_2XLARGE, Unit.ms(600))
+        cfg.add_task_flavor('task_findObj', flavor)
 
-        resrc_rqmt_dict = {
-            Hardware.RAM: Unit.gbyte(4),
-            Hardware.HD: Unit.mbyte(30),
-            Hardware.GPU: Unit.percentage(60),
-            Hardware.CPU: Unit.percentage(5),
-        }
-        latency_dict = {
-            Device.P3_2XLARGE: Unit.ms(20),
-        }
-        cfg.add_task_flavor(
-            'task_findObj', Flavor.GPU, resrc_rqmt_dict, latency_dict)
+        flavor = TaskFlavor(Flavor.GPU)
+        flavor.add_requirement(Hardware.RAM, Unit.gbyte(4))
+        flavor.add_requirement(Hardware.HD, Unit.mbyte(30))
+        flavor.add_requirement(Hardware.GPU, Unit.percentage(60))
+        flavor.add_requirement(Hardware.CPU, Unit.percentage(5))
+        flavor.add_latency_info(Device.P3_2XLARGE, Unit.ms(20))
+        cfg.add_task_flavor('task_findObj', flavor)
 
-        
+        cfg.add_task_mapping('task_takePic', 'CAMERA.0')
+        cfg.add_task_mapping('task_notify', 'CONTROLLER.0')
+
+        cfg2 = Config(folderpath='config_sample')
+        compare_cfg(cfg, cfg2)
+
+
+class TestExportConfig(BaseTestCase):
+    @staticmethod
+    def test(config_name=None, is_export=False):
+        assert config_name is None
+        cfg = Config(folderpath='config_sample')
+        cfg.export_data('config_test_wrapper')
+        cfg2 = Config(folderpath='config_test_wrapper')
+        compare_cfg(cfg, cfg2)
