@@ -66,6 +66,7 @@ class FileHelper(object):
 
     @classmethod
     def export_data(cls, node_info, edge_info, data_name):
+        """Export data."""
         filepath = cls.gen_config_filepath(data_name)
         filemap = dict(
             node_info=node_info,
@@ -74,10 +75,12 @@ class FileHelper(object):
 
     @classmethod
     def import_data(cls, data_name):
-        """
+        """Import data.
+
         Returns:
             node_info (dict)
             edge_info (dict)
+
         """
         filepath = cls.gen_config_filepath(data_name)
         filemap = json_utils.import_bundle(filepath)

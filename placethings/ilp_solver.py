@@ -12,6 +12,8 @@ from itertools import izip as zip
 import pulp
 import networkx as nx
 
+# NOTE: to use glpk solver, sudo apt-get install glpk-utils
+
 from placethings.definition import Const, GdInfo, GtInfo, Hardware
 from placethings.graph_gen import task_graph
 

@@ -117,11 +117,19 @@ class TaskInfo:
     wrapper for
         TASK_INFO = {
             'task_camera': {
+                "GtInfoEnum.EXEC_CMD": {
+                    "default": "cd {progdir} && python main_entity.py run_task -n task_camera -en task_forward -a {docker_addr} -ra {next_addr} &> /dev/null &"
+                },
                 GtInfo.LATENCY_INFO: {},
                 GtInfo.RESRC_RQMT: {},
             },
             ...
             'task_findObject': {
+                "GtInfoEnum.EXEC_CMD": {
+                    "default": "cd {progdir} && python main_entity.py run_task -n task_findObj -en task_findObj -a {self_addr} -ra {next_addr} -al local &> /dev/null &",
+                    "P3_2XLARGE.0": "cd {progdir} && python main_entity.py run_task -n task_findObj -en task_findObj -a {self_addr} -ra {next_addr} -al offload 172.17.49.60:18800 &> /dev/null &",
+                    "T3_LARGE.0": "cd {progdir} && python main_entity.py run_task -n task_findObj -en task_findObj -a {self_addr} -ra {next_addr} -al offload 172.17.51.1:18800 &> /dev/null &"
+                },
                 GtInfo.LATENCY_INFO: {
                     Device.T2_MICRO: {
                         Flavor.CPU: Unit.sec(6),
@@ -163,6 +171,7 @@ class TaskInfo:
         """
         assert task_name not in self.data
         self.data[task_name] = {
+            GtInfo.EXEC_CMD: {},
             GtInfo.LATENCY_INFO: {},
             GtInfo.RESRC_RQMT: {},
         }

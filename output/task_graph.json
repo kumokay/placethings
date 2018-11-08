@@ -2,7 +2,7 @@
     "node_info": {
         "task_camera": {
             "GtInfoEnum.RESRC_RQMT": {},
-            "GtInfoEnum.EXEC_CMD": "cd {progdir} && python main_entity.py run_task -n task_camera -en task_forward -a {docker_addr} -ra {next_addr}",
+            "GtInfoEnum.EXEC_CMD": {},
             "GtInfoEnum.LATENCY_INFO": {},
             "GtInfoEnum.DEVICE": "CAMERA.0"
         },
@@ -21,7 +21,7 @@
                     "Hardware.GPU": 60
                 }
             },
-            "GtInfoEnum.EXEC_CMD": "cd {progdir} && python main_entity.py run_task -n task_findObj -en task_findObj -a {self_addr} -ra {next_addr}",
+            "GtInfoEnum.EXEC_CMD": {},
             "GtInfoEnum.LATENCY_INFO": {
                 "Device.P3_2XLARGE": {
                     "Flavor.GPU": 100
@@ -37,7 +37,7 @@
         },
         "task_alert": {
             "GtInfoEnum.RESRC_RQMT": {},
-            "GtInfoEnum.EXEC_CMD": "cd {progdir} && python main_entity.py run_task -n task_alert -en task_forward -a {self_addr} -ra 172.17.51.5:18900",
+            "GtInfoEnum.EXEC_CMD": {},
             "GtInfoEnum.LATENCY_INFO": {},
             "GtInfoEnum.DEVICE": "CONTROLLER.0"
         }
