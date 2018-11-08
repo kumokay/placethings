@@ -22,9 +22,9 @@ class ConfigDataHelper(object):
         self.is_export = is_export
         self.update_id = -1
         # graphs
-        self.topo = None
-        self.topo_device_graph = None
         self.Gt = None
+        self.Gn = None
+        self.Gnd = None
         self.Gd = None
         self.G_map = None
         self.result_mapping = None
@@ -38,7 +38,7 @@ class ConfigDataHelper(object):
     def update_topo_device_graph(self):
         self.update_id += 1
         log.info('round {}: update topo device graph'.format(self.update_id))
-        self.Gd = graph_gen.create_device_graph(
+        self.Gn, self.Gnd, self.Gd = graph_gen.create_topo_device_graph(
             self.cfg, self.is_export, export_suffix=self.update_id)
 
     def update_task_map(self):
@@ -64,7 +64,7 @@ class ConfigDataHelper(object):
         return self.max_latency_log, self.max_latency_static_log
 
     def get_graphs(self):
-        return self.topo, self.topo_device_graph, self.Gd, self.G_map
+        return self.Gn, self.Gnd, self.Gd, self.G_map
 
     def _gen_link(src, dst):
         return '{} -> {}'.format
@@ -111,7 +111,7 @@ class ConfigDataHelper(object):
         update network_dev <-> network_dev link latency.
             e.g. change lantency of 'BB_SWITCH.0 -> BB_AP.0' from 3ms to 30 ms
         """
-        nw_links = self.cfg.all_nw_device_data.nw_links.data
+        nw_links = self.cfg.all_nw_device_data.nw_device_links.data
         self._update_link_latency(nw_links, nw_dev1, nw_dev2, latency)
 
     def update_dev_link(self, dev, nw_dev, new_nw_dev, new_latency):
@@ -127,6 +127,6 @@ class ConfigDataHelper(object):
         update device <-> network_dev link.
             e.g. change 'PHONE.0 -> BB_AP.0' to 'PHONE.0 -> BB_AP.1'
         """
-        nw_links = self.cfg.all_nw_device_data.nw_links.data
+        nw_links = self.cfg.all_nw_device_data.nw_device_links.data
         self._update_link_dst(
             nw_links, nw_dev1, nw_dev2, new_nw_dev2, new_latency)

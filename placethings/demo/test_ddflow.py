@@ -85,8 +85,8 @@ class TestPhase2(BaseTestCase):
             is_update_map=False, is_simulate=False):
         assert config_name == 'config_ddflow_phase2'
         # TODO: clean this shit
-        cfg1 = '{}.1'.format(config_name)
-        cfg2 = '{}.2'.format(config_name)
+        cfg1 = Config('{}.1'.format(config_name))
+        cfg2 = Config('{}.2'.format(config_name))
         cfgHelper = ConfigDataHelper(cfg1, is_export)
         cfgHelper.init_task_graph()
         cfgHelper.update_topo_device_graph()

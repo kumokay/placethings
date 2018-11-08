@@ -1,10 +1,12 @@
 {
     "task_info": {
         "task_camera": {
+            "GtInfoEnum.EXEC_CMD": {},
             "GtInfoEnum.LATENCY_INFO": {},
             "GtInfoEnum.RESRC_RQMT": {}
         },
         "task_alert": {
+            "GtInfoEnum.EXEC_CMD": {},
             "GtInfoEnum.LATENCY_INFO": {},
             "GtInfoEnum.RESRC_RQMT": {}
         }
