@@ -40,12 +40,14 @@ def _derive_graph_info(task_mapping, task_links, task_info):
     return node_info, edge_info
 
 
-def create_graph(mapping, task_links, task_info, is_export=False):
+def create_graph(
+        mapping, task_links, task_info, is_export=False, export_suffix=''):
     node_info, edge_info = _derive_graph_info(mapping, task_links, task_info)
     graph = GraphGen.create(node_info, edge_info)
     if is_export:
-        FileHelper.export_graph(graph, 'task_graph')
-        FileHelper.export_data(node_info, edge_info, 'task_graph')
+        export_data_name = 'task_graph{}'.format(export_suffix)
+        FileHelper.export_graph(graph, export_data_name)
+        FileHelper.export_data(node_info, edge_info, export_data_name)
     return graph
 
 

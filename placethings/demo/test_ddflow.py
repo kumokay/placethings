@@ -9,6 +9,7 @@ import random
 from placethings.demo.utils import ConfigDataHelper
 from placethings.demo.base_test import BaseTestCase
 from placethings.definition import Unit
+from placethings.config.wrapper.config_gen import Config
 
 log = logging.getLogger()
 
@@ -23,7 +24,8 @@ class TestPhase1(BaseTestCase):
             cls, config_name, is_export=False,
             is_update_map=True, is_simulate=False):
         assert config_name == 'config_ddflow_phase1'
-        cfgHelper = ConfigDataHelper(config_name, is_export)
+        cfg = Config(config_name)
+        cfgHelper = ConfigDataHelper(cfg, is_export)
         cfgHelper.init_task_graph()
         cfgHelper.update_topo_device_graph()
         cfgHelper.update_task_map()

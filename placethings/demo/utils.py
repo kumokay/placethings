@@ -6,42 +6,21 @@ from __future__ import unicode_literals
 import logging
 
 from placethings import ilp_solver
-from placethings.config import device_data, nw_device_data, task_data
 from placethings.config.common import LinkHelper
 from placethings.definition import GnInfo
-from placethings.graph_gen import device_graph, graph_factory
-from placethings.config.config_factory import FileHelper
-
+from placethings.graph_gen.wrapper import graph_gen
+from placethings.config.wrapper.config_gen import Config
 
 log = logging.getLogger()
 
 
 class ConfigDataHelper(object):
-    _DEFAULT_CONFIG = 'config_default'
 
-    def __init__(self, config_name=None, is_export=False):
-        if not config_name:
-            config_name = self._DEFAULT_CONFIG
-        self.config_name = config_name
+    def __init__(self, cfg, is_export=False):
+        assert type(cfg) is Config
+        self.cfg = cfg
         self.is_export = is_export
         self.update_id = -1
-        # get device data and topo data
-        dev_file = FileHelper.gen_config_filepath(config_name, 'device_data')
-        nw_file = FileHelper.gen_config_filepath(config_name, 'nw_device_data')
-        spec, inventory, links = device_data.import_data(dev_file)
-        nw_spec, nw_inventory, nw_links = nw_device_data.import_data(nw_file)
-        self.dev_spec = spec
-        self.dev_inventory = inventory
-        self.dev_links = links
-        self.nw_spec = nw_spec
-        self.nw_inventory = nw_inventory
-        self.nw_links = nw_links
-        # get task data
-        task_file = FileHelper.gen_config_filepath(config_name, 'task_data')
-        task_mapping, task_links, task_info = task_data.import_data(task_file)
-        self.task_mapping = task_mapping
-        self.task_links = task_links
-        self.task_info = task_info
         # graphs
         self.topo = None
         self.topo_device_graph = None
@@ -54,21 +33,13 @@ class ConfigDataHelper(object):
 
     def init_task_graph(self):
         log.info('init task graph')
-        Gt = graph_factory.gen_task_graph(
-            self.config_name,
-            is_export=self.is_export)
-        self.Gt = Gt
+        self.Gt = graph_gen.create_task_graph(self.cfg, self.is_export)
 
     def update_topo_device_graph(self):
         self.update_id += 1
         log.info('round {}: update topo device graph'.format(self.update_id))
-        topo, topo_device_graph, Gd = device_graph.create_topo_device_graph(
-            self.dev_spec, self.dev_inventory, self.dev_links,
-            self.nw_spec, self.nw_inventory, self.nw_links,
-            is_export=self.is_export, export_suffix=self.update_id)
-        self.topo = topo
-        self.topo_device_graph = topo_device_graph
-        self.Gd = Gd
+        self.Gd = graph_gen.create_device_graph(
+            self.cfg, self.is_export, export_suffix=self.update_id)
 
     def update_task_map(self):
         G_map, result_mapping = ilp_solver.place_things(
@@ -132,27 +103,30 @@ class ConfigDataHelper(object):
         update device <-> network_dev link latency.
             e.g. change lantency of 'PHONE.0 -> BB_AP.0' from 3ms to 30 ms
         """
-        self._update_link_latency(self.dev_links, dev, nw_dev, latency)
+        dev_links = self.cfg.all_device_data.device_links.data
+        self._update_link_latency(dev_links, dev, nw_dev, latency)
 
     def update_nw_link_latency(self, nw_dev1, nw_dev2, latency):
         """
         update network_dev <-> network_dev link latency.
             e.g. change lantency of 'BB_SWITCH.0 -> BB_AP.0' from 3ms to 30 ms
         """
-        self._update_link_latency(self.nw_links, nw_dev1, nw_dev2, latency)
+        nw_links = self.cfg.all_nw_device_data.nw_links.data
+        self._update_link_latency(nw_links, nw_dev1, nw_dev2, latency)
 
     def update_dev_link(self, dev, nw_dev, new_nw_dev, new_latency):
         """
         update device <-> network_dev link.
             e.g. change 'PHONE.0 -> BB_AP.0' to 'PHONE.0 -> BB_AP.1'
         """
-        self._update_link_dst(
-            self.dev_links, dev, nw_dev, new_nw_dev, new_latency)
+        dev_links = self.cfg.all_device_data.device_links.data
+        self._update_link_dst(dev_links, dev, nw_dev, new_nw_dev, new_latency)
 
     def update_nw_link(self, nw_dev1, nw_dev2, new_nw_dev2, new_latency):
         """
         update device <-> network_dev link.
             e.g. change 'PHONE.0 -> BB_AP.0' to 'PHONE.0 -> BB_AP.1'
         """
+        nw_links = self.cfg.all_nw_device_data.nw_links.data
         self._update_link_dst(
-            self.nw_links, nw_dev1, nw_dev2, new_nw_dev2, new_latency)
+            nw_links, nw_dev1, nw_dev2, new_nw_dev2, new_latency)
