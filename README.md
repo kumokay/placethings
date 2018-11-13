@@ -29,7 +29,7 @@ $ sudo py.test -v mininet/test/test_containernet.py
 
 2. Intall python packages
 ```
-$ sudo pip install msgpack-rpc-python numpy Pillow future
+$ sudo pip install msgpack-rpc-python numpy Pillow future networkx matplotlib
 ```
 
 ## Usage / Run
