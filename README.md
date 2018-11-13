@@ -29,6 +29,7 @@ $ sudo py.test -v mininet/test/test_containernet.py
 
 2. Intall python packages
 ```
+$ pip install --upgrade pip==9.0.1
 $ sudo pip install msgpack-rpc-python numpy Pillow future networkx matplotlib six aenum
 ```
 
