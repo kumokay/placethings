@@ -30,7 +30,7 @@ $ sudo py.test -v mininet/test/test_containernet.py
 2. Intall ilp solvers and python packages
 ```
 $ pip install --upgrade pip==9.0.1
-$ sudo pip install msgpack-rpc-python numpy Pillow future networkx matplotlib six aenum pulp
+$ sudo pip install msgpack-rpc-python numpy Pillow future networkx matplotlib six aenum pulp flake8
 sudo apt-get install glpk-utils
 ```
 
