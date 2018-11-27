@@ -1,11 +1,14 @@
-import msgpackrpc
-import os
 import math
+import os
+import sys
 import time
+
+import msgpackrpc
+
 
 car_text = """
                      ___..............._
-             __.. ' _'.""""""\\""""""""- .`-._ 
+             __.. ' _'.""""""\\""""""""- .`-._
  ______.-'         (_) |      \\           ` \\`-. _
 /_       --------------'-------\\---....______\\__`.`  -..___
 | T      _.----._           Xxx|x...           |          _.._`--. _
@@ -46,11 +49,10 @@ person_text = """
 """
 
 
-
 class FileServer(object):
     def __init__(self):
         self.cnt = 0
-        self.result = 'new result is not available 1'
+        self.result = 'new result is not available'
 
     def get_result(self, ts):
         return '{}, {}'.format(self.result, self.cnt)
@@ -72,7 +74,14 @@ class FileServer(object):
         return 'received {} bytes'.format(len(self.result))
 
 
-# print(display_text)
-server = msgpackrpc.Server(FileServer())
-server.listen(msgpackrpc.Address('172.17.51.1', 18900))
-server.start()
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print(
+            'usage: python {} IP:PORT. \n'
+            'e.g. 172.17.51.1:18900'.format(sys.argv[0]))
+        exit(0)
+    print('{} running at {}'.format(sys.argv[0], sys.argv[1]))
+    ip, port = sys.argv[1].split(':')
+    server = msgpackrpc.Server(FileServer())
+    server.listen(msgpackrpc.Address(ip, int(port)))
+    server.start()
