@@ -1,17 +1,8 @@
 {
+    "device_inventory": null, 
+    "device_links": {}, 
     "nw_device_inventory": {
-        "items": {
-            "bb_ap1": "dlink_ac3900", 
-            "bb_ap2": "dlink_ac3900", 
-            "bb_ap3": "dlink_ac3900", 
-            "bb_sw1": "juniper_ex4300", 
-            "bb_sw2": "juniper_ex4300", 
-            "bb_sw3": "juniper_ex4300", 
-            "home_sw1": "dlink_dgs105", 
-            "home_sw2": "dlink_dgs105", 
-            "home_sw3": "dlink_dgs105"
-        }, 
-        "nw_device_spec": {
+        "device_spec": {
             "items": {
                 "dlink_ac3900": {
                     "interfaces": {
@@ -59,9 +50,20 @@
                     "name": "juniper_ex4300"
                 }
             }
+        }, 
+        "items": {
+            "bb_ap1": "dlink_ac3900", 
+            "bb_ap2": "dlink_ac3900", 
+            "bb_ap3": "dlink_ac3900", 
+            "bb_sw1": "juniper_ex4300", 
+            "bb_sw2": "juniper_ex4300", 
+            "bb_sw3": "juniper_ex4300", 
+            "home_sw1": "dlink_dgs105", 
+            "home_sw2": "dlink_dgs105", 
+            "home_sw3": "dlink_dgs105"
         }
     }, 
-    "nw_device_links": {
+    "nw_links": {
         "bb_ap1": {
             "bb_sw1": {
                 "dst_intf_name": "WAN", 
