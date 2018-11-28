@@ -108,11 +108,11 @@ class Test(BaseTestCase):
         log.info("=== start mininet ===")
         _topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
         data_plane = _init_netsim(topo_device_graph, Gd, G_map)
-        raw_input('press any key to start the network')
+        # raw_input('press any key to start the network')
         data_plane.start(is_validate=True)
 
         data_plane.print_net_info()
-        raw_input('press any key to start scenario')
+        # raw_input('press any key to start scenario')
         log.info('=== running scenario: initial deployment ===')
         data_plane.start_workers()
 
