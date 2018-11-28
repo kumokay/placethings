@@ -7,7 +7,6 @@ import logging
 import subprocess
 
 from placethings.config.wrapper.config_gen import Config
-from placethings.definition import Unit
 from placethings.demo.utils import ConfigDataHelper
 from placethings.demo.base_test import BaseTestCase
 from placethings.netgen.network import DataPlane
@@ -29,7 +28,6 @@ CENTER_SWITCH.1 CENTER_SWITCH.0  FIELD_SWITCH.1   (manager)      T2_MICRO.0
 
 
 Drone1 ====flying path================>
-Drone2 (standby)
 
 Latency:
   all wired link: 2 ms
@@ -37,9 +35,6 @@ Latency:
 
 Scenrios:
 (1) all links alive
-(2) P3.X2LARGE.0 offline
-(3) T3.XLARGE.0 offline
-(4) P3.X2LARGE.0 back online
 
 """
 
