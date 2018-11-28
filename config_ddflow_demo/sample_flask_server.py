@@ -28,4 +28,4 @@ if __name__ == '__main__':
         sys.argv[0], sys.argv[1], sys.argv[2]))
     web_ip, web_port = sys.argv[1].split(':')
     DISPLAY_IP, DISPLAY_PORT = sys.argv[2].split(':')
-    app.run(host='172.17.51.1', port=int(web_port))
+    app.run(host=web_ip, port=int(web_port))
