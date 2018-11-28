@@ -143,10 +143,10 @@ class DataPlane(object):
         'cd {progdir} && python main_entity.py stop_server '
         '-n stopper -a {ip}:{port}')
 
-    def __init__(self, topo_device_graph):
+    def __init__(self, topo_device_graph, docker0_ip='172.18.0.1'):
         self.worker_dict = {}  # worker_name: start_cmd
         self.task_cmd = {}
-        self.net = NetManager.create()
+        self.net = NetManager.create(docker0_ip)
         # add nw devices
         for node in topo_device_graph.nodes():
             node_info = topo_device_graph.node[node]

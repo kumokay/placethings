@@ -12,17 +12,6 @@ from mininet.node import Controller
 from mininet.log import setLogLevel as mininet_SetLogLevel
 from mininet.cli import CLI
 
-import sys
-sys.path.append('/home/kumokay/github/mininet-wifi')
-from mininet.node import Controller, Docker
-from mininet.link import TCLink
-from mininet.log import setLogLevel as mininet_SetLogLevel
-from mininet_wifi.wifi.node import OVSKernelAP, DockerStation
-from mininet_wifi.wifi.cli import CLI_wifi
-from mininet_wifi.wifi.net import Mininet_wifi
-
-
-
 
 mininet_SetLogLevel('info')
 log = logging.getLogger()
@@ -37,10 +26,12 @@ class NetManager(object):
     _SWITCH_PREFIX = 's'
     _PORT_START = 18800
 
-    def __init__(self, net):
+    def __init__(self, net, docker_subnet_ip='172.18.0.1'):
         self._net = net
         self._host_dict = {}
         self._host_ip_dict = {}  # assigned host ip
+        self._docker_subnet_prefix = '.'.join(docker_subnet_ip.split('.')[:3])
+        self._mininet_subnet_prefix = '10.0.0'
         self._host_docker_ip_dict = {}
         self._host_next_free_port = {}
         self._switch_dict = {}
@@ -64,20 +55,21 @@ class NetManager(object):
         return list(self._host_dict)
 
     @classmethod
-    def create(cls):
+    def create(cls, docker0_ip='172.18.0.1'):
         raw_net = Containernet(controller=Controller, link=TCLink)
         log.info('create mininet wtih default controller')
         raw_net.addController('c0')
-        return cls(raw_net)
+        return cls(raw_net, docker0_ip)
 
-    @classmethod
-    def _new_ip(cls):
-        ip = '10.0.0.{}'.format(cls._NEXT_IP_NUM)
-        docker_ip = '172.18.0.{}'.format(cls._NEXT_DOCKER_IP_NUM)
-        cls._NEXT_IP_NUM += 1
-        cls._NEXT_DOCKER_IP_NUM += 1
-        assert cls._NEXT_IP_NUM < 256
-        assert cls._NEXT_DOCKER_IP_NUM < 256
+    def _new_ip(self):
+        ip = '{}.{}'.format(
+            self._mininet_subnet_prefix, self._NEXT_IP_NUM)
+        docker_ip = '{}.{}'.format(
+            self._docker_subnet_prefix, self._NEXT_DOCKER_IP_NUM)
+        self._NEXT_IP_NUM += 1
+        self._NEXT_DOCKER_IP_NUM += 1
+        assert self._NEXT_IP_NUM < 256
+        assert self._NEXT_DOCKER_IP_NUM < 256
         return ip, docker_ip
 
     @classmethod
@@ -126,7 +118,7 @@ class NetManager(object):
             bw_mbps = None if bw_bps > 1000000 else int(bw_bps / 1000000)
         delay = '{}ms'.format(delay_ms)
         jitter = '{}ms'.format(jitter_ms)
-        loss = int(pkt_loss_rate*100) if pkt_loss_rate else None
+        loss = int(pkt_loss_rate * 100) if pkt_loss_rate else None
         # TODO: fix this
         # if (('AP' in src or 'AP' in dst) and ('CAM' in src or 'CAM' in dst)):
         #    jitter = '5ms'
