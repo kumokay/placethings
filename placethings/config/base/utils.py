@@ -3,16 +3,37 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import importlib
-import json
-import os
 
-from future.utils import iteritems
+def time_str_to_ms(time_repr_str):
+    """
+    Args:
+        time_repr_str (str): e.g. 100sec, 10ms; float is not allowed
+    Returns:
+        num (int): ms
+    """
+    is_parsing_unit = False
+    num = 0
+    cnt = 0
+    for ch in time_repr_str:
+        if ch.isdigit():
+            assert is_parsing_unit is False
+            num = num * 10 + int(ch)
+            cnt += 1
+        else:
+            break
+    unit_str = time_repr_str[cnt:].lower()
+    if unit_str == 'min':
+        num *= 60 * 1000
+    elif unit_str == 'sec':
+        num *= 1000
+    elif unit_str == 'ms':
+        num *= 1
+    else:
+        assert False
+    return num
 
-from placethings.config.base import device_cfg
 
-
-def string_to_number(byte_repr_str):
+def size_str_to_bits(byte_repr_str):
     """
     Args:
         byte_repr_str (str): e.g. 100MB, 10Kb; float is not allowed
@@ -21,14 +42,18 @@ def string_to_number(byte_repr_str):
     """
     is_parsing_unit = False
     num = 0
+    cnt = 0
     for ch in byte_repr_str:
         if ch.isdigit():
             assert is_parsing_unit is False
             num = num * 10 + int(ch)
-            continue
+            cnt += 1
         else:
-            is_parsing_unit = True
-
+            break
+    unit_str = byte_repr_str[cnt:]
+    cnt = 0
+    for ch in unit_str:
+        cnt += 1
         if ch.lower() == 'k':
             num = num * 1024
         elif ch.lower() == 'm':
@@ -37,62 +62,11 @@ def string_to_number(byte_repr_str):
             num = num * 1024 * 1024 * 1024
         elif ch == 'B':
             num = num * 8
+            assert cnt == len(unit_str)
         elif ch == 'b':
             num = num * 1
+            assert cnt == len(unit_str)
         else:
             # invalid format
             assert(False)
     return num
-
-
-class SerializableObject(object):
-    def get_classname(self):
-        return self.__class__.__name__
-
-    def to_dict(self):
-        output = {}
-        # put classname here
-        ouput['__classname'] = self.get_classname()
-        for objname, obj in iteritems(self.__dict__):
-            if isinstance(obj, SerializableObject):
-                output[objname] = obj.to_dict()
-            else:
-                output[objname] = obj
-        return output
-
-    def from_dict(self, input_dict):
-        for objname, obj in iteritems(input_dict):
-            if objname == '__classname':
-                assert obj['__classname'] == self.get_classname()
-                continue
-            if isinstance(obj, dict):
-                if '__classname' in obj:
-                    classname = obj['__classname']
-                    classdef = getattr(device_cfg, classname, None)
-                    if classdef:
-                        setattr(self, objname, classdef().from_dict(obj))
-                        continue
-            setattr(self, objname, obj)
-        return self
-
-    def to_json(self):
-        return json.dumps(
-            self, sort_keys=True, indent=4,
-            default=lambda obj: obj.to_dict())
-
-    def from_json(self, json_str):
-        return json.loads(json_str, object_hook=self.from_dict)
-
-    def export_to_file(self, filepath):
-        filedir = os.path.dirname(filepath)
-        if not os.path.exists(filedir):
-            os.makedirs(filedir)
-        assert os.path.exists(filedir)
-        with open(filepath, mode='w') as fp:
-            fp.write(self.to_json())
-        return os.path.exists(filepath)
-
-    def import_from_file(self, filepath):
-        with open(filepath, mode='r') as fp:
-            json_str = fp.read()
-        return self.from_json(json_str)
