@@ -3,7 +3,7 @@
     "device_dict": {
         "bb_sw1": {
             "__classname": "Device", 
-            "auctuator_dict": {}, 
+            "actuator_dict": {}, 
             "network": {
                 "__classname": "Network", 
                 "interface_dict": {
@@ -51,7 +51,7 @@
         }, 
         "bb_sw2": {
             "__classname": "Device", 
-            "auctuator_dict": {}, 
+            "actuator_dict": {}, 
             "network": {
                 "__classname": "Network", 
                 "interface_dict": {
@@ -99,7 +99,7 @@
         }, 
         "bb_sw3": {
             "__classname": "Device", 
-            "auctuator_dict": {}, 
+            "actuator_dict": {}, 
             "network": {
                 "__classname": "Network", 
                 "interface_dict": {
@@ -147,7 +147,7 @@
         }, 
         "home_ap1": {
             "__classname": "Device", 
-            "auctuator_dict": {}, 
+            "actuator_dict": {}, 
             "network": {
                 "__classname": "Network", 
                 "interface_dict": {
@@ -195,7 +195,7 @@
         }, 
         "home_ap2": {
             "__classname": "Device", 
-            "auctuator_dict": {}, 
+            "actuator_dict": {}, 
             "network": {
                 "__classname": "Network", 
                 "interface_dict": {
@@ -243,7 +243,7 @@
         }, 
         "home_ap3": {
             "__classname": "Device", 
-            "auctuator_dict": {}, 
+            "actuator_dict": {}, 
             "network": {
                 "__classname": "Network", 
                 "interface_dict": {
@@ -291,7 +291,7 @@
         }, 
         "home_sw1": {
             "__classname": "Device", 
-            "auctuator_dict": {}, 
+            "actuator_dict": {}, 
             "network": {
                 "__classname": "Network", 
                 "interface_dict": {
@@ -339,7 +339,7 @@
         }, 
         "home_sw2": {
             "__classname": "Device", 
-            "auctuator_dict": {}, 
+            "actuator_dict": {}, 
             "network": {
                 "__classname": "Network", 
                 "interface_dict": {
@@ -387,7 +387,7 @@
         }, 
         "home_sw3": {
             "__classname": "Device", 
-            "auctuator_dict": {}, 
+            "actuator_dict": {}, 
             "network": {
                 "__classname": "Network", 
                 "interface_dict": {
@@ -439,7 +439,7 @@
         "items": {
             "dlink_ac3900": {
                 "__classname": "Device", 
-                "auctuator_dict": {}, 
+                "actuator_dict": {}, 
                 "network": {
                     "__classname": "Network", 
                     "interface_dict": {
@@ -487,7 +487,7 @@
             }, 
             "dlink_dgs105": {
                 "__classname": "Device", 
-                "auctuator_dict": {}, 
+                "actuator_dict": {}, 
                 "network": {
                     "__classname": "Network", 
                     "interface_dict": {
@@ -535,7 +535,7 @@
             }, 
             "juniper_ex4300": {
                 "__classname": "Device", 
-                "auctuator_dict": {}, 
+                "actuator_dict": {}, 
                 "network": {
                     "__classname": "Network", 
                     "interface_dict": {
