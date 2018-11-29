@@ -18,38 +18,16 @@ class NetworkInterface(SerializableObject):
     def __init__(
             self, protocol='ethernet', n_ports=5, ul_bw='10Mb', dl_bw='10Mb'):
         assert protocol in self._protocol
-        self.protocol = protocol
         assert n_ports > 0
-        self.n_ports = n_ports
         assert type(ul_bw) == unicode
-        self.ul_bw = string_to_number(ul_bw)
         assert type(dl_bw) == unicode
+        self.protocol = protocol
+        self.n_ports = n_ports
+        self.ul_bw = string_to_number(ul_bw)
         self.dl_bw = string_to_number(dl_bw)
 
 
-class NetworkDevice(SerializableObject):
-
-    # currently only support these parameters
-    _intf_name = {'LAN', 'WAN'}
-
-    def __init__(self, name, interface_dict=None):
-        assert type(name) == unicode
-        self.name = name
-        self.interfaces = {}
-        if not interface_dict:
-            interface_dict = {}
-        for intf_name, intf in iteritems(interface_dict):
-            self.add_interface(intf_name, intf)
-
-    def add_interface(self, name, intf):
-        assert type(name) == unicode
-        assert type(intf) == NetworkInterface
-        assert name in self._intf_name
-        assert name not in self.interfaces
-        self.interfaces[name] = intf
-
-
-class Hardware(SerializableObject):
+class ComputationResource(SerializableObject):
     def __init__(
             self, cpu_utilization=0, gpu_utilization=0,
             disk_space='0Mb', ram_size='0Mb'):
@@ -59,52 +37,73 @@ class Hardware(SerializableObject):
         self.ram_size = string_to_number(ram_size)
 
 
+class Sensor(SerializableObject):
+    _valid_sensor_types = {None, 'camera', 'gps', 'smoke'}
+    def __init__(self, sensor_type=None):
+        assert type(sensor_type) == unicode
+        assert sensor_type in self._valid_sensor_types
+        self.sensor_type = sensor_type
+
+
 class Device(SerializableObject):
 
     # currently only support these parameters
-    _intf_name = {'LAN', 'WAN'}
-    _device_type = {'sensor', 'processor', 'auctuator'}
+    _valid_intf_names = {'LAN', 'WAN'}
+    _valid_device_types = {
+        '_none': 0b0000,
+        'network_device': 0b0001,
+        'sensor': 0b0010,
+        'processor': 0b0100,
+        'auctuator': 0b1000,
+        '_all': 0b1111}
 
-    def __init__(self, name, device_type, hardware=None, interface_dict=None):
-        assert type(name) == unicode
-        self.name = name
-        assert device_type in self._device_type
-        self.device_type = device_type
-        self.interfaces = {}
-        if not hardware:
-            self.hardware = Hardware()
+    def __init__(self, computation_resource=None, interface_dict=None,
+            sensor_dict=None, auctuator_dict=None):
+        if not computation_resource:
+            computation_resource = ComputationResource()
         if not interface_dict:
             interface_dict = {}
+        if not sensor_dict:
+            sensor_dict = {}
+        if not auctuator_dict:
+            auctuator_dict = {}
+        assert type(computation_resource) == ComputationResource
+        assert type(interface_dict) == dict
+        assert type(sensor_dict) == dict
+        assert type(auctuator_dict) == dict
+        self.device_type = device_type
+        self.interfaces = {}
+        self.computation_resource = computation_resource
         for intf_name, intf in iteritems(interface_dict):
             self.add_interface(intf_name, intf)
 
     def add_interface(self, name, intf):
         assert type(name) == unicode
         assert type(intf) == NetworkInterface
-        assert name in self._intf_name
+        assert name in self._valid_intf_names
         assert name not in self.interfaces
         self.interfaces[name] = intf
 
-    def add_hardware(self, hardware):
-        assert type(hardware) == Hardware
-        self.hardware = hardware
+    def add_computation_resource(self, computation_resource):
+        assert type(computation_resource) == ComputationResource
+        self.computation_resource = computation_resource
 
 
 class DeviceSpec(SerializableObject):
 
-    def __init__(self, device_list=None):
+    def __init__(self, device_dict=None):
         self.items = {}  # {name: Device}
-        if not device_list:
-            device_list = []
-        for device in device_list:
-            self.add_device(device)
+        if not device_dict:
+            device_dict = {}
+        for device_name, device_obj in iteritems(device_dict):
+            self.add_device(device_name, device_obj)
 
-    def add_device(self, device):
-        assert device.name not in self.items
-        self.items[device.name] = device
+    def add_device(self, device_name, device_obj):
+        assert device_name not in self.items
+        self.items[device_name] = device_obj
 
-    def has_device(self, device):
-        return device in self.items
+    def has_device(self, device_name):
+        return device_name in self.items
 
     def get_device(self, device_name):
         return self.items[device_name]
