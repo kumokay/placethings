@@ -4,68 +4,12 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import copy
-import json
-import os
-import sys
 
 from future.utils import iteritems
 import networkx as nx
 
+from placethings.config.base.serializable import SerializableObject
 from placethings.config.base.utils import size_str_to_bits, time_str_to_ms
-
-
-class SerializableObject(object):
-    def get_classname(self):
-        return self.__class__.__name__
-
-    def to_dict(self):
-        output = {}
-        # put classname here
-        output['__classname'] = self.get_classname()
-        for objname, obj in iteritems(self.__dict__):
-            if isinstance(obj, SerializableObject):
-                output[objname] = obj.to_dict()
-            else:
-                output[objname] = obj
-        return output
-
-    def from_dict(self, input_dict):
-        for objname, obj in iteritems(input_dict):
-            if objname == '__classname':
-                assert obj == self.get_classname()
-                continue
-            if isinstance(obj, dict):
-                if '__classname' in obj:
-                    classname = obj['__classname']
-                    classdef = getattr(sys.modules[__name__], classname, None)
-                    if classdef:
-                        setattr(self, objname, classdef().from_dict(obj))
-                        continue
-            setattr(self, objname, obj)
-        return self
-
-    def to_json(self):
-        return json.dumps(
-            self, sort_keys=True, indent=4,
-            default=lambda obj: obj.to_dict())
-
-    def from_json(self, json_str):
-        output_dict = json.loads(json_str)
-        return self.from_dict(output_dict)
-
-    def export_to_file(self, filepath):
-        filedir = os.path.dirname(filepath)
-        if not os.path.exists(filedir):
-            os.makedirs(filedir)
-        assert os.path.exists(filedir)
-        with open(filepath, mode='w') as fp:
-            fp.write(self.to_json())
-        return os.path.exists(filepath)
-
-    def import_from_file(self, filepath):
-        with open(filepath, mode='r') as fp:
-            json_str = fp.read()
-        return self.from_json(json_str)
 
 
 class NetworkInterface(SerializableObject):
@@ -80,10 +24,8 @@ class NetworkInterface(SerializableObject):
         assert type(ul_bw) == unicode
         assert type(dl_bw) == unicode
         assert protocol == 'undefined' or protocol in self._protocol
-        ul_bw = size_str_to_bits(ul_bw)
-        dl_bw = size_str_to_bits(dl_bw)
-        assert ul_bw > 0
-        assert dl_bw > 0
+        assert size_str_to_bits(ul_bw) >= 0
+        assert size_str_to_bits(dl_bw) >= 0
         self.protocol = protocol
         self.n_ports = n_ports
         self.ul_bw = ul_bw
@@ -143,10 +85,12 @@ class ComputationResource(SerializableObject):
         assert type(ram_size) == unicode
         assert cpu_utilization[-1] == '%'
         assert gpu_utilization[-1] == '%'
+        assert size_str_to_bits(disk_space) >= 0
+        assert size_str_to_bits(ram_size) >= 0
         self.cpu_utilization = int(cpu_utilization[:-1])
         self.gpu_utilization = int(gpu_utilization[:-1])
-        self.disk_space = size_str_to_bits(disk_space)
-        self.ram_size = size_str_to_bits(ram_size)
+        self.disk_space = disk_space
+        self.ram_size = ram_size
 
 
 class ComputationLibrary(SerializableObject):
@@ -258,7 +202,7 @@ class DeviceSpec(SerializableObject):
 class NetworkLink(SerializableObject):
     def __init__(self, src_intf_name, dst_intf_name, latency):
         assert type(latency) == unicode
-        latency = time_str_to_ms(latency)
+        assert time_str_to_ms(latency) >= 0
         self.src_intf_name = src_intf_name
         self.dst_intf_name = dst_intf_name
         self.latency = latency
@@ -308,6 +252,9 @@ class DeviceData(SerializableObject):
                 base_graph.add_edge(src_device, dst_device)
                 base_graph.add_edge(dst_device, src_device)
         return base_graph
+
+    def has_device(self, device_id):
+        return device_id in self.device_dict
 
     def add_device(self, device_id, device_name):
         assert type(device_id) == unicode

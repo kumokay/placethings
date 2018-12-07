@@ -1,0 +1,214 @@
+{
+    "__classname": "TaskData", 
+    "link_dict": {
+        "capture_image": {
+            "detect_object": {
+                "__classname": "TaskLink", 
+                "data_traffic": "2MB"
+            }
+        }, 
+        "detect_object": {
+            "send_notification": {
+                "__classname": "TaskLink", 
+                "data_traffic": "20B"
+            }
+        }
+    }, 
+    "task_dict": {
+        "capture_image": {
+            "__classname": "Task", 
+            "items": {
+                "default": {
+                    "__classname": "Build", 
+                    "computation_library": {
+                        "__classname": "ComputationLibrary", 
+                        "items": {}
+                    }, 
+                    "computation_resource": {
+                        "__classname": "ComputationResource", 
+                        "cpu_utilization": 0, 
+                        "disk_space": "0Mb", 
+                        "gpu_utilization": 0, 
+                        "ram_size": "0Mb"
+                    }, 
+                    "exec_cmd": "cd {progdir} && python main_entity.py run_task -n task_camera -en task_forward -a {docker_addr} -ra {next_addr} &> /dev/null &", 
+                    "latency": "1ms"
+                }
+            }
+        }, 
+        "detect_object": {
+            "__classname": "Task", 
+            "items": {
+                "default": {
+                    "__classname": "Build", 
+                    "computation_library": {
+                        "__classname": "ComputationLibrary", 
+                        "items": {}
+                    }, 
+                    "computation_resource": {
+                        "__classname": "ComputationResource", 
+                        "cpu_utilization": 0, 
+                        "disk_space": "0Mb", 
+                        "gpu_utilization": 0, 
+                        "ram_size": "0Mb"
+                    }, 
+                    "exec_cmd": "cd {progdir} && python main_entity.py run_task -n task_findObj -en task_findObj -a {self_addr} -ra {next_addr} -al local &> /dev/null &", 
+                    "latency": "2400ms"
+                }, 
+                "p3.2xlarge": {
+                    "__classname": "Build", 
+                    "computation_library": {
+                        "__classname": "ComputationLibrary", 
+                        "items": {}
+                    }, 
+                    "computation_resource": {
+                        "__classname": "ComputationResource", 
+                        "cpu_utilization": 0, 
+                        "disk_space": "0Mb", 
+                        "gpu_utilization": 0, 
+                        "ram_size": "0Mb"
+                    }, 
+                    "exec_cmd": "cd {progdir} && python main_entity.py run_task -n task_findObj -en task_findObj -a {self_addr} -ra {next_addr} -al offload 172.17.49.60:18800 &> /dev/null &", 
+                    "latency": "860ms"
+                }, 
+                "t3.large": {
+                    "__classname": "Build", 
+                    "computation_library": {
+                        "__classname": "ComputationLibrary", 
+                        "items": {}
+                    }, 
+                    "computation_resource": {
+                        "__classname": "ComputationResource", 
+                        "cpu_utilization": 0, 
+                        "disk_space": "0Mb", 
+                        "gpu_utilization": 0, 
+                        "ram_size": "0Mb"
+                    }, 
+                    "exec_cmd": "cd {progdir} && python main_entity.py run_task -n task_findObj -en task_findObj -a {self_addr} -ra {next_addr} -al local &> /dev/null &", 
+                    "latency": "1600ms"
+                }
+            }
+        }, 
+        "send_notification": {
+            "__classname": "Task", 
+            "items": {
+                "default": {
+                    "__classname": "Build", 
+                    "computation_library": {
+                        "__classname": "ComputationLibrary", 
+                        "items": {}
+                    }, 
+                    "computation_resource": {
+                        "__classname": "ComputationResource", 
+                        "cpu_utilization": 0, 
+                        "disk_space": "0Mb", 
+                        "gpu_utilization": 0, 
+                        "ram_size": "0Mb"
+                    }, 
+                    "exec_cmd": "cd {progdir} && python main_entity.py run_task -n task_alert -en task_forward -a {self_addr} -ra 172.17.51.1:18900 &> /dev/null &", 
+                    "latency": "1ms"
+                }
+            }
+        }
+    }, 
+    "task_spec": {
+        "__classname": "TaskSpec", 
+        "items": {
+            "task_alert": {
+                "__classname": "Task", 
+                "items": {
+                    "default": {
+                        "__classname": "Build", 
+                        "computation_library": {
+                            "__classname": "ComputationLibrary", 
+                            "items": {}
+                        }, 
+                        "computation_resource": {
+                            "__classname": "ComputationResource", 
+                            "cpu_utilization": 0, 
+                            "disk_space": "0Mb", 
+                            "gpu_utilization": 0, 
+                            "ram_size": "0Mb"
+                        }, 
+                        "exec_cmd": "cd {progdir} && python main_entity.py run_task -n task_alert -en task_forward -a {self_addr} -ra 172.17.51.1:18900 &> /dev/null &", 
+                        "latency": "1ms"
+                    }
+                }
+            }, 
+            "task_camera": {
+                "__classname": "Task", 
+                "items": {
+                    "default": {
+                        "__classname": "Build", 
+                        "computation_library": {
+                            "__classname": "ComputationLibrary", 
+                            "items": {}
+                        }, 
+                        "computation_resource": {
+                            "__classname": "ComputationResource", 
+                            "cpu_utilization": 0, 
+                            "disk_space": "0Mb", 
+                            "gpu_utilization": 0, 
+                            "ram_size": "0Mb"
+                        }, 
+                        "exec_cmd": "cd {progdir} && python main_entity.py run_task -n task_camera -en task_forward -a {docker_addr} -ra {next_addr} &> /dev/null &", 
+                        "latency": "1ms"
+                    }
+                }
+            }, 
+            "task_findObj": {
+                "__classname": "Task", 
+                "items": {
+                    "default": {
+                        "__classname": "Build", 
+                        "computation_library": {
+                            "__classname": "ComputationLibrary", 
+                            "items": {}
+                        }, 
+                        "computation_resource": {
+                            "__classname": "ComputationResource", 
+                            "cpu_utilization": 0, 
+                            "disk_space": "0Mb", 
+                            "gpu_utilization": 0, 
+                            "ram_size": "0Mb"
+                        }, 
+                        "exec_cmd": "cd {progdir} && python main_entity.py run_task -n task_findObj -en task_findObj -a {self_addr} -ra {next_addr} -al local &> /dev/null &", 
+                        "latency": "2400ms"
+                    }, 
+                    "p3.2xlarge": {
+                        "__classname": "Build", 
+                        "computation_library": {
+                            "__classname": "ComputationLibrary", 
+                            "items": {}
+                        }, 
+                        "computation_resource": {
+                            "__classname": "ComputationResource", 
+                            "cpu_utilization": 0, 
+                            "disk_space": "0Mb", 
+                            "gpu_utilization": 0, 
+                            "ram_size": "0Mb"
+                        }, 
+                        "exec_cmd": "cd {progdir} && python main_entity.py run_task -n task_findObj -en task_findObj -a {self_addr} -ra {next_addr} -al offload 172.17.49.60:18800 &> /dev/null &", 
+                        "latency": "860ms"
+                    }, 
+                    "t3.large": {
+                        "__classname": "Build", 
+                        "computation_library": {
+                            "__classname": "ComputationLibrary", 
+                            "items": {}
+                        }, 
+                        "computation_resource": {
+                            "__classname": "ComputationResource", 
+                            "cpu_utilization": 0, 
+                            "disk_space": "0Mb", 
+                            "gpu_utilization": 0, 
+                            "ram_size": "0Mb"
+                        }, 
+                        "exec_cmd": "cd {progdir} && python main_entity.py run_task -n task_findObj -en task_findObj -a {self_addr} -ra {next_addr} -al local &> /dev/null &", 
+                        "latency": "1600ms"
+                    }
+                }
+            }
+        }
+    }
+}

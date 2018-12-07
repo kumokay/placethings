@@ -1,0 +1,8 @@
+{
+    "__classname": "MappingData", 
+    "mapping_dict": {
+        "capture_image": "patroller_drone", 
+        "detect_object": "gpu_server", 
+        "send_notification": "samsung_phone"
+    }
+}
