@@ -8,7 +8,6 @@ import logging
 import importlib
 
 from placethings.config import config_factory
-from placethings.graph_gen import graph_factory
 from placethings.utils.common_utils import update_rootlogger
 
 
@@ -75,28 +74,6 @@ class ArgsManager(object):
 class FuncManager(object):
 
     @staticmethod
-    def create_topograph(args):
-        config_name = args.config_name
-        graph_factory.gen_topo_graph(config_name, is_export=True)
-
-    @staticmethod
-    def create_taskgraph(args):
-        config_name = args.config_name
-        graph_factory.gen_task_graph(config_name, is_export=True)
-
-    @staticmethod
-    def create_devicegraph(args):
-        config_name = args.config_name
-        graph_factory.gen_device_graph(config_name, is_export=True)
-
-    @staticmethod
-    def export_all_graph(args):
-        config_name = args.config_name
-        graph_factory.gen_device_graph(config_name, is_export=True)
-        graph_factory.gen_task_graph(config_name, is_export=True)
-        graph_factory.gen_topo_graph(config_name, is_export=True)
-
-    @staticmethod
     def demo(args):
         testcase = args.testcase
         config_name = args.config_name
@@ -119,34 +96,6 @@ class FuncManager(object):
 def main():
     args_manager = ArgsManager()
 
-    name = 'create_topograph'
-    subargs_manager = args_manager.add_subparser(
-        name,
-        func=getattr(FuncManager, name),
-        help='generate network topology')
-    subargs_manager.config(required=False)
-
-    name = 'create_taskgraph'
-    subargs_manager = args_manager.add_subparser(
-        name,
-        func=getattr(FuncManager, name),
-        help='generate task graph')
-    subargs_manager.config(required=False)
-
-    name = 'create_devicegraph'
-    subargs_manager = args_manager.add_subparser(
-        name,
-        func=getattr(FuncManager, name),
-        help='generate network graph')
-    subargs_manager.config(required=False)
-
-    name = 'export_all_graph'
-    subargs_manager = args_manager.add_subparser(
-        name,
-        func=getattr(FuncManager, name),
-        help='export all config to json')
-    subargs_manager.config(required=False)
-
     name = 'demo'
     subargs_manager = args_manager.add_subparser(
         name,
@@ -157,12 +106,6 @@ def main():
     subargs_manager.visualize(required=False)
     subargs_manager.config(required=False)
     subargs_manager.testcase(required=False)
-
-    name = 'export_default_config'
-    subargs_manager = args_manager.add_subparser(
-        name,
-        func=getattr(FuncManager, name),
-        help='export all default config to json')
 
     args = args_manager.parse_args()
     args.func(args)

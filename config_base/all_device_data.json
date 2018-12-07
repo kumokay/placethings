@@ -2,8 +2,7 @@
     "__classname": "DeviceData", 
     "device_dict": {
         "bb_sw1": {
-            "__classname": "Device", 
-            "actuator_dict": {}, 
+            "__classname": "NetworkDevice", 
             "network": {
                 "__classname": "Network", 
                 "interface_dict": {
@@ -23,35 +22,11 @@
                         "protocol": "ethernet", 
                         "ul_bw": 1073741824
                     }
-                }, 
-                "network_type": "on_network_device"
-            }, 
-            "processor": {
-                "__classname": "Processor", 
-                "available_resource": {
-                    "__classname": "ComputationResource", 
-                    "cpu_utilization": 0, 
-                    "disk_space": 0, 
-                    "gpu_utilization": 0, 
-                    "ram_size": 0
-                }, 
-                "computation_library": {
-                    "__classname": "ComputationLibrary", 
-                    "items": {}
-                }, 
-                "computation_resource": {
-                    "__classname": "ComputationResource", 
-                    "cpu_utilization": 0, 
-                    "disk_space": 0, 
-                    "gpu_utilization": 0, 
-                    "ram_size": 0
                 }
-            }, 
-            "sensor_dict": {}
+            }
         }, 
         "bb_sw2": {
-            "__classname": "Device", 
-            "actuator_dict": {}, 
+            "__classname": "NetworkDevice", 
             "network": {
                 "__classname": "Network", 
                 "interface_dict": {
@@ -71,35 +46,11 @@
                         "protocol": "ethernet", 
                         "ul_bw": 1073741824
                     }
-                }, 
-                "network_type": "on_network_device"
-            }, 
-            "processor": {
-                "__classname": "Processor", 
-                "available_resource": {
-                    "__classname": "ComputationResource", 
-                    "cpu_utilization": 0, 
-                    "disk_space": 0, 
-                    "gpu_utilization": 0, 
-                    "ram_size": 0
-                }, 
-                "computation_library": {
-                    "__classname": "ComputationLibrary", 
-                    "items": {}
-                }, 
-                "computation_resource": {
-                    "__classname": "ComputationResource", 
-                    "cpu_utilization": 0, 
-                    "disk_space": 0, 
-                    "gpu_utilization": 0, 
-                    "ram_size": 0
                 }
-            }, 
-            "sensor_dict": {}
+            }
         }, 
         "bb_sw3": {
-            "__classname": "Device", 
-            "actuator_dict": {}, 
+            "__classname": "NetworkDevice", 
             "network": {
                 "__classname": "Network", 
                 "interface_dict": {
@@ -119,31 +70,8 @@
                         "protocol": "ethernet", 
                         "ul_bw": 1073741824
                     }
-                }, 
-                "network_type": "on_network_device"
-            }, 
-            "processor": {
-                "__classname": "Processor", 
-                "available_resource": {
-                    "__classname": "ComputationResource", 
-                    "cpu_utilization": 0, 
-                    "disk_space": 0, 
-                    "gpu_utilization": 0, 
-                    "ram_size": 0
-                }, 
-                "computation_library": {
-                    "__classname": "ComputationLibrary", 
-                    "items": {}
-                }, 
-                "computation_resource": {
-                    "__classname": "ComputationResource", 
-                    "cpu_utilization": 0, 
-                    "disk_space": 0, 
-                    "gpu_utilization": 0, 
-                    "ram_size": 0
                 }
-            }, 
-            "sensor_dict": {}
+            }
         }, 
         "cpu_server": {
             "__classname": "Device", 
@@ -159,8 +87,7 @@
                         "protocol": "ethernet", 
                         "ul_bw": 419430400
                     }
-                }, 
-                "network_type": "on_device"
+                }
             }, 
             "processor": {
                 "__classname": "Processor", 
@@ -199,8 +126,7 @@
                         "protocol": "ethernet", 
                         "ul_bw": 10737418240
                     }
-                }, 
-                "network_type": "on_device"
+                }
             }, 
             "processor": {
                 "__classname": "Processor", 
@@ -226,8 +152,7 @@
             "sensor_dict": {}
         }, 
         "home_ap1": {
-            "__classname": "Device", 
-            "actuator_dict": {}, 
+            "__classname": "NetworkDevice", 
             "network": {
                 "__classname": "Network", 
                 "interface_dict": {
@@ -247,35 +172,11 @@
                         "protocol": "wifi", 
                         "ul_bw": 104857600
                     }
-                }, 
-                "network_type": "on_network_device"
-            }, 
-            "processor": {
-                "__classname": "Processor", 
-                "available_resource": {
-                    "__classname": "ComputationResource", 
-                    "cpu_utilization": 0, 
-                    "disk_space": 0, 
-                    "gpu_utilization": 0, 
-                    "ram_size": 0
-                }, 
-                "computation_library": {
-                    "__classname": "ComputationLibrary", 
-                    "items": {}
-                }, 
-                "computation_resource": {
-                    "__classname": "ComputationResource", 
-                    "cpu_utilization": 0, 
-                    "disk_space": 0, 
-                    "gpu_utilization": 0, 
-                    "ram_size": 0
                 }
-            }, 
-            "sensor_dict": {}
+            }
         }, 
         "home_ap2": {
-            "__classname": "Device", 
-            "actuator_dict": {}, 
+            "__classname": "NetworkDevice", 
             "network": {
                 "__classname": "Network", 
                 "interface_dict": {
@@ -295,35 +196,11 @@
                         "protocol": "wifi", 
                         "ul_bw": 104857600
                     }
-                }, 
-                "network_type": "on_network_device"
-            }, 
-            "processor": {
-                "__classname": "Processor", 
-                "available_resource": {
-                    "__classname": "ComputationResource", 
-                    "cpu_utilization": 0, 
-                    "disk_space": 0, 
-                    "gpu_utilization": 0, 
-                    "ram_size": 0
-                }, 
-                "computation_library": {
-                    "__classname": "ComputationLibrary", 
-                    "items": {}
-                }, 
-                "computation_resource": {
-                    "__classname": "ComputationResource", 
-                    "cpu_utilization": 0, 
-                    "disk_space": 0, 
-                    "gpu_utilization": 0, 
-                    "ram_size": 0
                 }
-            }, 
-            "sensor_dict": {}
+            }
         }, 
         "home_ap3": {
-            "__classname": "Device", 
-            "actuator_dict": {}, 
+            "__classname": "NetworkDevice", 
             "network": {
                 "__classname": "Network", 
                 "interface_dict": {
@@ -343,35 +220,11 @@
                         "protocol": "wifi", 
                         "ul_bw": 104857600
                     }
-                }, 
-                "network_type": "on_network_device"
-            }, 
-            "processor": {
-                "__classname": "Processor", 
-                "available_resource": {
-                    "__classname": "ComputationResource", 
-                    "cpu_utilization": 0, 
-                    "disk_space": 0, 
-                    "gpu_utilization": 0, 
-                    "ram_size": 0
-                }, 
-                "computation_library": {
-                    "__classname": "ComputationLibrary", 
-                    "items": {}
-                }, 
-                "computation_resource": {
-                    "__classname": "ComputationResource", 
-                    "cpu_utilization": 0, 
-                    "disk_space": 0, 
-                    "gpu_utilization": 0, 
-                    "ram_size": 0
                 }
-            }, 
-            "sensor_dict": {}
+            }
         }, 
         "home_sw1": {
-            "__classname": "Device", 
-            "actuator_dict": {}, 
+            "__classname": "NetworkDevice", 
             "network": {
                 "__classname": "Network", 
                 "interface_dict": {
@@ -391,35 +244,11 @@
                         "protocol": "ethernet", 
                         "ul_bw": 104857600
                     }
-                }, 
-                "network_type": "on_network_device"
-            }, 
-            "processor": {
-                "__classname": "Processor", 
-                "available_resource": {
-                    "__classname": "ComputationResource", 
-                    "cpu_utilization": 0, 
-                    "disk_space": 0, 
-                    "gpu_utilization": 0, 
-                    "ram_size": 0
-                }, 
-                "computation_library": {
-                    "__classname": "ComputationLibrary", 
-                    "items": {}
-                }, 
-                "computation_resource": {
-                    "__classname": "ComputationResource", 
-                    "cpu_utilization": 0, 
-                    "disk_space": 0, 
-                    "gpu_utilization": 0, 
-                    "ram_size": 0
                 }
-            }, 
-            "sensor_dict": {}
+            }
         }, 
         "home_sw2": {
-            "__classname": "Device", 
-            "actuator_dict": {}, 
+            "__classname": "NetworkDevice", 
             "network": {
                 "__classname": "Network", 
                 "interface_dict": {
@@ -439,35 +268,11 @@
                         "protocol": "ethernet", 
                         "ul_bw": 104857600
                     }
-                }, 
-                "network_type": "on_network_device"
-            }, 
-            "processor": {
-                "__classname": "Processor", 
-                "available_resource": {
-                    "__classname": "ComputationResource", 
-                    "cpu_utilization": 0, 
-                    "disk_space": 0, 
-                    "gpu_utilization": 0, 
-                    "ram_size": 0
-                }, 
-                "computation_library": {
-                    "__classname": "ComputationLibrary", 
-                    "items": {}
-                }, 
-                "computation_resource": {
-                    "__classname": "ComputationResource", 
-                    "cpu_utilization": 0, 
-                    "disk_space": 0, 
-                    "gpu_utilization": 0, 
-                    "ram_size": 0
                 }
-            }, 
-            "sensor_dict": {}
+            }
         }, 
         "home_sw3": {
-            "__classname": "Device", 
-            "actuator_dict": {}, 
+            "__classname": "NetworkDevice", 
             "network": {
                 "__classname": "Network", 
                 "interface_dict": {
@@ -487,31 +292,8 @@
                         "protocol": "ethernet", 
                         "ul_bw": 104857600
                     }
-                }, 
-                "network_type": "on_network_device"
-            }, 
-            "processor": {
-                "__classname": "Processor", 
-                "available_resource": {
-                    "__classname": "ComputationResource", 
-                    "cpu_utilization": 0, 
-                    "disk_space": 0, 
-                    "gpu_utilization": 0, 
-                    "ram_size": 0
-                }, 
-                "computation_library": {
-                    "__classname": "ComputationLibrary", 
-                    "items": {}
-                }, 
-                "computation_resource": {
-                    "__classname": "ComputationResource", 
-                    "cpu_utilization": 0, 
-                    "disk_space": 0, 
-                    "gpu_utilization": 0, 
-                    "ram_size": 0
                 }
-            }, 
-            "sensor_dict": {}
+            }
         }, 
         "nuc": {
             "__classname": "Device", 
@@ -527,8 +309,7 @@
                         "protocol": "ethernet", 
                         "ul_bw": 104857600
                     }
-                }, 
-                "network_type": "on_device"
+                }
             }, 
             "processor": {
                 "__classname": "Processor", 
@@ -567,8 +348,7 @@
                         "protocol": "wifi", 
                         "ul_bw": 629145600
                     }
-                }, 
-                "network_type": "on_device"
+                }
             }, 
             "processor": {
                 "__classname": "Processor", 
@@ -617,8 +397,7 @@
                         "protocol": "wifi", 
                         "ul_bw": 629145600
                     }
-                }, 
-                "network_type": "on_device"
+                }
             }, 
             "processor": {
                 "__classname": "Processor", 
@@ -648,8 +427,7 @@
         "__classname": "DeviceSpec", 
         "items": {
             "dlink_ac3900": {
-                "__classname": "Device", 
-                "actuator_dict": {}, 
+                "__classname": "NetworkDevice", 
                 "network": {
                     "__classname": "Network", 
                     "interface_dict": {
@@ -669,35 +447,11 @@
                             "protocol": "wifi", 
                             "ul_bw": 104857600
                         }
-                    }, 
-                    "network_type": "on_network_device"
-                }, 
-                "processor": {
-                    "__classname": "Processor", 
-                    "available_resource": {
-                        "__classname": "ComputationResource", 
-                        "cpu_utilization": 0, 
-                        "disk_space": 0, 
-                        "gpu_utilization": 0, 
-                        "ram_size": 0
-                    }, 
-                    "computation_library": {
-                        "__classname": "ComputationLibrary", 
-                        "items": {}
-                    }, 
-                    "computation_resource": {
-                        "__classname": "ComputationResource", 
-                        "cpu_utilization": 0, 
-                        "disk_space": 0, 
-                        "gpu_utilization": 0, 
-                        "ram_size": 0
                     }
-                }, 
-                "sensor_dict": {}
+                }
             }, 
             "dlink_dgs105": {
-                "__classname": "Device", 
-                "actuator_dict": {}, 
+                "__classname": "NetworkDevice", 
                 "network": {
                     "__classname": "Network", 
                     "interface_dict": {
@@ -717,31 +471,8 @@
                             "protocol": "ethernet", 
                             "ul_bw": 104857600
                         }
-                    }, 
-                    "network_type": "on_network_device"
-                }, 
-                "processor": {
-                    "__classname": "Processor", 
-                    "available_resource": {
-                        "__classname": "ComputationResource", 
-                        "cpu_utilization": 0, 
-                        "disk_space": 0, 
-                        "gpu_utilization": 0, 
-                        "ram_size": 0
-                    }, 
-                    "computation_library": {
-                        "__classname": "ComputationLibrary", 
-                        "items": {}
-                    }, 
-                    "computation_resource": {
-                        "__classname": "ComputationResource", 
-                        "cpu_utilization": 0, 
-                        "disk_space": 0, 
-                        "gpu_utilization": 0, 
-                        "ram_size": 0
                     }
-                }, 
-                "sensor_dict": {}
+                }
             }, 
             "drone": {
                 "__classname": "Device", 
@@ -757,8 +488,7 @@
                             "protocol": "wifi", 
                             "ul_bw": 629145600
                         }
-                    }, 
-                    "network_type": "on_device"
+                    }
                 }, 
                 "processor": {
                     "__classname": "Processor", 
@@ -789,8 +519,7 @@
                 }
             }, 
             "juniper_ex4300": {
-                "__classname": "Device", 
-                "actuator_dict": {}, 
+                "__classname": "NetworkDevice", 
                 "network": {
                     "__classname": "Network", 
                     "interface_dict": {
@@ -810,31 +539,8 @@
                             "protocol": "ethernet", 
                             "ul_bw": 1073741824
                         }
-                    }, 
-                    "network_type": "on_network_device"
-                }, 
-                "processor": {
-                    "__classname": "Processor", 
-                    "available_resource": {
-                        "__classname": "ComputationResource", 
-                        "cpu_utilization": 0, 
-                        "disk_space": 0, 
-                        "gpu_utilization": 0, 
-                        "ram_size": 0
-                    }, 
-                    "computation_library": {
-                        "__classname": "ComputationLibrary", 
-                        "items": {}
-                    }, 
-                    "computation_resource": {
-                        "__classname": "ComputationResource", 
-                        "cpu_utilization": 0, 
-                        "disk_space": 0, 
-                        "gpu_utilization": 0, 
-                        "ram_size": 0
                     }
-                }, 
-                "sensor_dict": {}
+                }
             }, 
             "p3.2xlarge": {
                 "__classname": "Device", 
@@ -850,8 +556,7 @@
                             "protocol": "ethernet", 
                             "ul_bw": 10737418240
                         }
-                    }, 
-                    "network_type": "on_device"
+                    }
                 }, 
                 "processor": {
                     "__classname": "Processor", 
@@ -895,8 +600,7 @@
                             "protocol": "wifi", 
                             "ul_bw": 629145600
                         }
-                    }, 
-                    "network_type": "on_device"
+                    }
                 }, 
                 "processor": {
                     "__classname": "Processor", 
@@ -935,8 +639,7 @@
                             "protocol": "ethernet", 
                             "ul_bw": 419430400
                         }
-                    }, 
-                    "network_type": "on_device"
+                    }
                 }, 
                 "processor": {
                     "__classname": "Processor", 
@@ -975,8 +678,7 @@
                             "protocol": "ethernet", 
                             "ul_bw": 104857600
                         }
-                    }, 
-                    "network_type": "on_device"
+                    }
                 }, 
                 "processor": {
                     "__classname": "Processor", 

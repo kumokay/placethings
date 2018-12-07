@@ -9,6 +9,7 @@ import os
 import sys
 
 from future.utils import iteritems
+import networkx as nx
 
 from placethings.config.base.utils import size_str_to_bits, time_str_to_ms
 
@@ -92,19 +93,14 @@ class NetworkInterface(SerializableObject):
 
 
 class Network(SerializableObject):
-    _valid_network_types = {'on_device', 'on_network_device'}
     _valid_intf_directions = {'egress', 'ingress'}
 
-    def __init__(self, network_type='undefined', interface_dict=None):
+    def __init__(self, interface_dict=None):
         if not interface_dict:
             interface_dict = {}
-        assert type(network_type) == unicode
         assert type(interface_dict) == dict
-        assert network_type == 'undefined' or (
-            network_type in self._valid_network_types)
         for intf_direction, intf_obj in iteritems(interface_dict):
             assert intf_direction in self._valid_intf_directions
-        self.network_type = network_type
         self.interface_dict = interface_dict
 
     def add_interface(self, direction, intf):
@@ -178,7 +174,24 @@ class Processor(SerializableObject):
         self.available_resource = computation_resource
 
 
-class Device(SerializableObject):
+class DeviceBase(SerializableObject):
+    pass
+
+
+class NetworkDevice(DeviceBase):
+    """
+        NetworkDevice is a DeviceBase with only network capabilities
+    """
+    def __init__(self, network=None):
+        assert type(network) == Network
+        self.network = network
+
+    def set_network(self, network):
+        assert type(network) == Network
+        self.network = network
+
+
+class Device(DeviceBase):
 
     def __init__(
             self, processor=None, sensor_dict=None, actuator_dict=None,
@@ -232,6 +245,7 @@ class DeviceSpec(SerializableObject):
 
     def add_device(self, device_name, device_obj):
         assert device_name not in self.items
+        assert isinstance(device_obj, DeviceBase)
         self.items[device_name] = device_obj
 
     def has_device(self, device_name):
@@ -277,6 +291,24 @@ class DeviceData(SerializableObject):
         #     dst_device1: link_attr,
         #     dst_device2: link_attr}}
 
+    def to_graph(self, is_export=False):
+        base_graph = nx.DiGraph()
+        for device_name, device_obj in iteritems(self.device_dict):
+            if type(device_obj) == Device:
+                node_type = 'device'
+            elif type(device_obj) == NetworkDevice:
+                node_type = 'network_device'
+            else:
+                assert False
+            base_graph.add_node(device_name, node_type=node_type)
+        for src_device, dst_device_dict in iteritems(self.link_dict):
+            for dst_device in dst_device_dict:
+                assert src_device in base_graph.nodes()
+                assert dst_device in base_graph.nodes()
+                base_graph.add_edge(src_device, dst_device)
+                base_graph.add_edge(dst_device, src_device)
+        return base_graph
+
     def add_device(self, device_id, device_name):
         assert type(device_id) == unicode
         assert type(device_name) == unicode
@@ -289,15 +321,16 @@ class DeviceData(SerializableObject):
         assert src_device_id in self.device_dict
         assert dst_device_id in self.device_dict
         assert type(network_link) == NetworkLink
-        src_network = self.device_dict[src_device_id].network
-        dst_network = self.device_dict[dst_device_id].network
-        if src_network.network_type == 'on_device':
-            assert dst_network.network_type == 'on_network_device'
-        elif src_network.network_type == 'on_network_device':
-            assert dst_network.network_type == 'on_device' or (
-                dst_network.network_type == 'on_network_device')
+        src_device_obj = self.device_dict[src_device_id]
+        dst_device_obj = self.device_dict[dst_device_id]
+        if type(src_device_obj) == Device:
+            assert type(dst_device_obj) == NetworkDevice
+        elif type(src_device_obj) == NetworkDevice:
+            assert type(dst_device_obj) == NetworkDevice
         else:
             assert False
+        src_network = self.device_dict[src_device_id].network
+        dst_network = self.device_dict[dst_device_id].network
         src_intf_name = network_link.src_intf_name
         dst_intf_name = network_link.dst_intf_name
         assert src_intf_name in src_network.interface_dict

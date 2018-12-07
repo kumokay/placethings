@@ -7,6 +7,7 @@ import logging
 
 from placethings.config.base import device_cfg
 from placethings.demo.base_test import BaseTestCase
+from placethings.utils import plot_utils
 
 log = logging.getLogger()
 
@@ -24,24 +25,21 @@ network settings
 def create_network_device_spec():
     device_spec = device_cfg.DeviceSpec()
 
-    device = device_cfg.Device(
-        network=device_cfg.Network(network_type='on_network_device'))
+    device = device_cfg.NetworkDevice(network=device_cfg.Network())
     device.network.add_interface('ingress', device_cfg.NetworkInterface(
         protocol='ethernet', n_ports=24, ul_bw='1Gb', dl_bw='1Gb'))
     device.network.add_interface('egress', device_cfg.NetworkInterface(
         protocol='ethernet', n_ports=24, ul_bw='1Gb', dl_bw='1Gb'))
     device_spec.add_device('juniper_ex4300', device)
 
-    device = device_cfg.Device(
-        network=device_cfg.Network(network_type='on_network_device'))
+    device = device_cfg.NetworkDevice(network=device_cfg.Network())
     device.network.add_interface('ingress', device_cfg.NetworkInterface(
         protocol='wifi', n_ports=10, ul_bw='100Mb', dl_bw='100Mb'))
     device.network.add_interface('egress', device_cfg.NetworkInterface(
         protocol='ethernet', n_ports=1, ul_bw='1Gb', dl_bw='1Gb'))
     device_spec.add_device('dlink_ac3900', device)
 
-    device = device_cfg.Device(
-        network=device_cfg.Network(network_type='on_network_device'))
+    device = device_cfg.NetworkDevice(network=device_cfg.Network())
     device.network.add_interface('ingress', device_cfg.NetworkInterface(
         protocol='ethernet', n_ports=10, ul_bw='100Mb', dl_bw='100Mb'))
     device.network.add_interface('egress', device_cfg.NetworkInterface(
@@ -55,7 +53,6 @@ def create_default_spec():
     device_spec = create_network_device_spec()
 
     network = device_cfg.Network(
-        network_type='on_device',
         interface_dict=dict(egress=device_cfg.NetworkInterface(
             protocol='ethernet', n_ports=1, ul_bw='10Gb', dl_bw='10Gb')))
     comp_resource = device_cfg.ComputationResource(
@@ -67,7 +64,6 @@ def create_default_spec():
     device_spec.add_device('p3.2xlarge', device)
 
     network = device_cfg.Network(
-        network_type='on_device',
         interface_dict=dict(egress=device_cfg.NetworkInterface(
             protocol='ethernet', n_ports=1, ul_bw='400Mb', dl_bw='400Mb')))
     comp_resource = device_cfg.ComputationResource(
@@ -79,7 +75,6 @@ def create_default_spec():
     device_spec.add_device('t3.large', device)
 
     network = device_cfg.Network(
-        network_type='on_device',
         interface_dict=dict(egress=device_cfg.NetworkInterface(
             protocol='ethernet', n_ports=1, ul_bw='100Mb', dl_bw='100Mb')))
     comp_resource = device_cfg.ComputationResource(
@@ -91,7 +86,6 @@ def create_default_spec():
     device_spec.add_device('t3.micro', device)
 
     network = device_cfg.Network(
-        network_type='on_device',
         interface_dict=dict(egress=device_cfg.NetworkInterface(
             protocol='wifi', n_ports=1, ul_bw='600Mb', dl_bw='600Mb')))
     device = device_cfg.Device(network=network)
@@ -100,7 +94,6 @@ def create_default_spec():
     device_spec.add_device('phone', device)
 
     network = device_cfg.Network(
-        network_type='on_device',
         interface_dict=dict(egress=device_cfg.NetworkInterface(
             protocol='wifi', n_ports=1, ul_bw='600Mb', dl_bw='600Mb')))
     device = device_cfg.Device(network=network)
@@ -136,6 +129,9 @@ class TestDefineNwConfig(BaseTestCase):
         device_data.add_link('home_sw1', 'bb_sw1', network_link)
         device_data.add_link('home_sw2', 'bb_sw2', network_link)
         device_data.add_link('home_sw3', 'bb_sw3', network_link)
+
+        graph = device_data.to_graph()
+        plot_utils.plot(graph, filepath='config_base/nw_device_data.png')
 
         device_data.export_to_file('config_base/nw_device_data.json')
         device_data_imported = device_cfg.DeviceData().import_from_file(
@@ -182,6 +178,9 @@ class TestDefineConfig(BaseTestCase):
         device_data.add_link('nuc', 'home_sw3', network_link)
         device_data.add_link('samsung_phone', 'home_ap1', network_link)
         device_data.add_link('patroller_drone', 'home_ap2', network_link)
+
+        graph = device_data.to_graph()
+        plot_utils.plot(graph, filepath='config_base/all_device_data.png')
 
         device_data.export_to_file('config_base/all_device_data.json')
         device_data_imported = device_cfg.DeviceData().import_from_file(
