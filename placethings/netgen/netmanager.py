@@ -20,57 +20,69 @@ log = logging.getLogger()
 class NetManager(object):
     _NEXT_IP_NUM = 100
     _NEXT_DOCKER_IP_NUM = 2
+    # port on baremetal machine binds to the docker exposed port
+    _NEXT_DOCKER_BINDING_PORT = 20000
+    # port exposed to public in each docker container
+    _DOCKER_EXPOSED_PORT = 19000
+    # port exposed in mininet only for tasks communication
+    _HOST_TASK_PORT = 18800
     _NEXT_HOST_ID = 0
     _NEXT_SWITCH_ID = 0
     _HOST_PREFIX = 'h'
     _SWITCH_PREFIX = 's'
-    _PORT_START = 18800
 
-    def __init__(self, net, docker_subnet_ip='172.18.0.1'):
+    def __init__(self, net, docker_subnet_ip, docker_img):
+        if not docker_img:
+            docker_img = self._DEFAULT_IMG
         self._net = net
         self._host_dict = {}
         self._host_ip_dict = {}  # assigned host ip
+        self._host_port_dict = {}  # exposed host port
         self._docker_subnet_prefix = '.'.join(docker_subnet_ip.split('.')[:3])
+        self._docker_img = docker_img
         self._mininet_subnet_prefix = '10.0.0'
         self._host_docker_ip_dict = {}
-        self._host_next_free_port = {}
+        self._host_docker_port_dict = {}
+        self._host_docker_binding_port_dict = {}
         self._switch_dict = {}
         self._edge_dict = {}
         self._edge_info_dict = {}
         self._devNameToNodeName = {}
 
     def print_net_info(self):
-        for dev in self._host_dict:
-            log.info('dev={}, v_dev={}, v_ip={}, docker_ip={}'.format(
-                dev, self._devNameToNodeName[dev],
-                self._host_ip_dict[dev], self._host_docker_ip_dict[dev]))
         for dev in self._switch_dict:
             log.info('dev={}, v_dev={}'.format(
                 dev, self._devNameToNodeName[dev]))
         for edge in self._edge_dict:
             log.info('link={}, config={}'.format(
                 edge, self._edge_info_dict[edge]))
-
-    def get_host_list(self):
-        return list(self._host_dict)
+        for dev in self._host_dict:
+            log.info(
+                'dev={}<->{}, ip={}:{}, docker={}:{}<->localhost:{}'.format(
+                    dev, self._devNameToNodeName[dev], self._host_ip_dict[dev],
+                    self._host_port_dict[dev], self._host_docker_ip_dict[dev],
+                    self._host_docker_port_dict[dev],
+                    self._host_docker_binding_port_dict[dev]))
 
     @classmethod
-    def create(cls, docker0_ip='172.18.0.1'):
+    def create(cls, docker0_ip, docker_img):
         raw_net = Containernet(controller=Controller, link=TCLink)
         log.info('create mininet wtih default controller')
         raw_net.addController('c0')
-        return cls(raw_net, docker0_ip)
+        return cls(raw_net, docker0_ip, docker_img)
 
-    def _new_ip(self):
+    def _new_address(self):
         ip = '{}.{}'.format(
             self._mininet_subnet_prefix, self._NEXT_IP_NUM)
         docker_ip = '{}.{}'.format(
             self._docker_subnet_prefix, self._NEXT_DOCKER_IP_NUM)
+        docker_port = self._NEXT_DOCKER_BINDING_PORT
         self._NEXT_IP_NUM += 1
         self._NEXT_DOCKER_IP_NUM += 1
+        self._NEXT_DOCKER_BINDING_PORT += 1
         assert self._NEXT_IP_NUM < 256
         assert self._NEXT_DOCKER_IP_NUM < 256
-        return ip, docker_ip
+        return ip, docker_ip, docker_port
 
     @classmethod
     def _new_host_name(cls):
@@ -88,13 +100,17 @@ class NetManager(object):
         # auto generate name bc name cannot be too long =.=
         name = self._new_host_name()
         # TODO: use cmd to get correct docker ip
-        ip, docker_ip = self._new_ip()
+        ip, docker_ip, docker_port = self._new_address()
         host = self._net.addDocker(
-            name, ip=ip, dimage="kumokay/ubuntu_wifi:v6")
+            name, ip=ip, dimage=self._docker_img,
+            ports=[self._DOCKER_EXPOSED_PORT],
+            port_bindings={self._DOCKER_EXPOSED_PORT: docker_port})
         self._host_dict[device_name] = host
         self._host_ip_dict[device_name] = ip
+        self._host_port_dict[device_name] = self._HOST_TASK_PORT
         self._host_docker_ip_dict[device_name] = docker_ip
-        self._host_next_free_port[device_name] = self._PORT_START
+        self._host_docker_port_dict[device_name] = self._DOCKER_EXPOSED_PORT
+        self._host_docker_binding_port_dict[device_name] = docker_port
         self._devNameToNodeName[device_name] = name
         log.debug('add host {}'.format(device_name))
 
@@ -127,9 +143,10 @@ class NetManager(object):
             bw=bw_mbps, delay=delay, jitter=jitter,
             max_queue_size=max_queue_size, loss=loss)
         self._edge_dict[(src, dst)] = link
-        self._edge_info_dict[(src, dst)] = 'delay {}, jitter {}'.format(
-            delay_ms, jitter_ms)
-        log.debug('link {} <-> {}: delay={}'.format(src, dst, delay))
+        self._edge_info_dict[(src, dst)] = dict(
+            delay_ms=delay_ms, bw_bps=bw_bps)
+        log.debug('link {} <-> {}: {}'.format(
+            src, dst, self._edge_info_dict[(src, dst)]))
 
     def delLink(self, src, dst):
         if (src, dst) in self._edge_dict:
@@ -147,16 +164,22 @@ class NetManager(object):
             del self._edge_info_dict[(src, dst)]
         log.debug('delete link {} <-> {}'.format(src, dst))
 
-    def modifyLinkDelay(self, src, dst, delay_ms):
+    def modifyLinkAttribute(self, src, dst, delay_ms=None, bw_bps=None):
         edge = (src, dst)
         if edge not in self._edge_dict:
             edge = (dst, src)
             assert edge in self._edge_dict
         link = self._edge_dict[edge]
+        if delay_ms is None:
+            delay_ms = self._edge_info_dict[edge]['delay_ms']
+        if bw_bps is None:
+            bw_bps = self._edge_info_dict[edge]['bw_bps']
         delay = '{}ms'.format(delay_ms // 2)
-        link.intf1.config(delay=delay)
-        link.intf2.config(delay=delay)
-        self._edge_info_dict[edge] = delay_ms
+        link.intf1.config(delay=delay, bw_bps=bw_bps)
+        link.intf2.config(delay=delay, bw_bps=bw_bps)
+        self._edge_info_dict[edge] = dict(delay_ms=delay_ms, bw_bps=bw_bps)
+        log.debug('link {} <-> {}: {}'.format(
+            edge[0], edge[1], self._edge_info_dict[edge]))
 
     def modifyLink(
             self, src, dst, new_dst=None, bw_bps=None, delay_ms=1,
@@ -176,11 +199,11 @@ class NetManager(object):
         # TODO: this is a hotfix. should stop hosts properly
         cleanup()
 
-    def run_cmd(self, device_name, command, async=False):
+    def run_cmd(self, device_name, command, is_async=False):
         host = self._host_dict[device_name]
         log.info('send command to {}({}): {}'.format(
             device_name, host, command))
-        if async:
+        if is_async:
             # no waiting
             host.sendCmd(command)
             output = 'command sent'
@@ -200,11 +223,6 @@ class NetManager(object):
         # ip = self._host_dict[device_name].IP()
         assert ip is not None, 'host={}, docker_ip={}'.format(device_name, ip)
         return ip
-
-    def get_device_free_port(self, device_name):
-        next_port = self._host_next_free_port[device_name]
-        self._host_next_free_port[device_name] += 1
-        return next_port
 
     def validate(self):
         log.info('*** Validate network')

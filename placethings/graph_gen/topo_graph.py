@@ -9,7 +9,7 @@ import logging
 
 from placethings.config import nw_device_data
 from placethings.config.common import LinkHelper, InventoryManager
-from placethings.definition import GInfo, GnInfo, LinkInfo, NodeType
+from placethings.config.definition.common_def import GInfo, GnInfo, LinkInfo, NodeType
 from placethings.graph_gen.graph_utils import GraphGen, FileHelper
 
 
@@ -50,17 +50,22 @@ def _derive_edge_info(nw_device_spec, nw_device_inventory, links):
         n1, n2 = LinkHelper.get_nodes(edge_str)
         link_type1 = edge_data[GnInfo.SRC_LINK_TYPE]
         link_type2 = edge_data[GnInfo.DST_LINK_TYPE]
-        latency = edge_data[GnInfo.LATENCY]
+        est_bandwidth = edge_data.get(GnInfo.BANDWIDTH, 2147483647)
         ul1, dl1, prot1 = _get_link_info(inventory, n1, link_type1)
         ul2, dl2, prot2 = _get_link_info(inventory, n2, link_type2)
         assert prot1 == prot2
         edge_info[edge_str] = {
             GnInfo.SRC_LINK_TYPE: link_type1,
             GnInfo.DST_LINK_TYPE: link_type2,
-            GnInfo.BANDWIDTH: min(ul1, dl2),
-            GnInfo.LATENCY: latency,
+            GnInfo.BANDWIDTH: min(ul1, dl2, est_bandwidth),
             GnInfo.PROTOCOL: prot1,
         }
+        if GnInfo.LATENCY in edge_data:
+            assert GnInfo.DISTANCE not in edge_data
+            edge_info[edge_str][GnInfo.LATENCY] = edge_data[GnInfo.LATENCY]
+        if GnInfo.DISTANCE in edge_data:
+            assert GnInfo.LATENCY not in edge_data
+            edge_info[edge_str][GnInfo.DISTANCE] = edge_data[GnInfo.DISTANCE]
     return edge_info
 
 
@@ -78,11 +83,6 @@ def create_graph(spec, inventory, links, is_export=False, export_suffix=''):
         FileHelper.export_graph(graph, export_data_name)
         FileHelper.export_data(node_info, edge_info, export_data_name)
     return graph
-
-
-def create_default_graph(is_export=False):
-    spec, inventory, links = nw_device_data.create_default_device_data()
-    return create_graph(spec, inventory, links, is_export)
 
 
 def create_graph_from_file(filepath, is_export=False):

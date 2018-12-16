@@ -8,6 +8,8 @@ from placethings.config.wrapper.device_gen import AllDeviceData
 from placethings.config.wrapper.nw_device_gen import AllNwDeviceData
 from placethings.config.wrapper.task_gen import AllTaskData
 
+sandeep_debug = False
+
 
 class Config(object):
     def __init__(self, folderpath=None):
@@ -22,6 +24,48 @@ class Config(object):
                 filepath=self._gen_file_path(folderpath, 'nw_device_data'))
             self.all_task_data = AllTaskData(
                 filepath=self._gen_file_path(folderpath, 'task_data'))
+
+        if sandeep_debug:
+            raw_input('Sandeep: Press enter to continue: ')
+            print('Device Specs')
+            print(self.all_device_data.device_spec.data)
+            print('*'*100)
+            print('*'*100)
+            print('Device inventory')
+            print(self.all_device_data.device_inventory.data)
+            print('*'*100)
+            print('*'*100)
+            print('Device links')
+            print(self.all_device_data.device_links.data)
+            print('*'*100)
+            print('*'*100)
+
+            # Network Devices
+            print('NW Device Specs')
+            print(self.all_nw_device_data.nw_device_spec.data)
+            print('*'*100)
+            print('*'*100)
+            print('NW Device inventory')
+            print(self.all_nw_device_data.nw_device_inventory.data)
+            print('*'*100)
+            print('*'*100)
+            print('NW Device links')
+            print(self.all_nw_device_data.nw_device_links.data)
+            print('*'*100)
+            print('*'*100)
+
+            print('Tasks Details')
+            print(self.all_task_data.task_mapping.data)
+            print('*'*100)
+            print('*'*100)
+
+            print(self.all_task_data.task_links.data)
+            print('*'*100)
+            print('*'*100)
+
+            print(self.all_task_data.task_info.data)
+            print('*'*100)
+            print('*'*100)
 
     @staticmethod
     def _gen_file_path(folder_path, filename):

@@ -1,5 +1,7 @@
 # placethings
 
+code taken from https://github.com/kumokay/placethings
+
 ## Overview
 <b>placethings</b> allows developers to construct an experimental testbed to evaluate and verify their internet of things (IoT) applications during the development phase. <b>placethings</b>leverages the famous Mininet/Containernet emulation environment to span the emulation across virtual machines, containers, and bare metal devices. Developers can configure the emulated network and add virtual or real <b>THINGs</b>. Based on the network and devices configuration, <b>placethings</b> also suggests good solutions for deploying IoT applications.
 
@@ -34,4 +36,16 @@ $ sudo pip install msgpack-rpc-python numpy Pillow future networkx matplotlib si
 $ sudo apt-get install glpk-utils
 ```
 
+3. Run demo case
+```
+# first get the docker image for creating mininet hosts
+$  sudo docker pull kumokay/heliot_host:v4
 
+# try it out! and run with -v option to print the output graphs
+$ python main.py -tc test_ddflow_demo_local.Test -v
+```
+For more details, see this [docs/demo.md#demo-case-explain](docs/demo.md#demo-case-explain)
+
+## Example
+
+All examples are in placethings/demo. See [docs/demo.md](docs/demo.md) for more details

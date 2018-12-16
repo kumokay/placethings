@@ -6,33 +6,29 @@ from __future__ import unicode_literals
 import logging
 import random
 
-from placethings.demo.utils import ConfigDataHelper
-from placethings.demo.base_test import BaseTestCase
-from placethings.definition import Unit
+from placethings.config.definition.common_def import Unit
+from placethings.config.helper import ConfigDataHelper
 from placethings.config.wrapper.config_gen import Config
+from placethings.demo.base_test import BaseTestCase
 
 log = logging.getLogger()
 
 
 class TestPhase1(BaseTestCase):
-    @staticmethod
-    def _simulate(topo_device_graph, Gd, G_map):
-        pass
-
     @classmethod
     def test(
-            cls, config_name, is_export=False,
+            cls, config_name=None, is_export=False, is_interactive=True,
             is_update_map=True, is_simulate=False):
-        assert config_name == 'config_ddflow_phase1'
+        if not config_name:
+            config_name = 'sample_configs/config_ddflow_phase1'
+        assert config_name == 'sample_configs/config_ddflow_phase1'
         cfg = Config(config_name)
         cfgHelper = ConfigDataHelper(cfg, is_export)
         cfgHelper.init_task_graph()
         cfgHelper.update_topo_device_graph()
         cfgHelper.update_task_map()
         cfgHelper.update_max_latency_log()
-        topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
-        if is_simulate:
-            cls._simulate(topo_device_graph, Gd, G_map)
+        topo, topo_device_graph, G_map = cfgHelper.get_graphs()
         # all_devices = [
         #     'P3_2XLARGE.0',
         #     'T3_LARGE.0',
@@ -65,9 +61,9 @@ class TestPhase1(BaseTestCase):
             if is_update_map:
                 cfgHelper.update_task_map()
             cfgHelper.update_max_latency_log()
-            topo, topo_device_graph, Gd, G_map = cfgHelper.get_graphs()
+            topo, topo_device_graph, G_map = cfgHelper.get_graphs()
             if is_simulate:
-                cls._simulate(topo_device_graph, Gd, G_map)
+                cls._simulate(topo_device_graph, G_map)
         latency_dynamic, latency_static = cfgHelper.get_max_latency_log()
         print('static\tdynamic\tdiff')
         for t1, t2 in zip(latency_static, latency_dynamic):
@@ -75,15 +71,13 @@ class TestPhase1(BaseTestCase):
 
 
 class TestPhase2(BaseTestCase):
-    @staticmethod
-    def _simulate(topo_device_graph, Gd, G_map):
-        pass
-
     @classmethod
     def test(
-            cls, config_name, is_export=False,
+            cls, config_name=None, is_export=False, is_interactive=True,
             is_update_map=False, is_simulate=False):
-        assert config_name == 'config_ddflow_phase2'
+        if not config_name:
+            config_name = 'sample_configs/config_ddflow_phase2'
+        assert config_name == 'sample_configs/config_ddflow_phase2'
         # TODO: clean this shit
         cfg1 = Config('{}.1'.format(config_name))
         cfg2 = Config('{}.2'.format(config_name))
@@ -108,7 +102,7 @@ class TestPhase2(BaseTestCase):
             update_id += 1
             log.info('=== update {}: mobile-ap link ==='.format(update_id))
             dev = random.sample(all_mobiles, 1)[0]
-            _, topo_device_graph, _, _ = cfgHelper.get_graphs()
+            _Gn, topo_device_graph, _Gmap = cfgHelper.get_graphs()
             edges = list(topo_device_graph.edges(dev))
             assert len(edges) == 1
             nw_dev = edges[0][1]
